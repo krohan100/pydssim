@@ -11,7 +11,7 @@ from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
 import uuid
 
-class AbstractResource(Protected):
+class AbstractResource():
     '''
     classdocs
     '''

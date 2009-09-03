@@ -15,7 +15,7 @@ class Service(AbstractResource):
         '''
         self.initialize(pid, resource,description,availabity,period)
         
-    def initialize(self, resource,description,availabity,period):
+    def initialize(self, pid,resource,description,availabity,period):
         AbstractResource.initialize(self, pid,resource,description,availabity,period)
             
     
