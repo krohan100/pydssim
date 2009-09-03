@@ -69,3 +69,10 @@ class Interface(type):
                 if not callable(objattrib):
                     return 0
         return 1
+
+def implements(obj, *interfaces):
+    """Returns 1 if obj implements *all* interfaces, 0 otherwise."""
+    for interface in interfaces:
+        if not interface.implements(obj):
+            return 0
+    return 1
