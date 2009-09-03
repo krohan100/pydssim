@@ -2,6 +2,7 @@ from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
+from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from sets import ImmutableSet
 from pydssim.peer.i_peer import IPeer
 from random import randint
@@ -23,6 +24,7 @@ class AbstractPeer(Protected):
         self.__dispatcher = MessageDispatcher(self)
         self.__services = ServiceRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
+        self.__equivalences = EquivalenceRepository(self)
         self.__connectionTime = 0
         self.__neighbors = {}
         self.__disconnectionTime = 0
