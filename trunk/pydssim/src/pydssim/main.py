@@ -11,6 +11,7 @@ from time import ctime
 from pydssim.peer.resource.hardware_resource import Hardware 
 from pydssim.peer.resource.abstract_resource import AbstractResource
 from pydssim.peer.resource.service_resource import Service
+from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.util.protected import Protected
 import uuid
 
@@ -42,13 +43,23 @@ if __name__ == '__main__':
     
     r = Service(111,1111)
     
-    print isinstance(h, Hardware),h.__class__
+  
     
     if  isinstance(r, Hardware):
         print "h"
         
     if  isinstance(r, AbstractResource):
         print "AR"     
+    
+    
+    sr = ServiceRepository(111)
+    sr.addElement(h)
+    sr.addElement(r)
+    x= sr.getElements()
+    for key in x.keys():
+        print 'key=%s, valeu=%s'%(key,x[key])
+    
+    
     
     #get()    
   

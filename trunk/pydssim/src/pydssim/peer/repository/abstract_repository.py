@@ -1,7 +1,7 @@
 from pydssim.util.protected import Protected
 from pydssim.peer.i_peer import IPeer
 from pydssim.util.decorator.public import public
-from pydssim.util.decorator.public import return_type
+from pydssim.util.decorator.return_type import return_type
 from sets import ImmutableSet
 
 class AbstractRepository(Protected):
@@ -16,7 +16,7 @@ class AbstractRepository(Protected):
     
     @public
     def addElement(self, element):
-        key = element.getUUID()+element.getPID()
+        key = element.getUUID()
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
@@ -24,7 +24,7 @@ class AbstractRepository(Protected):
     
     @public
     def removeElement(self, element):
-        key = element.getUUID()+element.getPID()
+        key = element.getUUID()#+self.__peer.getPID()
         if not self.__elements.has_key(key):
             raise StandardError()
         if self.__elements[key] > 0:

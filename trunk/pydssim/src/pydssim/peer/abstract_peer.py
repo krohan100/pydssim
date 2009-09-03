@@ -1,6 +1,7 @@
 from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
+from pydssim.peer.repository.service_repository import ServiceRepository
 from sets import ImmutableSet
 from pydssim.peer.i_peer import IPeer
 from random import randint
@@ -20,8 +21,8 @@ class AbstractPeer(Protected):
         self.__network = network
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
-        self.__profile = None
-        self.__sharedResource = []
+        self.__services = ServiceRepository(self)
+        self.__sharedResource = SharedRecourceRepository(self)
         self.__connectionTime = 0
         self.__neighbors = {}
         self.__disconnectionTime = 0
@@ -121,45 +122,15 @@ class AbstractPeer(Protected):
             del self.__neighbors[targetId]
         return not self.isConnected()
    
+     
     @public
-    def addResource(self, sharedResource):
-        #criar um repositorio de recurosos compartilhados 
-        #if  isinstance(r, Hardware):
-        key = resource.getUUID()+resource.getPID()
-        if not self.__resources.has_key(key):
-            self.__resources[key] = resource
-        
-        return resource
-    
-    @public
-    def removeResource(self, resource):
-        key = resource.getUUID()+resource.getPID()
-        if not self.__resources.has_key(key):
-            raise StandardError()
-        if self.__resources[key] > 0:
-            del self.__resources[resources]
-            
-        return resources
-    
-    @public
-    @return_type(int)
-    def countResources(self):
-        return len(self.__resources)
-    
-    @public
-    @return_type(dict)
-    def getResources(self):
-        return self.__resources
+    def getServices(self):
+        return self.__services
     
     
-    @public
-    def getProfile(self):
-        return self.__profile
-    
-    
-    def setProfile(self, profile):
-        self.__profile = profile
-        return self.__profile
+    def setServices(self, serviceRepository):
+        self.__services = serviceRepositoy
+        return self.__services
     
     @public
     def advertise(self, type):
