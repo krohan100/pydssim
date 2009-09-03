@@ -15,14 +15,13 @@ class AbstractPeer(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, id, network):
-        self.__id = id
+    def initialize(self, pid, network):
+        self.__pid = pid
         self.__network = network
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
         self.__profile = None
         self.__sharedResource = []
-        self.__unsharedResource = []
         self.__connectionTime = 0
         self.__neighbors = {}
         self.__disconnectionTime = 0
@@ -125,6 +124,7 @@ class AbstractPeer(Protected):
     @public
     def addResource(self, sharedResource):
         #criar um repositorio de recurosos compartilhados 
+        #if  isinstance(r, Hardware):
         key = resource.getUUID()+resource.getPID()
         if not self.__resources.has_key(key):
             self.__resources[key] = resource

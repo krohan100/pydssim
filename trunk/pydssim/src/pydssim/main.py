@@ -9,6 +9,9 @@ from pydssim.util.resource_maps import *
 from pydssim.util.logger import *
 from time import ctime
 from pydssim.peer.resource.hardware_resource import Hardware 
+from pydssim.peer.resource.abstract_resource import AbstractResource
+from pydssim.peer.resource.service_resource import Service
+from pydssim.util.protected import Protected
 import uuid
 
 def get():    
@@ -31,11 +34,22 @@ if __name__ == '__main__':
     m2 = Logger('w')
     m2.resgiterLoggingInfo("Star Simulation2")
     # Obtm um datatime da data e hora atual
-    hoje = datetime.today()
-    print ctime() 
+    #hoje = datetime.today()
+    #print ctime() 
     h = Hardware(1,"memoria")
    
     print h.getPID(), h.getUUID()
+    
+    r = Service(111,1111)
+    
+    print isinstance(h, Hardware),h.__class__
+    
+    if  isinstance(r, Hardware):
+        print "h"
+        
+    if  isinstance(r, AbstractResource):
+        print "AR"     
+    
     #get()    
   
         
