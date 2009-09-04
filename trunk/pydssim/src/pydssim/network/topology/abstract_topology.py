@@ -1,7 +1,7 @@
 from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
 from sets import ImmutableSet
-from threading import Semaphore
+from multiprocessing import Semaphore
 from pydssim.p2p.routing.default_neighbor import DefaultNeighbor
 
 class AbstractTopology(Protected):
@@ -11,7 +11,7 @@ class AbstractTopology(Protected):
     
     def initialize(self):
         self.__network = None
-        self.__graph = {}
+ sds       self.__graph = {}
     
     @public
     def setNetwork(self, network):
@@ -43,12 +43,12 @@ class AbstractTopology(Protected):
     @public
     def show(self):
         raise NotImplementedError()
-    parei aqui
+
     @public
     def dispatchMessage(self, message):
         sem = Semaphore()
         sem.acquire()
-        peer = self.getP2PNetwork().getPeer(message.getTargetId())
+        peer = self.getNetwork().getPeer(message.getTargetId())
         peer.receive(message)
         sem.release()
         return message
