@@ -4,7 +4,7 @@ from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from sets import ImmutableSet
-from pydssim.peer.i_peer import IPeer
+#from pydssim.peer.i_peer import IPeer
 from random import randint
 #from pysocialsim.p2p.message.message_manager import MessageManager
 
