@@ -1,14 +1,12 @@
-from pysocialsim.base.object import Object
-from pysocialsim.base.decorator.require import require
-from pysocialsim.p2p.topology.i_p2p_topology import IP2PTopology
-from pysocialsim.base.decorator.public import public
-from pysocialsim.base.decorator.return_type import return_type
-from pysocialsim.simulator.simulation.i_simulation import ISimulation
-from pysocialsim.p2p.peer.i_peer import IPeer
+from pydssim.util.protected import Protected
+from pydssim.util.decorator.require import require
+from pydssim.util.decorator.public import public
+from pydssim.util.decorator.return_type import return_type
+from pydssim.peer.i_peer import IPeer
 from sets import ImmutableSet
 import bisect
 
-class AbstractP2PNetwork(Object):
+class AbstractNetwork(Object):
     
     def __init__(self):
         raise NotImplementedError()
@@ -17,13 +15,20 @@ class AbstractP2PNetwork(Object):
         self.__topology = topology
         self.__topology.setP2PNetwork(self)
         self.__simulation = None
+        
+        '''
+        
         self.__peers = {}
         self.__connectedPeers = []
         self.__disconnectedPeers = []
         self.__advertisedPeers = []
+        
+        '''
     
+    
+    colocar essa parte na topologia
     @public
-    def getP2PTopology(self):
+    def getTopology(self):
         return self.__topology
     
     @public
