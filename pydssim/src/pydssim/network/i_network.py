@@ -1,13 +1,13 @@
-from pysocialsim.base.interface import Interface
+from pydssim.util.interface import Interface
 
-class IP2PNetwork(object):
+class INetwork(object):
     
     __metaclass__ = Interface
     
     def __init__(self):
         raise NotImplementedError()
     
-    def getP2PTopology(self):
+    def getTopology(self):
         raise NotImplementedError()
     
     def getSimulation(self):
