@@ -32,14 +32,14 @@ class AbstractPeer(Protected):
         
         
     @public
-    def getId(self):
-        return self.__id
+    def getPID(self):
+        return self.__pid
     
     @public
     def isConnected(self):
         return self.__isConnected
     
-    '''
+    rever 
     
     @public
     def setP2PProtocol(self, protocol):
@@ -51,7 +51,7 @@ class AbstractPeer(Protected):
             self.__dispatcher.registerMessageHandler(h)
             
         return self.__protocol
-    '''
+  
     
     @public
     def connect(self, priority):
@@ -72,7 +72,7 @@ class AbstractPeer(Protected):
         if self.__isConnected:
             return True
         self.__isConnected = True
-        self.__network.increaseNumberOfConnectedPeers(self.__id)
+        self.__network.increaseNumberOfConnectedPeers(self)
         return self.__isConnected
     
     @public
@@ -80,7 +80,7 @@ class AbstractPeer(Protected):
         if not self.__isConnected:
             return
         self.__isConnected = False
-        self.__network.decreaseNumberOfConnectedPeers(self.__id)
+        self.__network.decreaseNumberOfConnectedPeers(self)
         return not self.__isConnected
     
     @public
@@ -91,7 +91,8 @@ class AbstractPeer(Protected):
     def send(self, message):
         self.sendMessage(message)
         return message
-    
+   
+    #ve issso
     @public
     def sendMessage(self, message):
         return self.__protocol.sendMessage(message)
@@ -111,17 +112,20 @@ class AbstractPeer(Protected):
     def getMessageDispatcher(self):
         return self.__dispatcher
     
+    
     @public
-    def createConnection(self, targetId):
-        self.__network.createConnection(self.__id, targetId)
-        self.connected()
+    def createConnection(self, target):
+       
+        if self.__network.createConnection(self, target):
+            self.addNeighbor(target)
+            self.connected()
         return self.isConnected()
     
     @public
-    def removeConnection(self, targetId):
-        self.__network.removeConnection(self.__id, targetId)
-        if self.__neighbors.has_key(targetId):
-            del self.__neighbors[targetId]
+    def removeConnection(self, target):
+        if self.__network.removeConnection(self, target):
+            if self.__neighbors.has_key(target.getPID()):
+                del self.__neighbors[target.getPID()]
         return not self.isConnected()
    
      
@@ -152,13 +156,10 @@ class AbstractPeer(Protected):
     def getConnectionTime(self):
         return self.__connectionTime
     
-    @public
-    def specifyInterest(self):
-        raise NotImplementedError()
     
     @public
-    def getNeighbor(self, id):
-        return self.__neighbors[id]
+    def getNeighbor(self, peer):
+        return self.__neighbors[peer.getPID()]
     
     @public
     def getNeighbors(self):
