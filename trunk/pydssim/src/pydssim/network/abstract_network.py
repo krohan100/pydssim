@@ -4,32 +4,23 @@ from pydssim.util.decorator.public import public
 from pydssim.util.decorator.return_type import return_type
 from pydssim.peer.i_peer import IPeer
 from sets import ImmutableSet
+from multiprocessing import Semaphore
+from pydssim.p2p.routing.default_neighbor import DefaultNeighbor
 import bisect
 
-class AbstractNetwork(Object):
+class AbstractNetwork(Protected):
     
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, topology):
-        self.__topology = topology
-        self.__topology.setP2PNetwork(self)
+    def initialize(self):
+       
         self.__simulation = None
-        
-        '''
-        
         self.__peers = {}
         self.__connectedPeers = []
         self.__disconnectedPeers = []
         self.__advertisedPeers = []
-        
-        '''
-    
-    
-    colocar essa parte na topologia
-    @public
-    def getTopology(self):
-        return self.__topology
+        self.__graph = {}
     
     @public
     def getSimulation(self):
@@ -70,40 +61,126 @@ class AbstractNetwork(Object):
         return self.__peers[id]
     
     @public
+    def getNeighbors(self, id):
+        if not self.__graph.has_key(id):
+            return ImmutableSet([])
+        return ImmutableSet(self.__graph[id])
+    
+    @public
+    def getGraph(self):
+        return self.__graph
+    
+    @public
+    def addNode(self, id):
+        if isinstance(id, bool):
+            raise TypeError()
+        if self.__graph.has_key(id):
+            return True
+        sem = Semaphore()
+        sem.acquire()
+        self.__graph[id] = []
+        sem.release()
+        return self.__graph.has_key(id)
+    
+    @public
+    def removeNode(self, id):
+        if isinstance(id, bool):
+            raise TypeError()
+        if not self.__graph.has_key(id):
+            return False
+        sem = Semaphore()
+        sem.acquire()
+        del self.__graph[id]
+        sem.release()
+        return not self.__graph.has_key(id)
+   
+    
+    @public
+    def countNodes(self):
+        return len(self.__graph.keys())
+    
+    @public
+    def countConnections(self):
+        connections = 0
+        for edges in self.__graph.values():
+            connections += len(edges)
+        return connections
+    
+    @public
+    def dispatchMessage(self, message):
+        sem = Semaphore()
+        sem.acquire()
+        peer = self.getPeer(message.getTargetId())
+        peer.receive(message)
+        sem.release()
+        return message
+    
+    @public
+    def isNeighbor(self, sourceId, targetId):
+        sem = Semaphore()
+        sem.acquire()
+        if self.__graph.has_key(sourceId):
+            aux = targetId in self.__graph[sourceId]
+        else:
+            aux = False
+        sem.release()
+        return aux
+    
+    @public
     def createConnection(self, sourceId, targetId):
+       
         if isinstance(sourceId, bool) or isinstance(targetId, bool):
             raise TypeError()
         if sourceId == targetId:
             raise StandardError()
         if (not self.__peers.has_key(sourceId) or (not self.__peers.has_key(targetId))):
             raise StandardError()
-        if (self.__topology.isNeighbor(sourceId, targetId) == True):
+        if (self.isNeighbor(sourceId, targetId) == True):
             return True
-        return self.__topology.createConnection(sourceId, targetId)
+        if targetId in self.__graph[sourceId]:
+            raise StandardError()
+        
+        sem = Semaphore()
+        sem.acquire()
+        self.__graph[sourceId].append(targetId)
+        self.getPeer(sourceId).addNeighbor(DefaultNeighbor(self.getPeer(sourceId), targetId))
+        self.__graph[targetId].append(sourceId)
+        self.getPeer(targetId).addNeighbor(DefaultNeighbor(self.getPeer(targetId), sourceId))
+        sem.release()
+        return self.isNeighbor(sourceId, targetId)
     
     @public
     def removeConnection(self, sourceId, targetId):
+        
         if isinstance(sourceId, bool) or isinstance(targetId, bool):
             raise TypeError()
         if sourceId == targetId:
             raise StandardError()
         if (not self.__peers.has_key(sourceId)) or (not self.__peers.has_key(targetId)):
             raise StandardError()
-        if (self.__topology.isNeighbor(sourceId, targetId) == False):
+        if (self.isNeighbor(sourceId, targetId) == False):
             return False
-        return self.__topology.removeConnection(sourceId, targetId)
+        
+        sem = Semaphore()
+        sem.acquire()
+        self.__graph[sourceId].remove(targetId)
+        if self.__graph.has_key(targetId):
+            self.__graph[targetId].remove(sourceId)
+        sem.release()
+        return not self.isNeighbor(sourceId, targetId)
     
     @public
     def increaseNumberOfConnectedPeers(self, peerId):
         self.__connectedPeers.append(peerId)
         self.__disconnectedPeers.remove(peerId)
+        self.addNode(peerId)
         return len(self.__connectedPeers)
     
     @public
     def decreaseNumberOfConnectedPeers(self, peerId):
         self.__disconnectedPeers.append(peerId)
         self.__connectedPeers.remove(peerId)
-        self.__topology.removeNode(peerId)
+        self.removeNode(peerId)
         return len(self.__connectedPeers)
     
     @public

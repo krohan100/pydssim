@@ -7,9 +7,7 @@ class INetwork(object):
     def __init__(self):
         raise NotImplementedError()
     
-    def getTopology(self):
-        raise NotImplementedError()
-    
+       
     def getSimulation(self):
         raise NotImplementedError()
     
@@ -25,6 +23,39 @@ class INetwork(object):
     def removePeer(self, id):
         raise NotImplementedError()
     
+    def getNeighbors(self, id):
+        raise NotImplementedError()
+    
+    @public
+    def getGraph(self):
+        raise NotImplementedError()
+    
+    @public
+    def addNode(self, id):
+        raise NotImplementedError()
+    
+    @public
+    def removeNode(self, id):
+        raise NotImplementedError()
+   
+    
+    @public
+    def countNodes(self):
+        raise NotImplementedError()
+    
+    @public
+    def countConnections(self):
+        raise NotImplementedError()
+    
+    @public
+    def dispatchMessage(self, message):
+        raise NotImplementedError()
+    
+    @public
+    def isNeighbor(self, sourceId, targetId):
+        raise NotImplementedError()
+    
+    @public
     def getPeer(self, id):
         raise NotImplementedError()
     
