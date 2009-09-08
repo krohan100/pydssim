@@ -37,18 +37,18 @@ class AbstractNetwork(Protected):
     
     @public
     def addPeer(self, peer):
-        if self.__peers.has_key(peer.getId()):
+        if self.__peers.has_key(peer.getPID()):
             raise StandardError()
-        self.__peers[peer.getId()] = peer
-        self.__disconnectedPeers.append(peer.getId())
-        return self.__peers[peer.getId()]
+        self.__peers[peer.getPID()] = peer
+        self.__disconnectedPeers.append(peer.getPID())
+        return self.__peers[peer.getPID()]
     
     @public
-    def removePeer(self, id):
-        if isinstance(id, bool):
+    def removePeer(self, peer):
+        if isinstance(peer.getPID(), bool):
             raise TypeError()
-        peer = self.__peers[id]
-        del self.__peers[id]
+        peer = self.__peers[peer.getPID()]
+        del self.__peers[peer.getPID()]
         return peer
     
     @public
@@ -61,38 +61,38 @@ class AbstractNetwork(Protected):
         return self.__peers[id]
     
     @public
-    def getNeighbors(self, id):
-        if not self.__graph.has_key(id):
+    def getNeighbors(self, peer):
+        if not self.__graph.has_key(peer.getPID()):
             return ImmutableSet([])
-        return ImmutableSet(self.__graph[id])
+        return ImmutableSet(self.__graph[peer.getPID()])
     
     @public
     def getGraph(self):
         return self.__graph
     
     @public
-    def addNode(self, id):
-        if isinstance(id, bool):
+    def addNode(self, peer):
+        if isinstance(peer.getPID(), bool):
             raise TypeError()
-        if self.__graph.has_key(id):
+        if self.__graph.has_key(peer.getPID()):
             return True
         sem = Semaphore()
         sem.acquire()
-        self.__graph[id] = []
+        self.__graph[peer.getPID()] = []
         sem.release()
-        return self.__graph.has_key(id)
+        return self.__graph.has_key(peer.getPID())
     
     @public
-    def removeNode(self, id):
-        if isinstance(id, bool):
+    def removeNode(self, peer):
+        if isinstance(peer.getPID(), bool):
             raise TypeError()
-        if not self.__graph.has_key(id):
+        if not self.__graph.has_key(peer.getPID()):
             return False
         sem = Semaphore()
         sem.acquire()
-        del self.__graph[id]
+        del self.__graph[peer.getPID()]
         sem.release()
-        return not self.__graph.has_key(id)
+        return not self.__graph.has_key(peer.getPID())
    
     
     @public
@@ -116,71 +116,71 @@ class AbstractNetwork(Protected):
         return message
     
     @public
-    def isNeighbor(self, sourceId, targetId):
+    def isNeighbor(self, source, target):
         sem = Semaphore()
         sem.acquire()
-        if self.__graph.has_key(sourceId):
-            aux = targetId in self.__graph[sourceId]
+        if self.__graph.has_key(source.getPID()):
+            aux = target in self.__graph[source.getPID()]
         else:
             aux = False
         sem.release()
         return aux
     
     @public
-    def createConnection(self, sourceId, targetId):
+    def createConnection(self, source, target):
        
-        if isinstance(sourceId, bool) or isinstance(targetId, bool):
+        if isinstance(source.getPID(), bool) or isinstance(target.getPID(), bool):
             raise TypeError()
-        if sourceId == targetId:
+        if source == target:
             raise StandardError()
-        if (not self.__peers.has_key(sourceId) or (not self.__peers.has_key(targetId))):
+        if (not self.__peers.has_key(source.getPID()) or (not self.__peers.has_key(target.getPID()))):
             raise StandardError()
-        if (self.isNeighbor(sourceId, targetId) == True):
+        if (self.isNeighbor(source, target) == True):
             return True
-        if targetId in self.__graph[sourceId]:
+        if targetId in self.__graph[source.getPID()]:
             raise StandardError()
         
         sem = Semaphore()
         sem.acquire()
-        self.__graph[sourceId].append(targetId)
-        self.getPeer(sourceId).addNeighbor(DefaultNeighbor(self.getPeer(sourceId), targetId))
-        self.__graph[targetId].append(sourceId)
-        self.getPeer(targetId).addNeighbor(DefaultNeighbor(self.getPeer(targetId), sourceId))
+        self.__graph[source.getPID()].append(target)
+        self.getPeer(source.getPID()).addNeighbor(DefaultNeighbor(self.getPeer(source.getPID()), target))
+        self.__graph[target.getPID()].append(source)
+        self.getPeer(target.getPID()).addNeighbor(DefaultNeighbor(self.getPeer(target.getPID()), source))
         sem.release()
-        return self.isNeighbor(sourceId, targetId)
+        return self.isNeighbor(source, target)
     
     @public
-    def removeConnection(self, sourceId, targetId):
+    def removeConnection(self, source, target):
         
-        if isinstance(sourceId, bool) or isinstance(targetId, bool):
+        if isinstance(source.getPID(), bool) or isinstance(target.getPID(), bool):
             raise TypeError()
-        if sourceId == targetId:
+        if source == target:
             raise StandardError()
-        if (not self.__peers.has_key(sourceId)) or (not self.__peers.has_key(targetId)):
+        if (not self.__peers.has_key(source.getPID())) or (not self.__peers.has_key(target.getPID())):
             raise StandardError()
-        if (self.isNeighbor(sourceId, targetId) == False):
+        if (self.isNeighbor(source, target) == False):
             return False
         
         sem = Semaphore()
         sem.acquire()
-        self.__graph[sourceId].remove(targetId)
-        if self.__graph.has_key(targetId):
-            self.__graph[targetId].remove(sourceId)
+        self.__graph[source.getPID()].remove(target)
+        if self.__graph.has_key(target.getPID()):
+            self.__graph[target.getPID()].remove(source)
         sem.release()
-        return not self.isNeighbor(sourceId, targetId)
+        return not self.isNeighbor(source, target)
     
     @public
-    def increaseNumberOfConnectedPeers(self, peerId):
-        self.__connectedPeers.append(peerId)
-        self.__disconnectedPeers.remove(peerId)
-        self.addNode(peerId)
+    def increaseNumberOfConnectedPeers(self, peer):
+        self.__connectedPeers.append(peer)
+        self.__disconnectedPeers.remove(peer)
+        self.addNode(peer)
         return len(self.__connectedPeers)
     
     @public
-    def decreaseNumberOfConnectedPeers(self, peerId):
-        self.__disconnectedPeers.append(peerId)
-        self.__connectedPeers.remove(peerId)
-        self.removeNode(peerId)
+    def decreaseNumberOfConnectedPeers(self, peer):
+        self.__disconnectedPeers.append(peer)
+        self.__connectedPeers.remove(peer)
+        self.removeNode(peer)
         return len(self.__connectedPeers)
     
     @public
@@ -204,17 +204,17 @@ class AbstractNetwork(Protected):
         return len(self.__disconnectedPeers)
     
     @public
-    def registerPeerForAdvertisement(self, id):
-        self.__advertisedPeers.append(id)
-        return self.__advertisedPeers[self.__advertisedPeers.index(id)]
+    def registerPeerForAdvertisement(self, peer):
+        self.__advertisedPeers.append(peer)
+        return self.__advertisedPeers[self.__advertisedPeers.index(peer)]
     
     @public
     def getPeerForAdvertisement(self):
         return self.__advertisedPeers[0]
     
     @public
-    def unregisterPeerForAdvertisement(self, id):
-        return self.__advertisedPeers.pop(self.__advertisedPeers.index(id))
+    def unregisterPeerForAdvertisement(self, peer):
+        return self.__advertisedPeers.pop(self.__advertisedPeers.index(peer))
     
     @public
     def getConnectedPeers(self):

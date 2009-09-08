@@ -39,7 +39,7 @@ class AbstractPeer(Protected):
     def isConnected(self):
         return self.__isConnected
     
-    rever 
+   #   rever 
     
     @public
     def setP2PProtocol(self, protocol):
