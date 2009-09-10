@@ -1,6 +1,6 @@
 from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
-from threading import Thread
+from multiprocessing import Thread
 
 class MessageDispatcher(Protected):
     

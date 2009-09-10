@@ -160,8 +160,8 @@ class AbstractPeer(Protected):
     
     
     @public
-    def getNeighbor(self, peer):
-        return self.__neighbors[peer.getPID()]
+    def getNeighbor(self, peerID):
+        return self.__neighbors[peerID]
     
     @public
     def getNeighbors(self):
