@@ -11,7 +11,6 @@ class AbstractProtocol(Protected):
     
     def initialize(self):
         self.__peer = None
-        self.__logger = Logger()
         self.__messageHandlers = {}
     
     def registerMessageHandler(self, messageHandler):

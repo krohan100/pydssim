@@ -3,14 +3,13 @@ from pydssim.util.decorator.require import require
 from pydssim.util.decorator.public import public
 from pydssim.util.decorator.return_type import return_type
 from sets import ImmutableSet
-import uuid
 
 class AbstractMessage(Object):
     
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, type, id=uuid.uuid1(),  source, target, ttl, priority):
+    def initialize(self, type, id,  source, target, ttl, priority):
         
         self.__id = id
         self.__type = type # name for type

@@ -3,8 +3,8 @@ from pydssim.util.decorator.public import public
 from multiprocessing import Semaphore
 from random import randint
 from pydssim.network.message.message_manager import MessageManager
-#from pysocialsim.p2p.message.gnutella.advertise_content_message import AdvertiseContentMessage
-#from pysocialsim.p2p.dispatcher.gnutella.advertise_content_message_handler import AdvertiseContentMessageHandler
+from pydssim.network.protocol.gnutella.message.advertise_content_message import AdvertiseContentMessage
+from pydssim.network.protocol.gnutella.dispatcher.advertise_content_message_handler import AdvertiseContentMessageHandler
 
 class GnutellaProtocol(AbstractProtocol):
     
@@ -24,7 +24,7 @@ class GnutellaProtocol(AbstractProtocol):
     @public
     def receiveMessage(self, message):
         if self.getPeer().getId() == message.getTargetId():
-            self.__logger.resgiterLoggingInfo("receive Message from PID = "+message.getSourceID())
+            Logger().resgiterLoggingInfo("receive Message from PID = "+message.getSourceID())
             dispatcher = self.getPeer().getMessageDispatcher()
             dispatcher.handleMessage(message)
             
@@ -36,12 +36,12 @@ class GnutellaProtocol(AbstractProtocol):
         peer = self.getPeer()
         network = peer.getNetwork()
         simulation = network.getSimulation()
-        neighbors = self.getNeighbors(peer)
+        neighbors = self.network.getNeighbors(peer)
         for n in neighbors:
             message = AdvertiseContentMessage(MessageManager().getMessageId(), peer.getId(), n, simulation.getNumberOfHops(), simulation.getSimulationCurrentTime())
             message.registerTrace(self.getPeer().getId())
             message.setParameter("contentId", element.getId())
-            message.setParameter("folksonomies", element.getFolksonomies())
+            #message.setParameter("folksonomies", element.getFolksonomies())
             message.setParameter("type", advertisementType)
             peer.send(message)
     
@@ -51,19 +51,20 @@ class GnutellaProtocol(AbstractProtocol):
         sem.acquire()
         if self.getPeer().isConnected():
             return
-        topology = self.getP2PTopology()
+        network = self.getPeer().getNetwork()
         
         node = None
-        if topology.countNodes() > 0:
-            idx = randint(0, topology.countNodes() - 1)
-            graph = topology.getGraph()
+        if netowork.countNodes() > 0:
+            idx = randint(0, network.countNodes() - 1)
+            graph = network.getGraph()
             node = graph.keys()[idx]
         
-        topology.addNode(self.getPeer().getId())
+        network.addNode(self.getPeer())
         if node:
-            topology.createConnection(self.getPeer().getId(), node)
+            network.createConnection(self.getPeer(), node)
             
         self.getPeer().connected()
+        # randon time for disconnect
         disconnectionTime = randint(3600, 28800)
         self.getPeer().setDisconnectionTime(disconnectionTime)
         
@@ -76,11 +77,11 @@ class GnutellaProtocol(AbstractProtocol):
         if not self.getPeer().isConnected():
             return
         
-        topology = self.getP2PTopology()
-        neighbors = topology.getNeighbors(self.getPeer().getId())
+        network = self.getPeer().getNetwork()
+        neighbors = network.getNeighbors(self.getPeer())
         if len(neighbors) > 0:
             for n in neighbors:
-                topology.removeConnection(self.getPeer().getId(), n)
+                network.removeConnection(self.getPeer(), n)
                 self.getPeer().disconnected()
         else:
             self.getPeer().disconnected()
