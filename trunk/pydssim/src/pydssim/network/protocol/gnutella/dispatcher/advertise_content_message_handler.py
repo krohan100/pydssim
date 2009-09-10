@@ -1,8 +1,7 @@
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.util.decorator.public import public
-#from pysocialsim.p2p.profile.default_interest_matching_strategy import DefaultInterestMatchingStrategy
 from pydssim.network.advertisement.content_advertisement import ContentAdvertisement
-re from pysocialsim.p2p.routing.content_route import ContentRoute
+from pydssim.network.route import ContentRoute
 
 class AdvertiseContentMessageHandler(AbstractMessageHandler):
     
@@ -19,10 +18,7 @@ class AdvertiseContentMessageHandler(AbstractMessageHandler):
             peer = self.getPeer()
             
             advertisement = ContentAdvertisement(message.getTraces()[0], message.getParameter("contentId"), message.getParameter("resources"), message.getParameter("type"))
-            
-            #profile = peer.getProfile()
-            #profile.matchInterests(advertisement, DefaultInterestMatchingStrategy())
-            
+                    
             neighbor = peer.getNeighbor(message.getSourceId())
             neighbor.addRoute(ContentRoute(advertisement.getElementId(), message.getTraces()))
             
