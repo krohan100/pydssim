@@ -1,6 +1,6 @@
 from pydssim.util.interface import Interface
 
-class IP2PMessage(object):
+class IMessage(object):
     
     __metaclass__ = Interface
     
