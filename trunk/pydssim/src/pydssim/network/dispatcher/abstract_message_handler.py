@@ -1,9 +1,8 @@
-from pysocialsim.base.object import Object
-from pysocialsim.base.decorator.require import require
-from pysocialsim.p2p.peer.i_peer import IPeer
-from pysocialsim.base.decorator.public import public
-from pysocialsim.base.decorator.return_type import return_type
-from pysocialsim.p2p.message.i_p2p_message import IP2PMessage
+from pydssim.util.protected import Protected
+from pydssim.util.decorator.require import require
+from pydssim.util.decorator.public import public
+from pydssim.util.decorator.return_type import return_type
+from pydssim.network.message.i_message import IMessage
 
 class AbstractMessageHandler(Object):
     
@@ -24,11 +23,11 @@ class AbstractMessageHandler(Object):
         return self.__peer
     
     @public
-    def getP2PMessage(self):
+    def getMessage(self):
         return self.__message
     
     @public
-    def handleP2PMessage(self, message):
+    def handleMessage(self, message):
         self.__message = message
         return self.executeHandler()
         
