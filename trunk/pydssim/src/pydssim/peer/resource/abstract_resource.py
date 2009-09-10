@@ -22,12 +22,12 @@ class AbstractResource():
         '''
         raise NotImplementedError()
     
-    def initialize(self, pid,resource, description='',availabity=True,period={}):
+    def initialize(self, peer,resource, description='',availabity=True,period={}):
       
         self.__uuid = uuid.uuid1()
         self.__type = resource
         self.__description = description
-        self.__pid = pid
+        self.__peer = peer
         self.__availability = availabity
         self.__period = period
         
@@ -42,8 +42,8 @@ class AbstractResource():
         return self.__description
     
     @public
-    def getPID(self):
-        return self.__pid
+    def getPeer(self):
+        return self.__peer
     
     @public 
     def getAvailability(self):

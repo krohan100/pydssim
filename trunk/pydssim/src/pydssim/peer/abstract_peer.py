@@ -3,8 +3,10 @@ from pydssim.util.decorator.public import public
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
+from pydssim.peer.repository.shared_recource_repository import SharedRecourceRepository
+from pydssim.peer.repository.unshared_recource_repository import UnSharedRecourceRepository
 from sets import ImmutableSet
-import uuid
+
 #from pydssim.peer.i_peer import IPeer
 from random import randint
 #from pysocialsim.p2p.message.message_manager import MessageManager
@@ -18,13 +20,14 @@ class AbstractPeer(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, pid=uuid.uuid1(), network):
+    def initialize(self, pid, network):
         self.__pid = pid
         self.__network = network
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
         self.__services = ServiceRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
+        self.__unSharedResource = UnSharedRecourceRepository(self)
         self.__equivalences = EquivalenceRepository(self)
         self.__connectionTime = 0
         self.__neighbors = {}
@@ -186,6 +189,21 @@ class AbstractPeer(Protected):
     @public
     def getScheduledForDisconnection(self):
         return self.__scheduledDisconnection
+    
+    @public
+    def getServices(self):
+        return self.__services
+        
+    @public
+    def getSharedResource(self):    
+        return self.__sharedResource
+    
+    @public
+    def getUnSharedResource(self):    
+        return self.__unSharedResource
+    @public
+    def getEquivalences(self):
+        return self.__equivalences
     
     
     

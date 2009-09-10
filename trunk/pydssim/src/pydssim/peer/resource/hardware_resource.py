@@ -7,13 +7,14 @@ Created on 29/08/2009
 from pydssim.peer.resource.abstract_resource import AbstractResource
 from pydssim.util.decorator.public import public
 from random import randint
+import uuid
 
 class Hardware(AbstractResource):
     '''
     classdocs
     '''
 
-    def __init__(self,pid ,resource,maxRange= 100000,sharePercente = 50,description='',availabity=True,period={}):
+    def __init__(self,pid=uuid.uuid1() ,resource='',maxRange= 100000,sharePercente = 50,description='',availabity=True,period={}):
         '''
         Constructor
         '''
@@ -34,6 +35,10 @@ class Hardware(AbstractResource):
     
     @public
     def getshareSize(self):
-        return self.__shareSize        
+        return self.__shareSize   
+    
+    @public
+    def getQuantity(self):
+        return self.__quantity     
             
         
