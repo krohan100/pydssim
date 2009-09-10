@@ -4,6 +4,7 @@ from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from sets import ImmutableSet
+import uuid
 #from pydssim.peer.i_peer import IPeer
 from random import randint
 #from pysocialsim.p2p.message.message_manager import MessageManager
@@ -17,7 +18,7 @@ class AbstractPeer(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, pid, network):
+    def initialize(self, pid=uuid.uuid1(), network):
         self.__pid = pid
         self.__network = network
         self.__isConnected = False
@@ -39,7 +40,7 @@ class AbstractPeer(Protected):
     def isConnected(self):
         return self.__isConnected
     
-   #   rever 
+    '''  rever 
     
     @public
     def setP2PProtocol(self, protocol):
@@ -52,7 +53,8 @@ class AbstractPeer(Protected):
             
         return self.__protocol
   
-    
+'''
+
     @public
     def connect(self, priority):
         if self.__isConnected == True:
