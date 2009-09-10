@@ -28,12 +28,19 @@ def get():
         
         for ix in range(initial, end):
             print map[concept][ix] 
-
+def testUUID(set =uuid.uuid1()):
+    print set
+    
 if __name__ == '__main__':
-    my = Logger()
-    my.resgiterLoggingError("Star Simulation")
+    m1 = Logger()
+    m1.resgiterLoggingError("Star Simulation")
     m2 = Logger('w')
     m2.resgiterLoggingInfo("Star Simulation2")
+    m3 = Logger()
+    m3.resgiterLoggingError("Star Simulation3")
+    m4 = Logger('w')
+    m4.resgiterLoggingInfo("Star Simulation4")
+    m4.resgiterLoggingInfo("teste4")
     # Obtm um datatime da data e hora atual
     #hoje = datetime.today()
     #print ctime() 
@@ -60,7 +67,7 @@ if __name__ == '__main__':
         print 'key=%s, valeu=%s'%(key,x[key])
     
     
-    
+    testUUID("tet")
     #get()    
   
         

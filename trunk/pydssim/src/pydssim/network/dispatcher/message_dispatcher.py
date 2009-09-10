@@ -31,11 +31,11 @@ class MessageDispatcher(Protected):
         return messageHandler
     
     @public
-    def handleP2PMessage(self, message):
+    def handleMessage(self, message):
         if not self.__messageHandlers.has_key(message.getName()):
             raise StandardError()
         handler = self.__messageHandlers[message.getName()]
-        handler.handleP2PMessage(message)
+        handler.handleMessage(message)
 #       
         return message
     
@@ -47,4 +47,4 @@ class MessageDispatcher(Protected):
             self.__message = message
             
         def run(self):
-            self.__handler.handleP2PMessage(self.__message)
+            self.__handler.handleMessage(self.__message)
