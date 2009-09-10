@@ -1,6 +1,6 @@
-re from pysocialsim.p2p.dispatcher.abstract_message_handler import AbstractMessageHandler
-from pysocialsim.base.decorator.public import public
-from pysocialsim.p2p.profile.default_interest_matching_strategy import DefaultInterestMatchingStrategy
+from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.util.decorator.public import public
+#from pysocialsim.p2p.profile.default_interest_matching_strategy import DefaultInterestMatchingStrategy
 from pysocialsim.p2p.advertisement.content_advertisement import ContentAdvertisement
 from pysocialsim.p2p.routing.content_route import ContentRoute
 
