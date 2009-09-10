@@ -23,16 +23,15 @@ from pysocialsim.p2p.dispatcher.relationship.accept_share_content_social_cloud_m
 
 
 import time
-  ddd 
-class DefaultPeer(AbstractPeer):
+import uuid
+class Peer(AbstractPeer):
     
-    def __init__(self, id, network):
+    def __init__(self, id=uuid.uuid1(), network):
         self.initialize(id, network)
         
     def initialize(self, id, network):
         AbstractPeer.initialize(self, id, network)
-        profile = DefaultProfile(self)
-        self.setProfile(profile)
+        
         
         map = FolksonomyMap()
         

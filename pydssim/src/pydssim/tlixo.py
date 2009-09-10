@@ -28,6 +28,8 @@ def get():
         
         for ix in range(initial, end):
             print map[concept][ix] 
+            
+            
 def testUUID(set =uuid.uuid1()):
     Logger().resgiterLoggingError("testeUUID")
     print set

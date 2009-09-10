@@ -5,11 +5,12 @@ Created on 29/08/2009
 '''
 
 from pydssim.peer.resource.abstract_resource import AbstractResource
+import uuid 
 
 class Service(AbstractResource):
     
     
-    def __init__(self,pid ,resource,description='',availabity=True,period={}):
+    def __init__(self,pid=uuid.uuid1() ,resource='',description='',availabity=True,period={}):
         '''
         Constructor
         '''
