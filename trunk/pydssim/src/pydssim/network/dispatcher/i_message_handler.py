@@ -13,11 +13,11 @@ class IMessageHandler(object):
     def getPeer(self):
         raise NotImplementedError()
     
-    def getP2PMessage(self):
+    def getMessage(self):
         raise NotImplementedError()
     
     def clone(self):
         raise NotImplementedError()
     
-    def handleP2PMessage(self, message):
+    def handleMessage(self, message):
         raise NotImplementedError()
