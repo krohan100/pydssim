@@ -35,7 +35,7 @@ class HardwareMap(object):
         mapping["io"] = ["hd", "dvd", "cdrom", "flash", "floppy"]
         mapping["process"] = ["Clic", "Time"]
         mapping["print"] = ["hp", "laser", "jato"]
-        mapping["memory"] = ["memory"]
+        mapping["memory"] = ["memory","DDR"]
         
         return mapping
 
