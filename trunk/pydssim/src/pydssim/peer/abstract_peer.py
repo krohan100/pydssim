@@ -43,7 +43,12 @@ class AbstractPeer(Protected):
     def isConnected(self):
         return self.__isConnected
     
+    
+   
+    
     '''  rever 
+    
+    
     
     @public
     def setP2PProtocol(self, protocol):
@@ -138,10 +143,14 @@ class AbstractPeer(Protected):
     def getServices(self):
         return self.__services
     
-    
+    @public
     def setServices(self, serviceRepository):
         self.__services = serviceRepositoy
         return self.__services
+    
+    @public
+    def loaderServices(self,fileName=None):
+        pass
     
     @public
     def advertise(self, type):

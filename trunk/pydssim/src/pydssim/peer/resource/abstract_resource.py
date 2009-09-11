@@ -31,7 +31,6 @@ class AbstractResource():
         self.__availability = availabity
         self.__period = period
         
-
         
     @public    
     def getResource(self):

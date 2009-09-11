@@ -46,7 +46,7 @@ def get2(tam=3):
     optionClass = [Service,Hardware]
    
     
-    for i in range(0,randint(1,tam)):
+    for i in range(1,randint(1,tam)):
         option = randint(0,1)
         resourceMap = ResourceMap(optionMap[option])
      
@@ -60,7 +60,7 @@ def get2(tam=3):
                 
         service = optionClass[option](resource=map[concept][resour])
                     
-        print service.getUUID(),service.getResource()
+        print service.getUUID(),service.getResource(),service.testedemetodo()
             #print map[concept][ix]
             
              
