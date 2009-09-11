@@ -25,7 +25,7 @@ class AbstractResource():
     def initialize(self, peer,resource, description='',availabity=True,period={}):
       
         self.__uuid = uuid.uuid1()
-        self.__type = resource
+        self.__resource = resource
         self.__description = description
         self.__peer = peer
         self.__availability = availabity
@@ -34,8 +34,13 @@ class AbstractResource():
 
         
     @public    
-    def getType(self):
-        return self.__type
+    def getResource(self):
+        return self.__resource
+    
+    @public
+    def setResource(self,resource):
+        self.__resource = resource
+        return self.__resource
     
     @public 
     def getDescription(self):
@@ -43,6 +48,11 @@ class AbstractResource():
     
     @public
     def getPeer(self):
+        return self.__peer
+    
+    @public
+    def setPeer(self,peer):
+        self.__peer = peer
         return self.__peer
     
     @public 

@@ -14,18 +14,18 @@ class Hardware(AbstractResource):
     classdocs
     '''
 
-    def __init__(self,pid=uuid.uuid1() ,resource='',maxRange= 100000,sharePercente = 50,description='',availabity=True,period={}):
+    def __init__(self,pid=uuid.uuid1() ,resource='',size= randint(1,100000),sharePercente = randint(10,90),description='Hardware',availabity=True,period={}):
         '''
         Constructor
         '''
-        self.initialize(pid, resource,maxRange,sharePercente,description,availabity,period)
+        self.initialize(pid, resource,size,sharePercente,description,availabity,period)
        
         
-    def initialize(self, pid,resource,maxRange,sharePercente,description,availabity,period):
+    def initialize(self, pid,resource,size,sharePercente,description,availabity,period):
         
-        AbstractResource.initialize(self, pid,resource)
+        AbstractResource.initialize(self, pid,resource,description,availabity,period)
         
-        self.__size = randint(0,maxRange)
+        self.__size = size
         self.__shareSize = self.__size*(sharePercente/100)
         self.__quantity = sharePercente
         
@@ -39,6 +39,21 @@ class Hardware(AbstractResource):
     
     @public
     def getQuantity(self):
-        return self.__quantity     
+        return self.__quantity 
+    
+    @public
+    def setSize(self,size):
+        self.__size = size
+        return self.__size
+    
+    @public
+    def setshareSize(self,shareSize):
+        self.__shareSize = shareSize
+        return self.__shareSize   
+    
+    @public
+    def getQuantity(self,quantity):
+        self.__quantity = quantity
+        return self.__quantity    
             
         
