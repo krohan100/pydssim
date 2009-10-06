@@ -1,4 +1,14 @@
+"""
+Defines the module with objective the implementation of AbstractPeer class.
+
+@author: Luiz Gustavo
+@organization: Federal University of Rio de Janeiro
+@contact: lglmoura@cos.ufrj.br 
+@since: 20/08/2009
+"""
+
 from pydssim.util.protected import Protected
+from pydssim.peer.i_peer import IPeer
 from pydssim.util.decorator.public import public
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
@@ -11,18 +21,16 @@ from sets import ImmutableSet
 from random import randint
 #from pysocialsim.p2p.message.message_manager import MessageManager
 
-class AbstractPeer(Protected):
+class AbstractPeer(Protected,IPeer):
     
-    CONTENT_ADVERTISEMENT = 0
-    
-    __public__ = ["CONTENT_ADVERTISEMENT"]
-    
+        
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, pid, network):
+    def initialize(self, pid, type, network):
         self.__pid = pid
         self.__network = network
+        self.__type = type
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
         self.__services = ServiceRepository(self)
@@ -40,11 +48,14 @@ class AbstractPeer(Protected):
         return self.__pid
     
     @public
+    def getType(self):
+        return self.__type
+    
+    @public
     def isConnected(self):
         return self.__isConnected
     
     
-   
     
     '''  rever 
     
@@ -61,7 +72,7 @@ class AbstractPeer(Protected):
             
         return self.__protocol
   
-'''
+
 
     @public
     def connect(self, priority):
@@ -77,6 +88,7 @@ class AbstractPeer(Protected):
             return
         self.__protocol.disconnect(priority)
     
+'''    
     @public
     def connected(self):
         if self.__isConnected:
@@ -97,32 +109,17 @@ class AbstractPeer(Protected):
     def getNetwork(self):
         return self.__network
     
-    @public
-    def send(self, message):
-        self.sendMessage(message)
-        return message
-   
+       
     #ve issso
     @public
     def sendMessage(self, message):
         return self.__protocol.sendMessage(message)
     
-    @public
-    def receive(self, message):
-        if self.__id == message.getSourceId():
-            return message
-        self.receiveMessage(message)
-        return message
     
     @public
     def receiveMessage(self, message):
         return self.__protocol.receiveMessage(message)
-    
-    @public
-    def getMessageDispatcher(self):
-        return self.__dispatcher
-    
-    
+       
     @public
     def createConnection(self, target):
        
@@ -150,16 +147,10 @@ class AbstractPeer(Protected):
     
     @public
     def loaderServices(self,fileName=None):
-        xcv pass
+        pass
         
 
-    
-    @public
-    def advertise(self, type):
-        if type == IPeer.CONTENT_ADVERTISEMENT:
-            for c in self.__contents.values():
-                self.__protocol.advertise(c, type)
-    
+      
     @public
     def share(self, type):
         pass
@@ -217,16 +208,4 @@ class AbstractPeer(Protected):
         return self.__equivalences
     
     
-    
-    @public
-    def createGroups(self):
-        raise NotImplementedError()
-        
-    '''
-    
-    @public    
-    def getContent(self, id):
-        return self.__contents[id]
-    
-    ''' 
     
