@@ -22,6 +22,9 @@ from pysocialsim.p2p.dispatcher.relationship.accept_share_content_social_cloud_m
 '''
 
 
+Criar um processe peer
+usar o event
+
 import time
 import uuid
 class Peer(AbstractPeer):

@@ -1,11 +1,21 @@
-from pydssim.util.interface import Interface
+"""
+Defines the module with the specification of IPeer interface.
+
+@author: Luiz Gustavo
+@organization: Federal University of Rio de Janeiro
+@contact: lglmoura@cos.ufrj.br 
+@since: 20/08/2009
+"""
 
 class IPeer(object):
-    
-    __metaclass__ = Interface
-    
-    CONTENT_ADVERTISEMENT = 0
-    
+    """
+    Defines the interface of peer objects.
+    @author: Luiz Gustavo
+    @organization: Federal University of Rio de Janeiro
+    @contact: lglmoura@cos.ufrj.br 
+    @since: 20/08/2009
+    """
+      
     def __init__(self):
         raise NotImplementedError()
     
@@ -18,34 +28,19 @@ class IPeer(object):
     def setProtocol(self):
         raise NotImplementedError()
     
-    def connect(self, priority):
+    def getNetwork(self):
         raise NotImplementedError()
-    
-    def disconnect(self, priority):
+       
+    def sendMessage(self, message):
         raise NotImplementedError()
-    
-    def connected(self):
+   
+    def connected(self): 
         raise NotImplementedError()
     
     def disconnected(self):
         raise NotImplementedError()
-    
-    def getNetwork(self):
-        raise NotImplementedError()
-    
-    def send(self, message):
-        raise NotImplementedError()
-    
-    def sendMessage(self, message):
-        raise NotImplementedError()
-    
-    def receive(self, message):
-        raise NotImplementedError()
-    
+             
     def receiveMessage(self, message):
-        raise NotImplementedError()
-    
-    def getMessageDispatcher(self):
         raise NotImplementedError()
     
     def createConnection(self, targetId):
@@ -53,29 +48,11 @@ class IPeer(object):
     
     def removeConnection(self, targetId):
         raise NotImplementedError()
-    
-    def addContent(self, content):
-        raise NotImplementedError()
-    
-    def removeContent(self, id):
-        raise NotImplementedError()
-    
-    def countContents(self):
-        raise NotImplementedError()
-    
-    def getContents(self):
-        raise NotImplementedError()
-        
-    def advertise(self, type):
-        raise NotImplementedError()
-    
+            
     def setConnectionTime(self, time):
         raise NotImplementedError()
     
     def getConnectionTime(self):
-        raise NotImplementedError()
-    
-    def specifyInterest(self):
         raise NotImplementedError()
     
     def getNeighbor(self, id):
@@ -99,9 +76,10 @@ class IPeer(object):
     def getScheduledForDisconnection(self):
         raise NotImplementedError()
     
-    # Create grups   
-    def createGroups(self):
+    def getType(self):
         raise NotImplementedError()
     
-    def getContent(self, id):
+    def setType(self):
         raise NotImplementedError()
+    
+    
