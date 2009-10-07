@@ -10,7 +10,7 @@ from pydssim.peer.neighbor.neighbor import Neighbor
 from pydssim.peer.neighbor.i_neighbor import INeighbor
 from multiprocessing import Semaphore
 
-class AbstractTopology(Protected, ITopology):
+class Topology(Protected, ITopology):
     """
     Defines the operations of Network topology.
 
@@ -34,22 +34,27 @@ class AbstractTopology(Protected, ITopology):
         return self.__network
 
     @public
-    def getNetwork(self):
-        return self.__network
+    def getLayout(self):
+        return self.__layout
     
     @public
-    def addNeighbor(self, source, target):
+    def getNetwork(self):
+        return self.__network
+    tirar neighbor 
+    @public
+    def addNeighbors(self, source, target):
         
-        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(targe.getId())) :
+        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(target.getId())) :
             return False
         if source.hasNeighbor(target):
+            return False 
+        if target.hasNeighbor(source):
             return False   
-        
-        neighbor = Neighbor(target) 
-               
+                   
         semaphore = Semaphore()
         semaphore.acquire()
-        source.addNeighbor(neighbor)
+        source.addNeighbor(target)
+        target.addNeighbor(source)
         semaphore.release()
         
         return source.hasNeighbor(target)
@@ -58,13 +63,16 @@ class AbstractTopology(Protected, ITopology):
     @public
     def removeNeighbor(self, source, target):
         
-        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(targe.getId())) :
+        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(target.getId())) :
             return False
         if source.hasNeighbor(target):
             return False 
+        if target.hasNeighbor(source):
+            return False
         
         semaphore = Semaphore()
         semaphore.acquire()
+        source.removeNeighbor()
         flag = self.__layout[source.getId()].removeNeighbor(self.__layout[source.getId()].getNeighbor(target.getId()))
         semaphore.release()
         
@@ -126,14 +134,7 @@ class AbstractTopology(Protected, ITopology):
         
         return self.__layout[source.getId()].getNeighbor(target.getId())
         
-    @public
-    def getNeighbors(self, peer):
-                
-        semaphore = Semaphore()
-        semaphore.acquire()
-        neighbors = self.__layout[peer.getId()].getNeighbors()
-        semaphore.release()
-        return neighbors
+    
 
     @public
     def countNeighbors(self, peer):
@@ -147,6 +148,15 @@ class AbstractTopology(Protected, ITopology):
     
     @public
     def getNeighbors(self, peer):
+                
+        semaphore = Semaphore()
+        semaphore.acquire()
+        neighbors = self.__layout[peer.getId()].getNeighbors()
+        semaphore.release()
+        return neighbors
+    
+    @public
+    def getNeighborIt(self, peer):
                 
         semaphore = Semaphore()
         semaphore.acquire()

@@ -175,6 +175,10 @@ class AbstractPeer(Protected,IPeer):
     
     @public
     def getNeighbor(self, peerID):
+        
+        '''
+        erro
+        '''
         return self.__neighbors[peerID]
     
     @public
@@ -188,10 +192,10 @@ class AbstractPeer(Protected,IPeer):
     @public
     def removeNeighbor(self, neighbor):
         
-        if not self.__neighbors.has_key(neighbor.getNeighborPeer().getId()):
+        if not self.__neighbors.has_key(neighbor.getId()):
             return False
-        del self.__neighbors[neighbors.getNeighborPeer().getId()]
-        return not self.__neighbors.has_key(neighbors.getNeighborPeer().getId())    
+        del self.__neighbors[neighbors.getId()]
+        return not self.__neighbors.has_key(neighbors.getId())    
     
     @public
     def countNeighbor(self):
