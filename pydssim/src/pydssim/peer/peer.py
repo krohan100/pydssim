@@ -19,11 +19,12 @@ from pysocialsim.p2p.message.relationship.share_content_social_cloud_message imp
 from pysocialsim.p2p.dispatcher.relationship.share_content_social_cloud_message_handler import ShareContentSocialCloudMessageHandler
 from pysocialsim.p2p.dispatcher.relationship.accept_share_content_social_cloud_message_handler import AcceptShareContentSocialCloudMessageHandler
 
+Criar um processe peer
+usar o event
 '''
 
 
-Criar um processe peer
-usar o event
+
 
 import time
 import uuid
