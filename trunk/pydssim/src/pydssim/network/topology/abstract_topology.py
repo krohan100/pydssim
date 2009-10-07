@@ -28,178 +28,137 @@ class AbstractTopology(Protected, ITopology):
         self.__network = network
     
     @public
-    def setNetwork(self, peerToPeerNetwork):
+    def setNetwork(self, network):
                
-        self.__peerToPeerNetwork = peerToPeerNetwork
-        return self.__peerToPeerNetwork
+        self.__network = network
+        return self.__network
 
     @public
     def getNetwork(self):
-        return self.__peerToPeerNetwork
+        return self.__network
     
     @public
     def addNeighbor(self, source, target):
+        
+        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(targe.getId())) :
+            return False
+        if source.hasNeighbor(target):
+            return False   
+        
+        neighbor = Neighbor(target) 
+               
+        semaphore = Semaphore()
+        semaphore.acquire()
+        source.addNeighbor(neighbor)
+        semaphore.release()
+        
+        return source.hasNeighbor(target)
+        
+
+    @public
+    def removeNeighbor(self, source, target):
+        
+        if (not self.__layout.has_key(source.getId())) and (not self.__layout.has_key(targe.getId())) :
+            return False
+        if source.hasNeighbor(target):
+            return False 
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        flag = self.__layout[source.getId()].removeNeighbor(self.__layout[source.getId()].getNeighbor(target.getId()))
+        semaphore.release()
+        
+        return flag
+        
+    @public
+    def addPeer(self, peer):
+        
+        if self.__layout.has_key(peer.getId()):
+            return False
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        
+        self.__layout[peer.getId()] = peer
+        semaphore.release()
+        return self.__layout.has_key(peer.getId())
+
+    @public
+    def removePeer(self, peer):
+        
+        if not self.__layout.has_key(peer.getId()):
+            return False
                 
         semaphore = Semaphore()
         semaphore.acquire()
-        peer = self.__layout[source.getId()]
-        if peer.hasNeighbor(target):
-            return False
-        targetPeer = self.__layout[target.getId()]
-        neighbor = Neighbor(targetPeer)
-        peer.addNeighbor(neighbor)
+        del self.__layout[peer.getId()]
         semaphore.release()
-        return peer.hasNeighbor(target)
         
-parei aui
+        return not self.__layout.has_key(peer.getId())
 
     @public
-    def removeNeighbor(self, sourceId, targetId):
-        requires(sourceId, int)
-        requires(targetId, int)
-        
-        pre_condition(sourceId, lambda x: x > 0)
-        pre_condition(targetId, lambda x: x > 0)
-        pre_condition(sourceId, lambda x: x <> None)
-        pre_condition(targetId, lambda x: x <> None)
-        pre_condition(sourceId, lambda x: self.__layout.has_key(sourceId))
-        pre_condition(targetId, lambda x: self.__layout[sourceId].hasNeighbor(x))
+    def getPeer(self, peerId):
         
         semaphore = Semaphore()
         semaphore.acquire()
-        rtrn = returns(self.__layout[sourceId].removeNeighbor(self.__layout[sourceId].getNeighbor(targetId)), bool)
+        peer = self.__layout[peerId]
         semaphore.release()
-        return rtrn
-        
-    @public
-    def addPeer(self, PeerId):
-        requires(PeerId, int)
-        
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        if self.__layout.has_key(PeerId):
-            return False
-        Peer = Peer(PeerId, self)
-        self.__layout[Peer.getId()] = Peer
-        semaphore.release()
-        return returns(self.__layout.has_key(Peer.getId()), bool)
-
-    @public
-    def removePeer(self, PeerId):
-        requires(PeerId, int)
-        
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        if not self.__layout.has_key(PeerId):
-            return False
-        
-        del self.__layout[PeerId]
-        semaphore.release()
-        return returns(not self.__layout.has_key(PeerId), bool)
-
-    @public
-    def getPeer(self, PeerId):
-        requires(PeerId, int)
-        
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        pre_condition(PeerId, lambda x: self.__layout.has_key(PeerId))
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        rtnr = returns(self.__layout[PeerId], IPeer)
-        semaphore.release()
-        return rtnr
+        return peer
 
     @public
     def getPeers(self):
         semaphore = Semaphore()
         semaphore.acquire()
-        rtrn = self.__layout.itervalues()
+        peers = self.__layout.itervalues()
         semaphore.release()
-        return rtrn
+        return peers
 
     @public
     def countPeers(self):
         semaphore = Semaphore()
         semaphore.acquire()
-        rtrn = returns(len(self.__layout), int)
+        tamPeers = len(self.__layout)
         semaphore.release()
-        return rtrn
-    @public
-    def getNeighbor(self, sourceId, targetId):
-        requires(sourceId, int)
-        requires(targetId, int)
-        
-        pre_condition(sourceId, lambda x: x > 0)
-        pre_condition(targetId, lambda x: x > 0)
-        pre_condition(sourceId, lambda x: x <> None)
-        pre_condition(targetId, lambda x: x <> None)
-        pre_condition(sourceId, lambda x: self.__layout.has_key(x))
-        pre_condition(targetId, lambda x: self.__layout[sourceId].hasNeighbor(x))
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        rtrn = returns(self.__layout[sourceId].getNeighbor(targetId), INeighbor)
-        semaphore.release()
-        return rtrn
+        return tamPeers
     
     @public
-    def getNeighbors(self, PeerId):
-        requires(PeerId, int)
+    def getNeighbor(self, source, target):
         
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        pre_condition(PeerId, lambda x: self.__layout.has_key(x))
+        return self.__layout[source.getId()].getNeighbor(target.getId())
         
+    @public
+    def getNeighbors(self, peer):
+                
         semaphore = Semaphore()
         semaphore.acquire()
-        rtrn = self.__layout[PeerId].getNeighbors()
+        neighbors = self.__layout[peer.getId()].getNeighbors()
         semaphore.release()
-        return rtrn
+        return neighbors
 
     @public
-    def countNeighbors(self, PeerId):
-        requires(PeerId, int)
-        
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        pre_condition(PeerId, lambda x: self.__layout.has_key(PeerId))
-        
+    def countNeighbors(self, peer):
+                       
         semaphore = Semaphore()
         semaphore.acquire()
-        Peer = self.__layout[PeerId]
-        rtrn = returns(Peer.countNeighbors(), int)
+        
+        count = peer.countNeighbors()
         semaphore.release()
-        return rtrn
+        return count
     
     @public
-    def getNeighbors(self, PeerId):
-        requires(PeerId, int)
-        
-        pre_condition(PeerId, lambda x: x > 0)
-        pre_condition(PeerId, lambda x: x <> None)
-        pre_condition(PeerId, lambda x: self.__layout.has_key(PeerId))
-        
+    def getNeighbors(self, peer):
+                
         semaphore = Semaphore()
         semaphore.acquire()
         neighbors = []
-        for Neighbor in self.__layout[PeerId].getNeighbors():
-            neighbors.append(Neighbor.getTargetPeer())
-        rtrn = neighbors.__iter__()
+        for neighbor in self.__layout[peer.getId()].getNeighbors():
+            neighbors.append(neighbor.getTargetPeer())
+        neighborIt = neighbors.__iter__()
         semaphore.release()
-        return rtrn
+        return neighborIt
     
     @public
-    def hasPeer(self, PeerId):
-        return returns(self.__layout.has_key(PeerId), bool)
+    def hasPeer(self, peer):
+        return self.__layout.has_key(peer.getId())
     
-    @public
-    def hasNeighbor(self):
-        raise NotImplementedError()
+    

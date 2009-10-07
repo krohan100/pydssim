@@ -28,7 +28,7 @@ class Neighbor(Protected,INeighbor):
         """
         self.__neighborPeer = neighborPeer
         self.__id = id
-        Logger().resgiterLoggingInfo("Create Neighbor "+ self.__peer.getId())
+        Logger().resgiterLoggingInfo("Create Neighbor "+ self.__neighborPeer.getId())
         
     @public
     def getId(self):

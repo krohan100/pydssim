@@ -144,5 +144,4 @@ class ITopology(object):
     def hasPeer(self, peerId):
         raise NotImplementedError()
     
-    def hasNeighbor(self):
-        raise NotImplementedError()
+   
