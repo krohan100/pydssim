@@ -13,7 +13,7 @@ class ITopology(object):
     def __init__(self):
         raise NotImplementedError()
     
-    def addNeighbor(self, sourceId, targetId):
+    def addNeighbors(self, source, target):
         """
         Creates a connection between two peers.
         @param sourceId: the identifier of source peer
@@ -25,7 +25,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def removeNeighbor(self, sourceId, targetId):
+    def removeNeighbor(self, source, target):
         """
         Removes a connection between two peers.
         @param sourceId: the identifier of source peer
@@ -37,7 +37,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def getNeighbor(self, sourceId, targetId):
+    def getNeighbor(self, source, target):
         """
         Gets a Neighbor.
         @param sourceId: the identifier of source node
@@ -49,7 +49,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def getNeighbors(self, nodeId):
+    def getNeighbors(self, peerId):
         """
         Gets the list of Neighbors in node
         @param nodeId: the identifier of node
@@ -59,7 +59,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def countNeighbors(self, nodeId):
+    def countNeighbors(self, peerId):
         """
         Counts the number of Neighbors in node
         @param nodeId: the identifier of node
@@ -69,7 +69,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def setNetwork(self, peerToPeerNetwork):
+    def setNetwork(self, network):
         """
         Sets the peer-to-peer network.
         @param peerToPeerNetwork: an IPeerToPeerNetwork
@@ -87,27 +87,7 @@ class ITopology(object):
         """
         raise NotImplementedError()
     
-    def addNode(self, nodeId):
-        """
-        Adds a node in topology.
-        @param nodeId: the node identifier
-        @type nodeId: int
-        @return: If node was registered, returns True, else returns False.
-        @rtype: bool
-        """
-        raise NotImplementedError()
-    
-    def removeNode(self, nodeId):
-        """
-        Adds a node in topology.
-        @param nodeId: the node identifier
-        @type nodeId: int
-        @return: If node was removed, returns True, else returns False.
-        @rtype: bool
-        """
-        raise NotImplementedError()
-    
-    def getPeer(self, PeerId):
+    def getPeer(self, peerId):
         """
         Gets a Peer in topology.
         @param PeerId: the Peer identifier

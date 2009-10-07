@@ -3,12 +3,21 @@ from pydssim.util.decorator.require import require
 from pydssim.util.decorator.public import public
 from pydssim.util.decorator.return_type import return_type
 from pydssim.peer.i_peer import IPeer
+from pydssim.network.topology.topology import Topology
 from sets import ImmutableSet
 from multiprocessing import Semaphore
 from pydssim.p2p.routing.default_neighbor import DefaultNeighbor
 import bisect
 
 class AbstractNetwork(Protected):
+    """
+    Defines the operations of Network .
+
+    @author: Luiz Gustavo
+    @organization: Federal University of Rio de Janeiro
+    @contact: lglmoura@cos.ufrj.br 
+    @since: 22/08/2009
+    """
     
     def __init__(self):
         raise NotImplementedError()
@@ -16,11 +25,11 @@ class AbstractNetwork(Protected):
     def initialize(self):
        
         self.__simulation = None
-        self.__peers = {}
+        
         self.__connectedPeers = []
         self.__disconnectedPeers = []
         self.__advertisedPeers = []
-        self.__graph = {}
+        self.__topology = Topology(self) 
     
     @public
     def getSimulation(self):
@@ -33,78 +42,34 @@ class AbstractNetwork(Protected):
     
     @public
     def countPeers(self):
-        return len(self.__peers)
+        return self.__topology.countPeers()
     
     @public
     def addPeer(self, peer):
-        if self.__peers.has_key(peer.getPID()):
-            raise StandardError()
-        self.__peers[peer.getPID()] = peer
-        self.__disconnectedPeers.append(peer.getPID())
-        return self.__peers[peer.getPID()]
+        return self.__topology.addPeer(peer)
     
     @public
     def removePeer(self, peer):
-        if isinstance(peer.getPID(), bool):
-            raise TypeError()
-        peer = self.__peers[peer.getPID()]
-        del self.__peers[peer.getPID()]
+        
+        self.__topology.removePeer(peer)
+        
         return peer
     
     @public
-    @return_type(IPeer)
-    @require("id", int)
     def getPeer(self, id):
-        if isinstance(id, bool):
-            raise TypeError()
-        
-        return self.__peers[id]
+        return self.__topology.getPeer(id)
     
     @public
     def getNeighbors(self, peer):
-        if not self.__graph.has_key(peer.getPID()):
+        layout = self.__topology.getLayout()
+        if not layout.has_key(peer.getPID()):
             return ImmutableSet([])
-        return ImmutableSet(self.__graph[peer.getPID()])
+        return ImmutableSet(layout[peer.getPID()])
     
+     
     @public
-    def getGraph(self):
-        return self.__graph
-    
-    @public
-    def addNode(self, peer):
-        if isinstance(peer.getPID(), bool):
-            raise TypeError()
-        if self.__graph.has_key(peer.getPID()):
-            return True
-        sem = Semaphore()
-        sem.acquire()
-        self.__graph[peer.getPID()] = []
-        sem.release()
-        return self.__graph.has_key(peer.getPID())
-    
-    @public
-    def removeNode(self, peer):
-        if isinstance(peer.getPID(), bool):
-            raise TypeError()
-        if not self.__graph.has_key(peer.getPID()):
-            return False
-        sem = Semaphore()
-        sem.acquire()
-        del self.__graph[peer.getPID()]
-        sem.release()
-        return not self.__graph.has_key(peer.getPID())
-   
-    
-    @public
-    def countNodes(self):
-        return len(self.__graph.keys())
-    
-    @public
-    def countConnections(self):
-        connections = 0
-        for edges in self.__graph.values():
-            connections += len(edges)
-        return connections
+    def countPeers(self):
+        return len(self.__topology.countPeers())
     
     @public
     def dispatchMessage(self, message):
@@ -119,8 +84,9 @@ class AbstractNetwork(Protected):
     def isNeighbor(self, source, target):
         sem = Semaphore()
         sem.acquire()
-        if self.__graph.has_key(source.getPID()):
-            aux = target in self.__graph[source.getPID()]
+        layout = self.__topology.getLayout()
+        if layout.has_key(source.getPID()):
+            aux = target in layout[source.getPID()]
         else:
             aux = False
         sem.release()
@@ -129,15 +95,14 @@ class AbstractNetwork(Protected):
     @public
     def createConnection(self, source, target):
        
-        if isinstance(source.getPID(), bool) or isinstance(target.getPID(), bool):
-            raise TypeError()
         if source == target:
             raise StandardError()
-        if (not self.__peers.has_key(source.getPID()) or (not self.__peers.has_key(target.getPID()))):
+        layout = self.__topology.getLayout()
+        if (not layout.has_key(source.getPID()) or (not layout.has_key(target.getPID()))):
             raise StandardError()
-        if (self.isNeighbor(source, target) == True):
+        if (self.isNeighbor(source, target)):
             return True
-        if targetId in self.__graph[source.getPID()]:
+        if target in layout[source.getPID()]:
             raise StandardError()
         
         sem = Semaphore()
