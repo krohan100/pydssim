@@ -55,7 +55,13 @@ class AbstractPeer(Protected,IPeer):
     def isConnected(self):
         return self.__isConnected
     
+    @public
+    def input(self,  data):
+        raise NotImplementedError()
     
+    @public
+    def output(self, data):
+        raise NotImplementedError()
     
     '''  rever 
     

@@ -31,9 +31,7 @@ class IPeer(object):
     def getNetwork(self):
         raise NotImplementedError()
        
-    def sendMessage(self, message):
-        raise NotImplementedError()
-   
+      
     def connected(self): 
         raise NotImplementedError()
     
@@ -41,6 +39,9 @@ class IPeer(object):
         raise NotImplementedError()
              
     def receiveMessage(self, message):
+        raise NotImplementedError()
+    
+    def sendMessage(self, message):
         raise NotImplementedError()
     
     def createConnection(self, targetId):
@@ -64,6 +65,15 @@ class IPeer(object):
     def addNeighbor(self, neighbor):
         raise NotImplementedError()
     
+    def removeNeighbor(self, neighbor):
+        raise NotImplementedError()
+    
+    def countNeighbor(self):
+        raise NotImplementedError()
+    
+    def hasNeighbor(self, neighborId):
+        raise NotImplementedError()
+    
     def setDisconnectionTime(self, time):
         raise NotImplementedError()
     
@@ -82,4 +92,9 @@ class IPeer(object):
     def setType(self):
         raise NotImplementedError()
     
+    def input(self,  data):
+        raise NotImplementedError()
+    
+    def output(self,  data):
+        raise NotImplementedError()
     
