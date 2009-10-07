@@ -4,6 +4,7 @@ from pydssim.util.logger import Logger
 import uuid
 
 class Neighbor(Protected,INeighbor):
+    
     """
     Defines the module with objective the implementation of Neighbor class.
 
@@ -12,6 +13,7 @@ class Neighbor(Protected,INeighbor):
     @contact: lglmoura@cos.ufrj.br 
     @since: 20/08/2009
     """
+    
     def __init__(self,neighborPeer, id=uuid.uuid1()):
         """
         Constructor of class
@@ -34,7 +36,7 @@ class Neighbor(Protected,INeighbor):
     
           
     @public
-    def getNeighborpeer(self):
+    def getNeighborPeer(self):
         return self.__neighborPeer
     
     @public

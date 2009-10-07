@@ -169,6 +169,9 @@ class AbstractPeer(Protected,IPeer):
     def getConnectionTime(self):
         return self.__connectionTime
     
+    @public
+    def hasNeighbor(self, neighbor):
+        return self.__neighbors.has_key(neighbor.getId())
     
     @public
     def getNeighbor(self, peerID):
