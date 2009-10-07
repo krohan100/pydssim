@@ -184,6 +184,18 @@ class AbstractPeer(Protected,IPeer):
     @public
     def addNeighbor(self, neighbor):
         self.__neighbors[neighbor.getId()] = neighbor
+        
+    @public
+    def removeNeighbor(self, neighbor):
+        
+        if not self.__neighbors.has_key(neighbor.getNeighborPeer().getId()):
+            return False
+        del self.__neighbors[neighbors.getNeighborPeer().getId()]
+        return not self.__neighbors.has_key(neighbors.getNeighborPeer().getId())    
+    
+    @public
+    def countNeighbor(self):
+        return len(self.__neighbors)
     
     @public    
     def setDisconnectionTime(self, time):
