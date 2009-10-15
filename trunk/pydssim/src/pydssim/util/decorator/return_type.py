@@ -4,7 +4,15 @@ Created on 22/08/2009
 @author: LGustavo
 '''
 
-from pydssim.util.interface import implements
+
+
+def implements(obj, *interfaces):
+    """Returns 1 if obj implements *all* interfaces, 0 otherwise."""
+    for interface in interfaces:
+        if not interface.implements(obj):
+            return 0
+    return 1
+
 
 def return_type(type):
     def make_wrapper(f):

@@ -6,7 +6,7 @@ from pydssim.peer.i_peer import IPeer
 from pydssim.network.topology.topology import Topology
 from sets import ImmutableSet
 from multiprocessing import Semaphore
-from pydssim.p2p.routing.default_neighbor import DefaultNeighbor
+from pydssim.peer.neighbor import Neighbor
 import bisect
 
 class AbstractNetwork(Protected):
@@ -18,7 +18,7 @@ class AbstractNetwork(Protected):
     @contact: lglmoura@cos.ufrj.br 
     @since: 22/08/2009
     """
-    
+
     def __init__(self):
         raise NotImplementedError()
     
@@ -27,9 +27,8 @@ class AbstractNetwork(Protected):
         self.__simulation = None
         
         self.__connectedPeers = []
-        self.__disconnectedPeers = []
         self.__advertisedPeers = []
-        self.__topology = Topology(self) 
+        self.__layout = {} 
     
     @public
     def getSimulation(self):
@@ -42,35 +41,68 @@ class AbstractNetwork(Protected):
     
     @public
     def countPeers(self):
-        return self.__topology.countPeers()
-    
+        semaphore = Semaphore()
+        semaphore.acquire()
+        tamPeers = len(self.__layout)
+        semaphore.release()
+        return tamPeers
+   
     @public
     def addPeer(self, peer):
-        return self.__topology.addPeer(peer)
-    
+        
+        if self.__layout.has_key(peer.getId()):
+            return False
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        
+        self.__layout[peer.getId()] = peer
+        semaphore.release()
+        return self.__layout.has_key(peer.getId())
+
     @public
     def removePeer(self, peer):
         
-        self.__topology.removePeer(peer)
+        flag = True
         
+        if not self.__layout.has_key(peer.getId()):
+            return False
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        
+        '''
+        pode travar  pois estou chamando um sema dentro do outro?
+        '''
+        neighbors = peer.getNeighbors()  
+        
+        if  len(neighbors) != 0:
+            for target in  neighbors:
+                self.removeNeighbor(peer, target) 
+        
+        del self.__layout[peer.getId()]
+        flag = not self.__layout.has_key(peer.getId())
+        semaphore.release()
+        
+        return flag
+
+    @public
+    def getPeer(self, peerId):
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        peer = self.__layout[peerId]
+        semaphore.release()
         return peer
     
     @public
-    def getPeer(self, id):
-        return self.__topology.getPeer(id)
-    
-    @public
     def getNeighbors(self, peer):
-        layout = self.__topology.getLayout()
+        layout = self.__layout
         if not layout.has_key(peer.getPID()):
             return ImmutableSet([])
         return ImmutableSet(layout[peer.getPID()])
     
      
-    @public
-    def countPeers(self):
-        return len(self.__topology.countPeers())
-    
     @public
     def dispatchMessage(self, message):
         sem = Semaphore()
@@ -84,11 +116,9 @@ class AbstractNetwork(Protected):
     def isNeighbor(self, source, target):
         sem = Semaphore()
         sem.acquire()
-        layout = self.__topology.getLayout()
-        if layout.has_key(source.getPID()):
-            aux = target in layout[source.getPID()]
-        else:
-            aux = False
+        
+        aux = source.hasNeighbor(target)
+        
         sem.release()
         return aux
     
@@ -97,20 +127,21 @@ class AbstractNetwork(Protected):
        
         if source == target:
             raise StandardError()
-        layout = self.__topology.getLayout()
+        layout = self.__layout
         if (not layout.has_key(source.getPID()) or (not layout.has_key(target.getPID()))):
             raise StandardError()
-        if (self.isNeighbor(source, target)):
+        if (source.hasNeighbor( target)):
             return True
-        if target in layout[source.getPID()]:
-            raise StandardError()
         
         sem = Semaphore()
         sem.acquire()
-        self.__graph[source.getPID()].append(target)
-        self.getPeer(source.getPID()).addNeighbor(DefaultNeighbor(self.getPeer(source.getPID()), target))
-        self.__graph[target.getPID()].append(source)
-        self.getPeer(target.getPID()).addNeighbor(DefaultNeighbor(self.getPeer(target.getPID()), source))
+       
+        self.getPeer(source.getPID()).addNeighbor(Neighbor(target))
+        self.getPeer(target.getPID()).addNeighbor(Neighbor(source))
+        
+        self.__connectedPeers.append(target)
+        self.__connectedPeers.append(source)
+        
         sem.release()
         return self.isNeighbor(source, target)
     
@@ -121,33 +152,25 @@ class AbstractNetwork(Protected):
             raise TypeError()
         if source == target:
             raise StandardError()
-        if (not self.__peers.has_key(source.getPID())) or (not self.__peers.has_key(target.getPID())):
+        if (not self.__layout.has_key(source.getPID())) or (not self.__layout.has_key(target.getPID())):
             raise StandardError()
         if (self.isNeighbor(source, target) == False):
             return False
         
         sem = Semaphore()
         sem.acquire()
-        self.__graph[source.getPID()].remove(target)
-        if self.__graph.has_key(target.getPID()):
-            self.__graph[target.getPID()].remove(source)
+        
+        source.removeConnection(target)
+        targer.removeConnection(source)
+        
+        self.__connectedPeers.remove(target)
+        self.__connectedPeers.remove(soruce)
+        
         sem.release()
+        
         return not self.isNeighbor(source, target)
     
-    @public
-    def increaseNumberOfConnectedPeers(self, peer):
-        self.__connectedPeers.append(peer)
-        self.__disconnectedPeers.remove(peer)
-        self.addNode(peer)
-        return len(self.__connectedPeers)
-    
-    @public
-    def decreaseNumberOfConnectedPeers(self, peer):
-        self.__disconnectedPeers.append(peer)
-        self.__connectedPeers.remove(peer)
-        self.removeNode(peer)
-        return len(self.__connectedPeers)
-    
+   pensar na validade de coloca isso    
     @public
     def getPeerForConnection(self):
         if len(self.__disconnectedPeers) == 0:

@@ -40,7 +40,7 @@ class Topology(Protected, ITopology):
     @public
     def getNetwork(self):
         return self.__network
-    tirar neighbor 
+     
     @public
     def addNeighbors(self, source, target):
         
@@ -72,46 +72,13 @@ class Topology(Protected, ITopology):
         
         semaphore = Semaphore()
         semaphore.acquire()
-        source.removeNeighbor()
-        flag = self.__layout[source.getId()].removeNeighbor(self.__layout[source.getId()].getNeighbor(target.getId()))
+        flag = source.removeNeighbor(target)
+        target.removeNeighbor(source)
         semaphore.release()
         
         return flag
         
-    @public
-    def addPeer(self, peer):
-        
-        if self.__layout.has_key(peer.getId()):
-            return False
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        
-        self.__layout[peer.getId()] = peer
-        semaphore.release()
-        return self.__layout.has_key(peer.getId())
-
-    @public
-    def removePeer(self, peer):
-        
-        if not self.__layout.has_key(peer.getId()):
-            return False
-                
-        semaphore = Semaphore()
-        semaphore.acquire()
-        del self.__layout[peer.getId()]
-        semaphore.release()
-        
-        return not self.__layout.has_key(peer.getId())
-
-    @public
-    def getPeer(self, peerId):
-        
-        semaphore = Semaphore()
-        semaphore.acquire()
-        peer = self.__layout[peerId]
-        semaphore.release()
-        return peer
+    
 
     @public
     def getPeers(self):
@@ -121,13 +88,7 @@ class Topology(Protected, ITopology):
         semaphore.release()
         return peers
 
-    @public
-    def countPeers(self):
-        semaphore = Semaphore()
-        semaphore.acquire()
-        tamPeers = len(self.__layout)
-        semaphore.release()
-        return tamPeers
+   
     
     @public
     def getNeighbor(self, source, target):
