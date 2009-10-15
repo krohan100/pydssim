@@ -1,7 +1,7 @@
 from pydssim.util.protected import Protected
-from pydssim.util.decorator.public import public
+from pydssim.util.decorator.public import public, createURN
 from pydssim.util.logger import Logger
-import uuid
+
 
 class Neighbor(Protected,INeighbor):
     
@@ -14,7 +14,7 @@ class Neighbor(Protected,INeighbor):
     @since: 20/08/2009
     """
     
-    def __init__(self,neighborPeer, id=uuid.uuid1()):
+    def __init__(self,neighborPeer, id=createURN("neighbor")):
         """
         Constructor of class
         

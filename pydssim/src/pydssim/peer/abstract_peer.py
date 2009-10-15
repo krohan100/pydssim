@@ -52,8 +52,8 @@ class AbstractPeer(Protected,IPeer):
         return self.__type
     
     @public
-    def isConnected(self):
-        return self.__isConnected
+    def isConnected(self,target):
+        return self.__neighbors.has_key(target.getPID())
     
     @public
     def input(self,  data):
@@ -95,21 +95,7 @@ class AbstractPeer(Protected,IPeer):
         self.__protocol.disconnect(priority)
     
 '''    
-    @public
-    def connected(self):
-        if self.__isConnected:
-            return True
-        self.__isConnected = True
-        self.__network.increaseNumberOfConnectedPeers(self)
-        return self.__isConnected
-    
-    @public
-    def disconnected(self):
-        if not self.__isConnected:
-            return
-        self.__isConnected = False
-        self.__network.decreaseNumberOfConnectedPeers(self)
-        return not self.__isConnected
+   
     
     @public
     def getNetwork(self):
@@ -132,14 +118,13 @@ class AbstractPeer(Protected,IPeer):
         if self.__network.createConnection(self, target):
             self.addNeighbor(target)
             self.connected()
-        return self.isConnected()
+        return self.isConnected(target)
     
     @public
     def removeConnection(self, target):
-        if self.__network.removeConnection(self, target):
-            if self.__neighbors.has_key(target.getPID()):
-                del self.__neighbors[target.getPID()]
-        return not self.isConnected()
+        if self.__neighbors.has_key(target.getPID()):
+            del self.__neighbors[target.getPID()]
+        return not self.isConnected(target)
    
      
     @public
@@ -154,9 +139,7 @@ class AbstractPeer(Protected,IPeer):
     @public
     def loaderServices(self,fileName=None):
         pass
-        
-
-      
+    
     @public
     def share(self, type):
         pass
@@ -175,10 +158,6 @@ class AbstractPeer(Protected,IPeer):
     
     @public
     def getNeighbor(self, peerID):
-        
-        '''
-        erro
-        '''
         return self.__neighbors[peerID]
     
     @public

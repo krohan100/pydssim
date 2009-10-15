@@ -16,7 +16,12 @@ from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.util.protected import Protected
 import uuid
 
-def teste(t1=uuid.uuid1(),t2=randint(0,10),t3="t3",t4="t4"):
+def createURN(type):
+    
+    return "urn:"+type+":id:"+uuid.uuid1().__str__()
+    
+
+def teste(t1=createURN("testesteste"),t2=randint(0,10),t3="t3",t4="t4"):
     print t1,t2,t3,t4
 
 def get(tam=3):    
@@ -66,5 +71,14 @@ def get2(tam=3):
              
 if __name__ == '__main__':
     
-    #teste(t4="teste4")
-    get2(10)
+    
+    print createURN("peer"),[teste(t4="teste4")]
+    t1 = {10:11,20:21}
+    t1[31]=31
+    t1[40]=41
+    for h in t1.values():
+        print h
+    
+    
+    print "tam", len(t1.values())    
+  
