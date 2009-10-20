@@ -26,7 +26,7 @@ class AbstractNetwork(Protected):
        
         self.__simulation = None
         
-        self.__connectedPeers = []
+        self.__connectedPeers = {}
         self.__advertisedPeers = []
         self.__layout = {} 
     
@@ -38,6 +38,15 @@ class AbstractNetwork(Protected):
     def setSimulation(self, simulation):
         self.__simulation = simulation
         return self.__simulation
+    
+    @public
+    def getLayout(self):
+        return self.__layout
+    
+    @public
+    def setLayout(self, layout):
+        self.__layout = layout
+        return self.__layout
     
     @public
     def countPeers(self):
@@ -81,6 +90,8 @@ class AbstractNetwork(Protected):
                 self.removeNeighbor(peer, target) 
         
         del self.__layout[peer.getId()]
+        del self.__connectedPeers[peer.getId()]
+        
         flag = not self.__layout.has_key(peer.getId())
         semaphore.release()
         
@@ -97,10 +108,10 @@ class AbstractNetwork(Protected):
     
     @public
     def getNeighbors(self, peer):
-        layout = self.__layout
-        if not layout.has_key(peer.getPID()):
+        
+        if not self.__layout.has_key(peer.getPID()):
             return ImmutableSet([])
-        return ImmutableSet(layout[peer.getPID()])
+        return layout[peer.getPID()].getNeighbors()
     
      
     @public
@@ -127,11 +138,14 @@ class AbstractNetwork(Protected):
        
         if source == target:
             raise StandardError()
-        layout = self.__layout
-        if (not layout.has_key(source.getPID()) or (not layout.has_key(target.getPID()))):
+        
+       
+        if (not self.__layout.has_key(source.getPID()) or (not self.__layout.has_key(target.getPID()))):
             raise StandardError()
         if (source.hasNeighbor( target)):
             return True
+        
+        
         
         sem = Semaphore()
         sem.acquire()
@@ -139,8 +153,8 @@ class AbstractNetwork(Protected):
         self.getPeer(source.getPID()).addNeighbor(Neighbor(target))
         self.getPeer(target.getPID()).addNeighbor(Neighbor(source))
         
-        self.__connectedPeers.append(target)
-        self.__connectedPeers.append(source)
+        self.__connectedPeers[target.getPID()] = target
+        self.__connectedPeers[source.getPID()] = source
         
         sem.release()
         return self.isNeighbor(source, target)
@@ -163,19 +177,35 @@ class AbstractNetwork(Protected):
         source.removeConnection(target)
         targer.removeConnection(source)
         
-        self.__connectedPeers.remove(target)
+               
+        if len(self.getNeighbors(source)) ==0 :
+             del self.__connectedPeers[source.getId()]
+        
+        if len(self.getNeighbors(target)) ==0 :
+             del self.__connectedPeers[target.getId()]
+        
         self.__connectedPeers.remove(soruce)
         
         sem.release()
         
         return not self.isNeighbor(source, target)
     
-   pensar na validade de coloca isso    
+    parei aqui
     @public
     def getPeerForConnection(self):
-        if len(self.__disconnectedPeers) == 0:
+         
+        if (len(self.__layout) == 0) or (len(self.__layout) == len(self.__connectedPeers)):
             return None
-        return self.__disconnectedPeers[0]
+                        
+        while True:
+            peerKey = self.__layout.keys()[randint(0, len(self.__layout.keys()) - 1)]
+            if not self.__connectedPeers.has_key(peerKey):
+                return self.__layout[peerKey]
+        
+            
+                      
+        
+        
     
     @public
     def getPeerForDisconnection(self):

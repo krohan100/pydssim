@@ -51,9 +51,7 @@ class AbstractPeer(Protected,IPeer):
     def getType(self):
         return self.__type
     
-    @public
-    def isConnected(self,target):
-        return self.__neighbors.has_key(target.getPID())
+   
     
     @public
     def input(self,  data):
@@ -160,6 +158,7 @@ class AbstractPeer(Protected,IPeer):
     def getNeighbor(self, peerID):
         return self.__neighbors[peerID]
     
+       
     @public
     def getNeighbors(self):
         return ImmutableSet(self.__neighbors.values())    
@@ -170,7 +169,7 @@ class AbstractPeer(Protected,IPeer):
         
     @public
     def removeNeighbor(self, neighbor):
-        
+        ''' coloar mesange de desconectar '''
         if not self.__neighbors.has_key(neighbor.getId()):
             return False
         del self.__neighbors[neighbors.getId()]
