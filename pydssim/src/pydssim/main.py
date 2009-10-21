@@ -65,7 +65,7 @@ def get2(tam=3):
                 
         service = optionClass[option](resource=map[concept][resour])
                     
-        print service.getUUID(),service.getResource(),service.testedemetodo()
+        #print service.getUUID(),service.getResource(),service.testedemetodo()
             #print map[concept][ix]
             
              
@@ -74,8 +74,13 @@ if __name__ == '__main__':
     
     print createURN("peer"),[teste(t4="teste4")]
     t1 = {10:11,20:21}
-    t1[31]=31
+    t1[30]=31
     t1[40]=41
+    i =  randint(0, len(t1.keys()) - 1)
+    print "key ", t1.keys()#[randint(0, len(t1.keys()) - 1)]
+    print t1.values()#[randint(0, len(t1.keys()) - 1)]
+    print "key ", t1.keys()[i],"valor ",t1[t1.keys()[i]]
+                   
     for h in t1.values():
         print h
     

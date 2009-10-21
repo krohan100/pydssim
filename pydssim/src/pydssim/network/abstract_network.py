@@ -190,7 +190,7 @@ class AbstractNetwork(Protected):
         
         return not self.isNeighbor(source, target)
     
-    parei aqui
+   
     @public
     def getPeerForConnection(self):
          
@@ -202,16 +202,15 @@ class AbstractNetwork(Protected):
             if not self.__connectedPeers.has_key(peerKey):
                 return self.__layout[peerKey]
         
-            
-                      
-        
-        
     
     @public
     def getPeerForDisconnection(self):
         if len(self.__connectedPeers) == 0:
             return None
-        return self.__connectedPeers[0]
+        
+        peerKey = self.__connectedPeers.keys()[randint(0, len(self.__connectedPeers.keys()) - 1)]
+        
+        return self.__connectedPeers[peerKey]
     
     @public
     def countConnectedPeers(self):
@@ -219,7 +218,9 @@ class AbstractNetwork(Protected):
     
     @public
     def countDisconnectedPeers(self):
-        return len(self.__disconnectedPeers)
+        return len(self.__layout) - self.countConnectedPeers()
+    
+    '''
     
     @public
     def registerPeerForAdvertisement(self, peer):
@@ -233,7 +234,11 @@ class AbstractNetwork(Protected):
     @public
     def unregisterPeerForAdvertisement(self, peer):
         return self.__advertisedPeers.pop(self.__advertisedPeers.index(peer))
+    '''
     
     @public
     def getConnectedPeers(self):
         return self.__connectedPeers
+    
+     acabei
+    
