@@ -240,5 +240,5 @@ class AbstractNetwork(Protected):
     def getConnectedPeers(self):
         return self.__connectedPeers
     
-     acabei
+
     
