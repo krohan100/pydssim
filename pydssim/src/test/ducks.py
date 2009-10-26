@@ -137,16 +137,16 @@ class DuckFactory( Process ):
 
 if __name__ == '__main__':
 
-    simUntil = 50000
-    hunter_ammo = 60
-    hunter_accuracy_decile = 5
+    simUntil = 5000000
+    hunter_ammo = 180
+    hunter_accuracy_decile = 5 # municao
     hunter_switch_target = 2
     mySim = Simulation()
     myDuckFlock = DuckFlock( "Duck Flock", "unbounded", "ducks", None, mySim )
     myDuckFactory = DuckFactory( "My Duck Factory", simUntil, 200, myDuckFlock, mySim )
     mySim.activate( myDuckFactory, myDuckFactory.execute() )
     h = Hunter( "Fred", hunter_ammo, hunter_accuracy_decile, hunter_switch_target, myDuckFlock, mySim )
-    k = Hunter( "Dave", 80, 4, 4, myDuckFlock, mySim )
+    k = Hunter( "Dave", 180, 4, 4, myDuckFlock, mySim )
     mySim.activate( h, h.shoot() )
     mySim.activate( k, k.shoot() )
     mySim.simulate( until = simUntil )
