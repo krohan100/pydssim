@@ -9,7 +9,7 @@ from pydssim.simulation.process.abstract_simulation_process import AbstractSimul
 
 class BeginSimulationProcess(AbstractSimulationProcess):
     """
-    Defines the implementation of BeginSimulationEventHandler
+    Defines the implementation of BeginSimulationProcess
     @author: Luiz Gustavo 
     @organization: Federal University of Rio de Janeiro
     @contact: lglmoura@cos.ufrj.br 
@@ -17,7 +17,7 @@ class BeginSimulationProcess(AbstractSimulationProcess):
     """
 
     def __init__(self):
-        AbstractSimulationEventHandler.initialize(self, "BEGIN_SIMULATION")
+        AbstractSimulationProcess.initialize(self, "BEGIN_SIMULATION")
     
     def execute(self):
         return AbstractSimulationProcess.execute(self)
