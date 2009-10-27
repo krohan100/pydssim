@@ -6,10 +6,22 @@
 """
 
 from pydssim.simulation.process.begin_simulation_process import BeginSimulationProcess
+
+
+            
+if __name__ == '__main__':
+    
+    tes = BeginSimulationProcess()
+    print tes.getIdentifier()
+    
+    
+'''
+
 from pymockobject.events import ReturnValue
 import pymockobject
 
 import unittest
+
 
 class BeginSimulationProcessTest(unittest.TestCase):
     
@@ -17,5 +29,6 @@ class BeginSimulationProcessTest(unittest.TestCase):
         self.assertTrue(BeginSimulationProcess())
         handler = BeginSimulationProcess()
         self.assertEquals("BEGIN_SIMULATION", handler.getIdentifier())
-       
-   
+    
+'''
+

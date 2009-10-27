@@ -24,7 +24,7 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
         raise NotImplementedError()
     
     @public
-    def initialize(self, identifier, peerId, priority):
+    def initialize(self, identifier, peer=None, priority=0):
         """
         Initializes the object.
         @param identifier: identifier of simulation event
@@ -78,7 +78,7 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
             return False
         return self.__identifier == other.getIdentifier() and self.__peerId == other.getPeerId() and self.__priority == other.getPriority()
     
-    identifier = property(getHandle, None, None, None)
+    identifier = property(getIdentifier, None, None, None)
     """
     @type: str 
     """
