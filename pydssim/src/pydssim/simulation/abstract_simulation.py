@@ -38,7 +38,7 @@ class AbstractSimulation(Protected, ISimulation):
         self.__currentSimulationTime = 0
         self.__network = None
         self.__simulationEventGenerators = []
-   s
+   
     @public
     def addSimulationEventGenerator(self, simulationEventGenerator):
        
