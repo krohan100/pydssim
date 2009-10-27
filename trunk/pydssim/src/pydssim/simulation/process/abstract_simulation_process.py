@@ -10,7 +10,7 @@ from pydssim.util.protected import Protected
 from pydssim.simulation.process.i_simulation_process import ISimulationProcess
 from pydssim.util.decorator.public import public
 from SimPy.Simulation import Process
-criar um evento abstrato
+
 class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
     """
     Abstract class that implemenents the ISimulationEvent interface.
