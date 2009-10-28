@@ -134,7 +134,7 @@ class DuckFactory( Process ):
             yield put, self, self.duckflock, [d]
 
 
-
+olhar aqui 
 if __name__ == '__main__':
 
     simUntil = 5000000

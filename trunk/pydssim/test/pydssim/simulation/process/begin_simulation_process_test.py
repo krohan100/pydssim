@@ -17,6 +17,7 @@ if __name__ == '__main__':
     
 '''
 
+
 from pymockobject.events import ReturnValue
 import pymockobject
 
@@ -29,6 +30,6 @@ class BeginSimulationProcessTest(unittest.TestCase):
         self.assertTrue(BeginSimulationProcess())
         handler = BeginSimulationProcess()
         self.assertEquals("BEGIN_SIMULATION", handler.getIdentifier())
-    
-'''
+ 
+ '''
 
