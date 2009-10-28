@@ -24,7 +24,7 @@ class AbstractSimulation(Protected, ISimulation):
     @organization: Federal University of Rio de Janeiro
    
     """
-    
+    e aqui 
     def __init__(self):
         raise NotImplementedError()
 
@@ -76,25 +76,19 @@ class AbstractSimulation(Protected, ISimulation):
     
     @public    
     def getPeerToPeerNetwork(self):
-        return returns(self.__network, IPeerToPeerNetwork)
+        return self.__network
     
     @public
     def getSimulationEvent(self, handle):
-        requires(handle, str)
-        
-        pre_condition(handle, lambda x: x <> "")
-        pre_condition(handle, lambda x: x <> None)
-        pre_condition(handle, lambda x: self.__queues.has_key(x))
-        
-        return returns(self.__queues[handle].getFirst(), ISimulationEvent)
+                
+        return self.__queues[handle].getFirst()
 
     @public
     def setPeerToPeerNetwork(self, peerToPeerNetwork):
-        requires(peerToPeerNetwork, IPeerToPeerNetwork)
-        pre_condition(peerToPeerNetwork, lambda x: x <> None)
+        
         self.__network = peerToPeerNetwork
         self.__network.setSimulation(self)
-        return returns(self.__network, IPeerToPeerNetwork)
+        return returnsself.__network
     
     @public    
     def getSimulationTime(self):
