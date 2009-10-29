@@ -57,7 +57,7 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def setPeerToPeerNetwork(self, peerToPeerNetwork):
+    def setNetwork(self, peerToPeerNetwork):
         """
         Sets a peer-to-peer network object.
         @param peerToPeerNetwork: an IPeerToPeerNetwork
@@ -67,7 +67,7 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def getPeerToPeerNetwork(self):
+    def getNetwork(self):
         """
         Gets a peer-to-peer network object.
         @return: an IPeerToPeerNetwork
@@ -82,43 +82,8 @@ class ISimulation(object):
         @rtype: int
         """
         raise NotImplementedError()
-    
-    def countSimulationEvents(self, handle):
-        """
-        Counts simulation events registered by simulation object.
-        @return: an int
-        @rtype: int
-        """
-        raise NotImplementedError()
-    
-    def getSimulationEvent(self, handle):
-        """
-        Gets the first simulation event in priority queue.
-        @return: a ISimulationEvent
-        @rtype: ISimulationEvent
-        """
-        raise NotImplementedError()
-    
-    def registerSimulationEvent(self, simulationEvent):
-        """
-        Registries a simulation event in simulation.
-        @param simulationEvent: an ISimulationEvent
-        @type simulationEvent: ISimulationEvent
-        @return: an ISimulationEvent
-        @rtype: ISimulationEvent
-        """
-        raise NotImplementedError()
-    
-    def unregisterSimulationEvent(self, handle):
-        """
-        Unregistries a simulation event in queue of events.
-        @param handle: a str
-        @type handle: str
-        @return: an ISimulationEvent
-        @rtype: ISimulationEvent
-        """
-        raise NotImplementedError()
-    
+      
+       
     def setCurrentSimulationTime(self, currentSimulationTime):
         """
         Sets the current time of simulation.
@@ -129,17 +94,9 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def setSimulator(self, simulator):
-        """
-        Sets a simulator.
-        @param simulator: an ISimulator
-        @type simulator: ISimulator
-        @return: an ISimulator
-        @rtype: ISimulator
-        """
-        raise NotImplementedError()
+   
     
-    def getSimulator(self):
+    def getSimulation(self):
         """
         Sets a simulator.
         @return: an ISimulator
@@ -147,15 +104,9 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def countSimulationEventQueues(self):
-        """
-        Counts queues of simulation events.
-        @return: a int
-        @rtype: int
-        """
-        raise NotImplementedError()
     
-    def addSimulationEventGenerator(self, simulationEventGenerator):
+    
+    def SimulationProcessFactory(self, simulationEventGenerator):
         """
         Adds a simulation event generator.
         @param simulationEventGenerator: an ISimulationEventGenerator
@@ -164,7 +115,7 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def removeSimulationEventGenerator(self, simulationEventGenerator):
+    def removeSimulationProcessFactory(self, simulationEventGenerator):
         """
         Removes a simulation event generator.
         @param simulationEventGenerator: an ISimulationEventGenerator
@@ -173,7 +124,7 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def getSimulationEventGenerators(self):
+    def getSimulationProcessFactorys(self):
         """
         Gets a list of simulation event generators.
         @return: a list
@@ -181,7 +132,7 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def countSimulationEventGenerators(self):
+    def countSimulationProcessFactorys(self):
         """
         Counts simulation event generators.
         @return: a int

@@ -10,11 +10,10 @@ Defines the module with the implementation of AbstractSimulation class.
 from pydssim.util.protected import Protected
 from pydssim.simulation.i_simulation import ISimulation
 from pydssim.util.decorator.public import public
-from pysocialsim.common.simulator.event.i_simulation_event import ISimulationEvent
-from pysocialsim.common.error.register_simulation_event_error import RegisterSimulationEventError
-from pysocialsim.common.error.unregister_simulation_event_error import UnregisterSimulationEventError
-from pysocialsim.common.p2p.network.i_peer_to_peer_network import IPeerToPeerNetwork
-from pysocialsim.common.simulator.event.i_simulation_event_generator import ISimulationEventGenerator
+from multiprocessing import Semaphore
+from SimPy.Simulation import Simulation
+from pydssim.util.logger import Logger
+
 import time
 
 class AbstractSimulation(Protected, ISimulation):
@@ -24,7 +23,7 @@ class AbstractSimulation(Protected, ISimulation):
     @organization: Federal University of Rio de Janeiro
    
     """
-    e aqui 
+     
     def __init__(self):
         raise NotImplementedError()
 
@@ -33,73 +32,68 @@ class AbstractSimulation(Protected, ISimulation):
         Initializes the object.
         @rtype: NoneType
         """
+        self.__simulation = Simulation() 
         
         self.__simulationTime = 0
         self.__currentSimulationTime = 0
         self.__network = None
-        self.__simulationEventGenerators = []
-   
+        self.__simulationProcessFactory = []
+        Logger().resgiterLoggingInfo("Create Simulation ")
+
     @public
-    def addSimulationEventGenerator(self, simulationEventGenerator):
+    def addSimulationProcessFactory(self, simulationProcessFactory):
        
-        if simulationEventGenerator in self.__simulationEventGenerators:
+        if simulationProcessFactory in self.__simulationProcessFactory:
             return None
-        self.__simulationEventGenerators.append(simulationEventGenerator)
-        simulationEventGenerator.setSimulation(self)
-        return self.__simulationEventGenerators[self.__simulationEventGenerators.index(simulationEventGenerator)]
+        self.__simulationProcessFactory.append(simulationProcessFactory)
+        simulationProcessFactory.setSimulation(self)
+        return self.__simulationProcessFactory[self.__simulationProcessFactory.index(simulationProcessFactory)]
 
     @public
-    def removeSimulationEventGenerator(self, simulationEventGenerator):
+    def removeSimulationProcessFactory(self, simulationProcessFactory):
        
-        if not simulationEventGenerator in self.__simulationEventGenerators:
+        if not simulationProcessFactory in self.__simulationProcessFactory:
             return None
-        self.__simulationEventGenerators.remove(simulationEventGenerator)
-        return simulationEventGenerator
+        self.__simulationProcessFactory.remove(simulationProcessFactory)
+        return simulationProcessFactory
 
     @public
-    def getSimulationEventGenerators(self):
-        return self.__simulationEventGenerators
+    def getSimulationProcessFactorys(self):
+        return self.__simulationProcessFactory
 
     @public
-    def countSimulationEventGenerators(self):
-        return len(self.__simulationEventGenerators)
+    def countSimulationProcessFactorys(self):
+        return len(self.__simulationProcessFactory)
     
     @public    
     def configure(self):
-        handlers = self.__simulator.getSimulationEventHandlers()
-        for hndlr in handlers:
-            self.__queues[hndlr.getHandle()] = PriorityQueue()
-        generatedEvents = 0
-        for generator in self.__simulationEventGenerators:
-            generatedEvents += generator.generateSimulationEvents()
-        return generatedEvents
+        
+        factoryProcess = 0
+        for factory in self.__simulationProcessFactory:
+            factoryProcess += factory.factorySimulationProcess()
+        return factoryProcess
     
     @public    
-    def getPeerToPeerNetwork(self):
+    def getNetwork(self):
         return self.__network
     
+    
     @public
-    def getSimulationEvent(self, handle):
-                
-        return self.__queues[handle].getFirst()
-
-    @public
-    def setPeerToPeerNetwork(self, peerToPeerNetwork):
+    def setNetwork(self, network):
         
-        self.__network = peerToPeerNetwork
+        self.__network = network
         self.__network.setSimulation(self)
-        return returnsself.__network
+        return self.__network
     
     @public    
     def getSimulationTime(self):
-        return returns(self.__simulationTime, int)
+        return self.__simulationTime
 
     @public
     def setSimulationTime(self, simulationTime):
-        requires(simulationTime, int)
-        pre_condition(simulationTime, lambda x: x > 0)
+        
         self.__simulationTime = simulationTime
-        return returns(self.__simulationTime, int)
+        return self.__simulationTime
     
     @public
     def getCurrentSimulationTime(self):
@@ -107,79 +101,39 @@ class AbstractSimulation(Protected, ISimulation):
         semaphore.acquire()
         time = self.__currentSimulationTime
         semaphore.release()
-        return returns(time, int)
-
+        return time
+    
     @public
     def setCurrentSimulationTime(self, currentSimulationTime):
-        requires(currentSimulationTime, int)
-        pre_condition(currentSimulationTime, lambda x: x > 0)
+       
         semaphore = Semaphore()
         semaphore.acquire()
         self.__currentSimulationTime = currentSimulationTime
         semaphore.release()
-        return returns(currentSimulationTime, int)
+        return self.__currentSimulationTime
     
     @public
-    def getSimulator(self):
-        return returns(self.__simulator, ISimulator)
+    def getSimulation(self):
+        return self.__simulation
     
-    @public
-    def setSimulator(self, simulator):
-        requires(simulator, ISimulator)
-        pre_condition(simulator, lambda x: x <> None)
-        self.__simulator = simulator
-        return returns(self.__simulator, ISimulator)
-    
+        
     @public
     def execute(self):
-        self.SimulationEngine(self).start()
+        raise NotImplementedError()
+       
     
     @public
     def stop(self):
-        for queue in self.__queues.values():
-            queue.clear()
+        raise NotImplementedError()
+       
     
-    @public
-    def countSimulationEventQueues(self):
-        return len(self.__queues)
-
-    @public
-    def countSimulationEvents(self, handle):
-        requires(handle, str)
-        pre_condition(handle, lambda x: x <> "" or x <> None)
-        return returns(self.__queues[handle].size(), int)
-
-    @public
-    def registerSimulationEvent(self, simulationEvent):
-        requires(simulationEvent, ISimulationEvent)
-        pre_condition(simulationEvent, lambda x: x <> None)
-        if not self.__queues.has_key(simulationEvent.getHandle()):
-            raise RegisterSimulationEventError(simulationEvent.getHandle()+" is invalid handle")
-        return returns(self.__queues[simulationEvent.getHandle()].enqueue(simulationEvent, simulationEvent.getPriority()), ISimulationEvent)
-
-    @public
-    def unregisterSimulationEvent(self, handle):
-        requires(handle, str)
-        pre_condition(handle, lambda x: x <> None)
-        pre_condition(handle, lambda x: x <> "")
-        if not self.__queues.has_key(handle):
-            raise UnregisterSimulationEventError(handle + "was not registered by simulator.")
-        return returns(self.__queues[handle].dequeue(), ISimulationEvent)
     
-    simulator = property(getSimulator, setSimulator, None, None)
-    """
-    @type: ISimulator 
-    """
+    simulation = property(getSimulation, None, None, None)
+   
     simulationTime = property(getSimulationTime, setSimulationTime, None, None)
-    """
-    @type: int 
-    """
+    
     currentSimulationTime = property(getCurrentSimulationTime, setCurrentSimulationTime, None, None)
-    """
-    @type: int
-    """
-    peerToPeerNetwork = property(getPeerToPeerNetwork, setPeerToPeerNetwork, None, None)
-    """
-    @type: IPeerToPeerNetwork 
-    """
+   
+    Network = property(getNetwork, setNetwork, None, None)
+    
     

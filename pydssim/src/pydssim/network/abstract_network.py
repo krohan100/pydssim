@@ -9,6 +9,8 @@ from multiprocessing import Semaphore
 from pydssim.peer.neighbor import Neighbor
 import bisect
 
+
+ pensar em gerar a rede dentro sa simulador
 class AbstractNetwork(Protected):
     """
     Defines the operations of Network .
