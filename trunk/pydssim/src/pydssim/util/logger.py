@@ -25,7 +25,7 @@ class Logger(Protected):
     def initialize(self,fileMode='w'):
         #today = datetime.today().strftime("%Y_%m_%d_%H_%M_%S")
         #LOG_FILENAME = 'logging_simulatorfile_'+today+'.log'
-        LOG_FILENAME = 'logging_simulatorfile.log'
+        LOG_FILENAME = 'logging_simulation_file.log'
         logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',
