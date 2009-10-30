@@ -4,6 +4,9 @@ Created on 22/08/2009
 @author: LGustavo
 '''
 
+import uuid
+
+
 def public(f):
     '''
     Decorator used to assign the attribute __public__ to methods.

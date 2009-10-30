@@ -4,7 +4,7 @@ Created on 22/08/2009
 @author: LGustavo
 '''
 
-from pydssim.util.interface import implements
+#from pydssim.util.interface import implements
 
 def require(arg_name, *allowed_types):
     def make_wrapper(f):

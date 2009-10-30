@@ -32,7 +32,7 @@ class AbstractSimulation(Protected, ISimulation):
         Initializes the object.
         @rtype: NoneType
         """
-        self.__simulation = Simulation() 
+        self.__simInstance = Simulation() 
         
         self.__simulationTime = 0
         self.__currentSimulationTime = 0
@@ -73,6 +73,7 @@ class AbstractSimulation(Protected, ISimulation):
             factoryProcess += factory.factorySimulationProcess()
         return factoryProcess
     
+   
     @public    
     def getNetwork(self):
         return self.__network
@@ -114,7 +115,7 @@ class AbstractSimulation(Protected, ISimulation):
     
     @public
     def getSimulation(self):
-        return self.__simulation
+        return self.__simInstance
     
         
     @public

@@ -3,14 +3,14 @@ from pydssim.util.decorator.require import require
 from pydssim.util.decorator.public import public
 from pydssim.util.decorator.return_type import return_type
 from pydssim.peer.i_peer import IPeer
-from pydssim.network.topology.topology import Topology
 from sets import ImmutableSet
 from multiprocessing import Semaphore
-from pydssim.peer.neighbor import Neighbor
-import bisect
+from pydssim.peer.neighbor.neighbor import Neighbor
+from pydssim.util.logger import Logger
+from SimPy.Simulation import Store
 
 
- pensar em gerar a rede dentro sa simulador
+
 class AbstractNetwork(Protected):
     """
     Defines the operations of Network .
@@ -24,22 +24,26 @@ class AbstractNetwork(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self):
+    def initialize(self, simulation, peers , newPeerTime, neighbors):
        
-        self.__simulation = None
+        self.__simInstance = simulation
         
         self.__connectedPeers = {}
         self.__advertisedPeers = []
         self.__layout = {} 
+        self.__peers = peers
+        self.__newPeerTime = newPeerTime
+        self.__neighbors = neighbors
+        Logger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(peers,newPeerTime,neighbors))
     
     @public
     def getSimulation(self):
-        return self.__simulation
+        return self.__simInstance
     
     @public
     def setSimulation(self, simulation):
-        self.__simulation = simulation
-        return self.__simulation
+        self.__simInstance = simulation
+        return self.__simInstance
     
     @public
     def getLayout(self):

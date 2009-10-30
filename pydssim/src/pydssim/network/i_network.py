@@ -1,4 +1,5 @@
 from pydssim.util.interface import Interface
+from pydssim.util.decorator.public import public
 
 class INetwork(object):
     

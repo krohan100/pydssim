@@ -16,8 +16,8 @@ class BeginSimulationProcess(AbstractSimulationProcess):
     @since: 6/07/2009
     """
 
-    def __init__(self):
-        AbstractSimulationProcess.initialize(self, "BEGIN_SIMULATION")
+    def __init__(self,simInstance=None):
+        AbstractSimulationProcess.initialize(self, "BEGIN_SIMULATION",simInstance)
     
     def execute(self):
         return AbstractSimulationProcess.execute(self)

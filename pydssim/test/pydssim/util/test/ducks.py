@@ -131,6 +131,10 @@ class DuckFactory( Process ):
             self.name = duck_name
             d = Duck( duck_name, self.sim )
             yield hold, self, random()*2000
+       
+            
+              colocar na redde
+          
             yield put, self, self.duckflock, [d]
 
 
