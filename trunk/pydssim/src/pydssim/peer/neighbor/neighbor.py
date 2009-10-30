@@ -1,6 +1,7 @@
 from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public, createURN
 from pydssim.util.logger import Logger
+from pydssim.peer.neighbor.i_neighbor import INeighbor
 
 
 class Neighbor(Protected,INeighbor):

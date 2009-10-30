@@ -57,21 +57,21 @@ class ISimulation(object):
         """
         raise NotImplementedError()
     
-    def setNetwork(self, peerToPeerNetwork):
+    def setNetwork(self, Network):
         """
-        Sets a peer-to-peer network object.
-        @param peerToPeerNetwork: an IPeerToPeerNetwork
-        @type peerToPeerNetwork: IPeerToPeerNetwork
-        @return: an IPeerToPeerNetwork
-        @rtype: IPeerToPeerNetwork
+        Sets a  network object.
+        @param Network: an INetwork
+        @type Network: INetwork
+        @return: an INetwork
+        @rtype: INetwork
         """
         raise NotImplementedError()
     
     def getNetwork(self):
         """
         Gets a peer-to-peer network object.
-        @return: an IPeerToPeerNetwork
-        @rtype: IPeerToPeerNetwork
+        @return: an INetwork
+        @rtype: INetwork
         """
         raise NotImplementedError()
     
@@ -106,19 +106,19 @@ class ISimulation(object):
     
     
     
-    def SimulationProcessFactory(self, simulationEventGenerator):
+    def addSimulationProcessFactory(self, simulationProcessFactory):
         """
         Adds a simulation event generator.
-        @param simulationEventGenerator: an ISimulationEventGenerator
+        @param simulationEventGenerator: an ISimulationProcessFactory
         @return: a ISimulationEventGenerator
         @rtype: ISimulationEventGenerator
         """
         raise NotImplementedError()
     
-    def removeSimulationProcessFactory(self, simulationEventGenerator):
+    def removeSimulationProcessFactory(self, simulationProcessFactory):
         """
-        Removes a simulation event generator.
-        @param simulationEventGenerator: an ISimulationEventGenerator
+        Removes a simulation Process Factorys.
+        @param simulationEventGenerator: an ISimulationProcessFactory
         @return: a ISimulationEventGenerator
         @rtype: ISimulationEventGenerator
         """
@@ -126,7 +126,7 @@ class ISimulation(object):
     
     def getSimulationProcessFactorys(self):
         """
-        Gets a list of simulation event generators.
+        Gets a list of simulation Process Factoryss.
         @return: a list
         @rtype: list
         """
@@ -134,9 +134,16 @@ class ISimulation(object):
     
     def countSimulationProcessFactorys(self):
         """
-        Counts simulation event generators.
+        Counts simulation Process Factoryss.
         @return: a int
         @rtype: int
         """
         raise NotImplementedError()
     
+    def initializeNetwork(self ,peers ,newPeerTime):
+        """
+        create network.
+        @return: a int
+        @rtype: int
+        """
+        raise NotImplementedError()
