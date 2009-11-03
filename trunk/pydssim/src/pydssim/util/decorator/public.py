@@ -7,6 +7,7 @@ Created on 22/08/2009
 import uuid
 
 
+
 def public(f):
     '''
     Decorator used to assign the attribute __public__ to methods.
@@ -20,5 +21,8 @@ def createURN(type):
     '''
     Create URN.
     '''
+    
+    
+   
     urn = "urn:"+type+":id:"+uuid.uuid1().__str__()
     return urn

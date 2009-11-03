@@ -12,7 +12,7 @@ class INetwork(object):
     def getSimulation(self):
         raise NotImplementedError()
     
-    def setSimulation(self, simulation):
+    def setSimulation(self, simInstance):
         raise NotImplementedError()
     
     def countPeers(self):

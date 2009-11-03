@@ -8,7 +8,7 @@ from pydssim.simulation.process.abstract_simulation_process import AbstractSimul
 from pydssim.util.decorator.public import public
 from pydssim.util.logger import Logger
 
-class BeginSimulationProcess(AbstractSimulationProcess):
+class NewPeersSimulationProcess(AbstractSimulationProcess):
     """
     Defines the implementation of BeginSimulationProcess
     @author: Luiz Gustavo 
@@ -18,7 +18,7 @@ class BeginSimulationProcess(AbstractSimulationProcess):
     """
 
     def __init__(self,simInstance=None):
-        AbstractSimulationProcess.initialize(self, "BEGIN_SIMULATION_PROCESS",simInstance)
+        AbstractSimulationProcess.initialize(self, "NEW PEERS SIMULATION PROCESS",simInstance)
         
     @public
     def start(self):
@@ -26,6 +26,3 @@ class BeginSimulationProcess(AbstractSimulationProcess):
         Logger().resgiterLoggingInfo("Start %s"%self.getIdentifier())
         
         return 
-    
-    
-        

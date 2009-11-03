@@ -30,7 +30,15 @@ class ISimulationProcessFactory(object):
         """
         raise NotImplementedError()
     
-    def setSimulation(self, simulation):
+    def getName(self):
+        """
+        Gets a simulation object.
+        @return: an ISimulation
+        @rtype: ISimulation
+        """
+        raise NotImplementedError()
+    
+    def setSimulation(self, simInstance):
         """
         Sets a simulation object.
         @param simulation: an ISimulation

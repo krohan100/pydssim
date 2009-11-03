@@ -8,7 +8,7 @@ COLOCAR PARA LE DE ARQUIVO YAAM
 '''
 
 from pydssim.util.protected import Protected
-from pydssim.util.decorator.public import public
+from pydssim.util.decorator.public import public, createURN
 import uuid
 
 class AbstractResource():
@@ -24,7 +24,7 @@ class AbstractResource():
     
     def initialize(self, peer,resource, description='',availabity=True,period={}):
       
-        self.__uuid = uuid.uuid1()
+        self.__uuid = createURN(description)#uuid.uuid1()
         self.__resource = resource
         self.__description = description
         self.__peer = peer

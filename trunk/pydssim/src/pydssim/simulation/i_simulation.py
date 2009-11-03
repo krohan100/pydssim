@@ -18,12 +18,17 @@ class ISimulation(object):
     def __init__(self):
         raise NotImplementedError()
     
-    def execute(self):
+    def start(self):
         """
         Executes the simulation.
         @rtype: NoneType
         """
         raise NotImplementedError()
+    
+    
+    
+    def initializeNetwork(self, peers ,newPeerTime ,neighbors):
+        raise NotImplementedError() 
     
     def configure(self):
         """
@@ -96,7 +101,7 @@ class ISimulation(object):
     
    
     
-    def getSimulation(self):
+    def getSimInstance(self):
         """
         Sets a simulator.
         @return: an ISimulator

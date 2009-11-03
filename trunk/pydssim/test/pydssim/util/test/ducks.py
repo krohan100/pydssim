@@ -133,7 +133,7 @@ class DuckFactory( Process ):
             yield hold, self, random()*2000
        
             
-              colocar na redde
+              #colocar na redde
           
             yield put, self, self.duckflock, [d]
 
@@ -141,7 +141,7 @@ class DuckFactory( Process ):
 
 if __name__ == '__main__':
 
-    simUntil = 5000000
+    simUntil = 50000
     hunter_ammo = 180
     hunter_accuracy_decile = 5 # municao
     hunter_switch_target = 2
@@ -154,4 +154,5 @@ if __name__ == '__main__':
     mySim.activate( h, h.shoot() )
     mySim.activate( k, k.shoot() )
     mySim.simulate( until = simUntil )
+ 
 

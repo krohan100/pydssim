@@ -7,7 +7,7 @@ from sets import ImmutableSet
 from multiprocessing import Semaphore
 from pydssim.peer.neighbor.neighbor import Neighbor
 from pydssim.util.logger import Logger
-from SimPy.Simulation import Store
+
 
 
 
@@ -20,13 +20,13 @@ class AbstractNetwork(Protected):
     @contact: lglmoura@cos.ufrj.br 
     @since: 22/08/2009
     """
-
+ 
     def __init__(self):
         raise NotImplementedError()
     
     def initialize(self, simulation, peers , newPeerTime, neighbors):
        
-        self.__simInstance = simulation
+        self.__simulation = simulation
         
         self.__connectedPeers = {}
         self.__advertisedPeers = []
@@ -38,12 +38,20 @@ class AbstractNetwork(Protected):
     
     @public
     def getSimulation(self):
-        return self.__simInstance
+        return self.__simulation
     
     @public
     def setSimulation(self, simulation):
-        self.__simInstance = simulation
-        return self.__simInstance
+        self.__simulation = simulation
+        return self.__simulation
+    
+    @public
+    def getPeers(self):
+        return self.__peers
+    
+    @public
+    def getNewPeerTime(self):
+        return self.__newPeerTime
     
     @public
     def getLayout(self):
@@ -65,22 +73,23 @@ class AbstractNetwork(Protected):
     @public
     def addPeer(self, peer):
         
-        if self.__layout.has_key(peer.getId()):
+        if self.__layout.has_key(peer.getPID()):
             return False
         
         semaphore = Semaphore()
         semaphore.acquire()
         
-        self.__layout[peer.getId()] = peer
+        self.__layout[peer.getPID()] = peer
         semaphore.release()
-        return self.__layout.has_key(peer.getId())
+        Logger().resgiterLoggingInfo("Add peer %s in Layout Network "%(peer.getPID()))
+        return self.__layout.has_key(peer.getPID())
 
     @public
     def removePeer(self, peer):
         
         flag = True
         
-        if not self.__layout.has_key(peer.getId()):
+        if not self.__layout.has_key(peer.getPID()):
             return False
         
         semaphore = Semaphore()
@@ -89,16 +98,16 @@ class AbstractNetwork(Protected):
         '''
         pode travar  pois estou chamando um sema dentro do outro?
         '''
-        neighbors = peer.getNeighbors()  
+        neighbors = peer.getPID().getNeighbors()  
         
         if  len(neighbors) != 0:
             for target in  neighbors:
-                self.removeNeighbor(peer, target) 
+                self.removeNeighbor(peer.getPID(), target) 
         
-        del self.__layout[peer.getId()]
-        del self.__connectedPeers[peer.getId()]
+        del self.__layout[peer.getPID().getId()]
+        del self.__connectedPeers[peer.getPID()]
         
-        flag = not self.__layout.has_key(peer.getId())
+        flag = not self.__layout.has_key(peer.getPID())
         semaphore.release()
         
         return flag
