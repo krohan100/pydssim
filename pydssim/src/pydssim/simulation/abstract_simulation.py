@@ -40,6 +40,11 @@ class AbstractSimulation(Protected, ISimulation):
         self.__simulationProcessFactory = []
         Logger().resgiterLoggingInfo("Create Simulation ")
 
+    
+    @public
+    def initializeNetwork(self, peers ,newPeerTime ,neighbors):
+        raise NotImplementedError() 
+
     @public
     def addSimulationProcessFactory(self, simulationProcessFactory):
        
@@ -47,6 +52,8 @@ class AbstractSimulation(Protected, ISimulation):
             return None
         self.__simulationProcessFactory.append(simulationProcessFactory)
         simulationProcessFactory.setSimulation(self)
+        simulationProcessFactory.initializeProcess()
+        
         return self.__simulationProcessFactory[self.__simulationProcessFactory.index(simulationProcessFactory)]
 
     @public
@@ -67,17 +74,11 @@ class AbstractSimulation(Protected, ISimulation):
     
     @public    
     def configure(self):
-        
-        factoryProcess = 0
-        for factory in self.__simulationProcessFactory:
-            factoryProcess += factory.factorySimulationProcess()
-        return factoryProcess
+        raise NotImplementedError()
     
-   
     @public    
     def getNetwork(self):
         return self.__network
-    
     
     @public
     def setNetwork(self, network):
@@ -114,13 +115,23 @@ class AbstractSimulation(Protected, ISimulation):
         return self.__currentSimulationTime
     
     @public
-    def getSimulation(self):
+    def getSimInstance(self):
         return self.__simInstance
     
         
     @public
-    def execute(self):
-        raise NotImplementedError()
+    def start(self):
+        mySim = self.getSimInstance()
+        
+        factoryProcess = 0
+        for factory in self.__simulationProcessFactory:
+            print factory.getName()
+            mySim.activate( factory, factory.factorySimulationProcess() ) 
+            factoryProcess +=1
+            
+            
+        mySim.simulate( until = self.getSimulationTime() )    
+        return factoryProcess
        
     
     @public
@@ -129,12 +140,12 @@ class AbstractSimulation(Protected, ISimulation):
        
     
     
-    simulation = property(getSimulation, None, None, None)
+    simInstance = property(getSimInstance, None, None, None)
    
     simulationTime = property(getSimulationTime, setSimulationTime, None, None)
     
     currentSimulationTime = property(getCurrentSimulationTime, setCurrentSimulationTime, None, None)
    
-    Network = property(getNetwork, setNetwork, None, None)
+    network = property(getNetwork, setNetwork, None, None)
     
     

@@ -10,7 +10,7 @@ import uuid
 class Service(AbstractResource):
     
     
-    def __init__(self,pid=uuid.uuid1() ,resource='',description='Service',availabity=True,period={}):
+    def __init__(self,pid ,resource='',description='service',availabity=True,period={}):
         '''
         Constructor
         '''

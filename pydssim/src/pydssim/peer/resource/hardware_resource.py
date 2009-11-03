@@ -14,7 +14,7 @@ class Hardware(AbstractResource):
     classdocs
     '''
 
-    def __init__(self,pid=uuid.uuid1() ,resource='',size= randint(1,100000),sharePercente = randint(10,90),description='Hardware',availabity=True,period={}):
+    def __init__(self,pid ,resource='',size= randint(1,100000),sharePercente = randint(10,90),description='hardware',availabity=True,period={}):
         '''
         Constructor
         '''

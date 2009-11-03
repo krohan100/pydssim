@@ -10,7 +10,7 @@ COLOCAR PARA LE DE ARQUIVO YAAM
  
 class ServiceMap(object):
     def Map(self, resource):
-        print "****** Service *******"
+        #print "****** Service *******"
         mapping = {}
         mapping["design"] = ["inspiration", "webdesign", "web", "blog", "art", "portfolio", "illustration", "typography", "photoshop", "graphic", "graphics"]
         mapping["blog"] = ["design", "inspiration", "music", "art", "web2.0", "webdesign", "blogs", "photography", "wordpress", "web", "news"]
@@ -29,7 +29,7 @@ class ServiceMap(object):
 
 class HardwareMap(object):
     def Map(self, resource):
-        print "****** Hardware *********"
+        #print "****** Hardware *********"
         
         mapping = {}
         mapping["io"] = ["hd", "dvd", "cdrom", "flash", "floppy"]

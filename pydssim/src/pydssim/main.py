@@ -13,6 +13,7 @@ from pydssim.peer.resource.hardware_resource import Hardware
 from pydssim.peer.resource.abstract_resource import AbstractResource
 from pydssim.peer.resource.service_resource import Service
 from pydssim.peer.repository.service_repository import ServiceRepository
+from pydssim.util.decorator.public import public, createURN
 from pydssim.util.protected import Protected
 import uuid
 
@@ -41,17 +42,17 @@ def get(tam=3):
         print 'id %d conce %s initial %d End %d' % (i,concept,initial,end)  
         
         for ix in range(initial, end):
-            service = optionClass[option](resource=map[concept][ix])
+            service = optionClass[option](pid=createURN("peer"),resource=map[concept][ix])
                         
             print service.getUUID(),service.getResource()
             #print map[concept][ix] 
 
-def get2(tam=3):    
+def get2(tam=5):    
     optionMap   = [ServiceMap(),HardwareMap()]
     optionClass = [Service,Hardware]
    
     
-    for i in range(1,randint(1,tam)):
+    for i in range(0,randint(1,tam)):
         option = randint(0,1)
         resourceMap = ResourceMap(optionMap[option])
      
@@ -63,16 +64,21 @@ def get2(tam=3):
               
         print 'id %d conce %s resour %d rrr %s' % (i,concept,resour,map[concept][resour])  
                 
-        service = optionClass[option](resource=map[concept][resour])
+        service = optionClass[option](pid=createURN("peer"),resource=map[concept][resour])
                     
         #print service.getUUID(),service.getResource(),service.testedemetodo()
-            #print map[concept][ix]
+        #print map[concept][ix]
             
              
 if __name__ == '__main__':
     
+    get2(7)
     
-    print createURN("peer"),[teste(t4="teste4")]
+    
+   
+    '''
+        
+    print createURN("peer"),[teste(t4="teste4")]    
     t1 = {10:11,20:21}
     t1[30]=31
     t1[40]=41
@@ -85,5 +91,8 @@ if __name__ == '__main__':
         print h
     
     
-    print "tam", len(t1.values())    
+    print "tam", len(t1.values())
+    
+    '''
+        
   

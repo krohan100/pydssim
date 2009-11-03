@@ -9,17 +9,23 @@ Defines the module with objective the implementation of AbstractPeer class.
 
 from pydssim.util.protected import Protected
 from pydssim.peer.i_peer import IPeer
-from pydssim.util.decorator.public import public
+from pydssim.util.decorator.public import public, createURN
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from pydssim.peer.repository.shared_recource_repository import SharedRecourceRepository
-from pydssim.peer.repository.unshared_recource_repository import UnSharedRecourceRepository
+from pydssim.peer.repository.history_repository import HistoryRepository
 from sets import ImmutableSet
-
-#from pydssim.peer.i_peer import IPeer
+from pydssim.util.logger import Logger
 from random import randint
-#from pysocialsim.p2p.message.message_manager import MessageManager
+from pydssim.util.resource_maps import *
+from pydssim.peer.resource.hardware_resource import Hardware 
+from pydssim.peer.resource.abstract_resource import AbstractResource
+from pydssim.peer.resource.service_resource import Service
+
+
+from random import randint
+
 
 class AbstractPeer(Protected,IPeer):
     
@@ -27,20 +33,21 @@ class AbstractPeer(Protected,IPeer):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, pid, type, network):
+    def initialize(self,  network,pid):
         self.__pid = pid
         self.__network = network
-        self.__type = type
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
         self.__services = ServiceRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
-        self.__unSharedResource = UnSharedRecourceRepository(self)
+        self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
         self.__connectionTime = 0
         self.__neighbors = {}
         self.__disconnectionTime = 0
         self.__scheduledDisconnection = False
+        
+        Logger().resgiterLoggingInfo("Initialize Peer => pid  = %s "%(pid))
         
         
     @public
@@ -204,11 +211,51 @@ class AbstractPeer(Protected,IPeer):
         return self.__sharedResource
     
     @public
-    def getUnSharedResource(self):    
-        return self.__unSharedResource
+    def getHistoryResource(self):    
+        return self.__historyResource
     @public
     def getEquivalences(self):
         return self.__equivalences
     
-    
-    
+    @public
+    def createServices(self,tam=7):
+        optionMap   = [ServiceMap(),HardwareMap()]
+        optionClass = [Service,Hardware]
+       
+        
+        for i in range(0,randint(1,tam)):
+            option = randint(0,1)
+            resourceMap = ResourceMap(optionMap[option])
+         
+            map = resourceMap.Map()
+            
+            concept = map.keys()[randint(0, len(map.keys()) - 1)]
+            resour  = randint(0, (len(map[concept]) - 1))
+                    
+            service = optionClass[option](pid=createURN("peer"),resource=map[concept][resour])
+            self.__services.addElement(service)
+        
+        self.createSharedRecource()
+        
+   
+   
+    def createSharedRecource(self):
+         for i in range(0,self.getServices().countElements()):
+             
+            numEle =self.getServices().countElements()
+            initial = randint(0, numEle/2 - 1)
+            if initial == 0:
+                initial =1çll
+            end = randint(numEle/2, numEle - 1)
+                  
+            ix = 0
+            for key in self.getServices().getElements().keys():
+                
+                if ix < initial:
+                    continue
+                if ix > end:
+                    break 
+                
+                self.getSharedResource().addElement(self.getServices().getElements()[key])
+                
+                

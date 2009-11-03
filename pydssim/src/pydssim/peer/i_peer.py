@@ -19,7 +19,7 @@ class IPeer(object):
     def __init__(self):
         raise NotImplementedError()
     
-    def getId(self):
+    def getPID(self):
         raise NotImplementedError()
     
     def isConnected(self):

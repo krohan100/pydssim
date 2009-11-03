@@ -3,6 +3,7 @@ from pydssim.peer.i_peer import IPeer
 from pydssim.util.decorator.public import public
 from pydssim.util.decorator.return_type import return_type
 from sets import ImmutableSet
+from pydssim.util.logger import Logger
 
 class AbstractRepository(Protected):
     
@@ -12,6 +13,7 @@ class AbstractRepository(Protected):
     def initialize(self, peer):
         self.__peer = peer
         self.__elements = {}
+        Logger().resgiterLoggingInfo("Initialize Repository pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getPID()))
         
     
     @public
@@ -20,6 +22,7 @@ class AbstractRepository(Protected):
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
+        Logger().resgiterLoggingInfo("Add Service %s - %s in Repository pid  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getPID()))
         return element
     
     @public
@@ -33,7 +36,6 @@ class AbstractRepository(Protected):
         return element
     
     @public
-    @return_type(int)
     def countElements(self):
         return len(self.__elements)
     

@@ -26,6 +26,7 @@ class Widget(Lister):
 
 widgbuf=[]
 for i in range(10):
+    
     widgbuf.append(Widget(5))
 
 initialize()
@@ -38,7 +39,7 @@ for i in range(3):       # define and activate 3 consumer objects
     c=ConsumerD()
     activate(c,c.consume())
 
-simulate(until=50)
+simulate(until=150)
 
 print 'LenBuffer:',buf.bufferMon     # length of buffer
 print 'getQ:',buf.getQMon            # length of getQ

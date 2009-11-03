@@ -10,6 +10,7 @@ from pydssim.util.protected import Protected
 from pydssim.simulation.process.i_simulation_process import ISimulationProcess
 from pydssim.util.decorator.public import public
 from SimPy.Simulation import Process
+from pydssim.util.logger import Logger
 
 class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
     """
@@ -43,6 +44,7 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
         self.__peer = peer
         self.__priority = priority
         self.__isIdentified = False
+        Logger().resgiterLoggingInfo("Initialize Simulation Process => %s"%self.__identifier)
     
     @public
     def getIdentifier(self):
@@ -64,10 +66,11 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
     def isIdentified(self):
         return self.__isIdentified
     
-    def execute(self):
+   
+    def start(self):
         """
-        Template method to implement specific algorithm for handling a given simulation event.
-        This method must be implemented in AbstractSimulationEventHandler subclasses.
+        Template method to implement specific algorithm for handling a given simulation process.
+        
         @note: The visibility of this operation is protected.
         @rtype: NoneType
         """

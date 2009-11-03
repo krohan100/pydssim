@@ -10,6 +10,9 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
 from pydssim.util.decorator.public import public
 from pydssim.simulation.process.begin_simulation_process import BeginSimulationProcess
+from pydssim.util.logger import Logger
+from SimPy.Simulation import *
+
 
 class BeginSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
@@ -20,13 +23,16 @@ class BeginSimulationProcessFactory(AbstractSimulationProcessFactory):
     @since: 28/10/2009
     """
 
-    def __init__(self,simInstance=None):
-        AbstractSimulationProcessFactory.initialize(self,"Begin Simulation Process Factory",simInstance)
+    def __init__(self):
+        AbstractSimulationProcessFactory.initialize(self,"BEGIN SIMULATION PROCESS FACTORY")
         
     
     @public
     def factorySimulationProcess(self):
-        simulation = self.getSimulation()
-        event = BeginSimulationProcess()
-        simulation.registerSimulationEvent(event)
-        return 1
+        
+        Logger().resgiterLoggingInfo("Factoring Process %s"%self.getName())
+        yield hold, self, 1
+        process = BeginSimulationProcess()
+        process.start()
+        
+       

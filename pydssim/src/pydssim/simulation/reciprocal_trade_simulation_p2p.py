@@ -18,4 +18,4 @@ class ReciprocalTradeSimulationP2P(AbstractSimulation):
         
     @public
     def initializeNetwork(self, peers ,newPeerTime ,neighbors):
-        self.__network = P2PNetwork(self, peers, newPeerTime,neighbors)
+        self.setNetwork( P2PNetwork(self, peers, newPeerTime,neighbors))
