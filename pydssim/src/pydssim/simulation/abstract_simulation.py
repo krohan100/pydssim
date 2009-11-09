@@ -38,6 +38,7 @@ class AbstractSimulation(Protected, ISimulation):
         self.__currentSimulationTime = 0
         self.__network = None
         self.__simulationProcessFactory = []
+        self.__resourcePeer = 0
         Logger().resgiterLoggingInfo("Create Simulation ")
 
     
@@ -96,6 +97,16 @@ class AbstractSimulation(Protected, ISimulation):
         
         self.__simulationTime = simulationTime
         return self.__simulationTime
+    
+    @public    
+    def getResourcePeer(self):
+        return self.__resourcePeer
+
+    @public
+    def setResourcePeer(self, resourcePeer):
+        
+        self.__resourcePeer = resourcePeer
+        return self.__resourcePeer
     
     @public
     def getCurrentSimulationTime(self):

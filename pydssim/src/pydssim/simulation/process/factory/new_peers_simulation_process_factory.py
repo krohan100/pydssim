@@ -43,11 +43,11 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             Logger().resgiterLoggingInfo(logMsg)
             #print logMsg
             peer = DefaultPeer(network,pid)
-            peer.createServices(7)
+            peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
             
           
-            yield hold, self, random()*simulation.getNetwork().getNewPeerTime() 
+            yield hold, self, simulation.getNetwork().getNewPeerTime()#*random() 
             
         #process = NewPeersSimulationProcess()
         #process.start()

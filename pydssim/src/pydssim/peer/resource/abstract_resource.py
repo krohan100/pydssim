@@ -24,7 +24,7 @@ class AbstractResource():
     
     def initialize(self, peer,resource, description='',availabity=True,period={}):
       
-        self.__uuid = createURN(description)#uuid.uuid1()
+        self.__uuid = createURN(description)
         self.__resource = resource
         self.__description = description
         self.__peer = peer

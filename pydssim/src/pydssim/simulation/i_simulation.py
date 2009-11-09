@@ -152,3 +152,12 @@ class ISimulation(object):
         @rtype: int
         """
         raise NotImplementedError()
+    
+     
+    def getResourcePeer(self):
+        raise NotImplementedError()
+
+    
+    def setResourcePeer(self, resourcePeer):
+        
+        raise NotImplementedError()

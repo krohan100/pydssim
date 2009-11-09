@@ -235,8 +235,10 @@ class AbstractPeer(Protected,IPeer):
             service = optionClass[option](pid=createURN("peer"),resource=map[concept][resour])
             self.__services.addElement(service)
         
-        self.createSharedRecource()
+       
         
+   
+    '''
    
    
     def createSharedRecource(self):
@@ -245,7 +247,7 @@ class AbstractPeer(Protected,IPeer):
             numEle =self.getServices().countElements()
             initial = randint(0, numEle/2 - 1)
             if initial == 0:
-                initial =1çll
+                initial =1
             end = randint(numEle/2, numEle - 1)
                   
             ix = 0
@@ -257,5 +259,8 @@ class AbstractPeer(Protected,IPeer):
                     break 
                 
                 self.getSharedResource().addElement(self.getServices().getElements()[key])
+                
+    '''
+                
                 
                 
