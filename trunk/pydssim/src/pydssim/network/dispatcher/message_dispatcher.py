@@ -1,6 +1,7 @@
 from pydssim.util.protected import Protected
 from pydssim.util.decorator.public import public
 from threading import Thread
+from pydssim.util.logger import Logger
 
 class MessageDispatcher(Protected):
     
@@ -10,6 +11,7 @@ class MessageDispatcher(Protected):
     def initialize(self, peer):
         self.__peer = peer
         self.__messageHandlers = {}
+        Logger().resgiterLoggingInfo("Initialize Repository pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getPID()))
     
     @public
     def registerMessageHandler(self, messageHandler):

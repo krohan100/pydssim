@@ -1,10 +1,17 @@
-from pydssim.util.protected import Protected
-from pydssim.util.decorator.require import require
+"""
+Defines the module with the implementation IMessage class.
+
+@author: Luiz Gustavo 
+@organization: Federal University of Rio de Janeiro
+@contact: lglmoura@cos.ufrj.br 
+@since: 28/10/2009
+"""
+
 from pydssim.util.decorator.public import public
-from pydssim.util.decorator.return_type import return_type
+from pydssim.network.message.i_message import IMessage
 from sets import ImmutableSet
 
-class AbstractMessage(Object):
+class AbstractMessage(Object,IMessage):
     
     def __init__(self):
         raise NotImplementedError()
@@ -13,8 +20,8 @@ class AbstractMessage(Object):
         
         self.__id = id
         self.__type = type # name for type
-        self.__sourceId = source.getPID()
-        self.__targetId = targetId.getPID()
+        self.__source = source
+        self.__target = targetId
         self.__ttl = ttl
         self.__traces = []
         self.__isHandled = False
@@ -23,26 +30,25 @@ class AbstractMessage(Object):
         self.__parameters = {}
     
     @public
-    def getSourceId(self):
-        return self.__sourceId
+    def getSource(self):
+        return self.__source
     
     @public
-    def getTargetId(self):
-        return self.__targetId
+    def getTarget(self):
+        return self.__target
     
     @public
     def getTTL(self):
         return self.__ttl
     
     @public
-    def registerTrace(self, id):
+    def registerTrace(self, peer):
         if isinstance(id, bool):
             raise TypeError()
-        self.__traces.append(id)
-        return id
+        self.__traces.append(peer)
+        return peer
     
     @public
-    @return_type(int)
     def unregisterTrace(self):
         if len(self.__traces) == 0:
             raise StandardError()
@@ -50,30 +56,24 @@ class AbstractMessage(Object):
         
     
     @public
-    @return_type(int)
     def countTraces(self):
         return len(self.__traces)
     
     @public
-    @return_type(int)
-    @require("index", int)
     def getTrace(self, index):
         return self.__traces[index]
     
     @public
-    @return_type(list)
     def getTraces(self):
         return self.__traces
     
     @public
-    @return_type(int)
     def getFirstTrace(self):
         if len(self.__traces) == 0:
             raise StandardError()
         return self.__traces[0]
     
     @public
-    @return_type(int)
     def getLastTrace(self):
         if len(self.__traces) == 0:
             raise StandardError()
@@ -81,83 +81,63 @@ class AbstractMessage(Object):
         return self.__traces[len(self.__traces) - 1]
     
     @public
-    @return_type(str)
     def getType(self):
         return self.__type
     
     @public
-    @return_type(bool)
     def handled(self):
         self.__isHandled = True
         return self.__isHandled
     
     @public
-    @return_type(bool)
     def isHandled(self):
         return self.__isHandled
     
     @public
-    @return_type(int)
-    @require("hop", int)
     def setHop(self, hop):
         self.__hop = hop
         return self.__hop
         
     @public
-    @return_type(int)
     def getHop(self):
         return self.__hop
     
     @public
-    @return_type(int)
-    @require("sourceId", int)
-    def setSourceId(self, sourceId):
-        self.__sourceId = sourceId
+    def setSource(self, source):
+        self.__source = source
     
     @public
-    @return_type(int)
-    @require("targetId", int)
-    def setTargetId(self, targetId):
-        self.__targetId = targetId
+    def setTargetId(self, target):
+        self.__target = target
         
     @public    
     def clone(self):
         raise NotImplementedError()
     
     @public
-    @return_type(object)
-    @require("name", str)
-    @require("value", object)
     def setParameter(self, name, value):
         self.__parameters[name] = value
         return self.__parameters[name]
         
     @public
-    @return_type(object)
-    @require("name", str)
     def getParameter(self, name):
         return self.__parameters[name]
     
     @public
-    @return_type(object)
-    @require("name", str)
     def removeParameter(self, name):
         value = self.__parameters[name]
         del self.__parameters[name]
         return value
         
     @public
-    @return_type(int)
     def getId(self):
         return self.__id
     
     @public
-    @return_type(int)
     def countParameters(self):
         return len(self.__parameters)
     
     @public
-    @return_type(int)
     def getPriority(self):
         return self.__priority
     
