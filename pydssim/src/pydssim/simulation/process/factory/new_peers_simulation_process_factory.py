@@ -39,7 +39,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             peer_number+=1 
             
             pid = "urn:peer:id:"+uuid.uuid1().__str__()
-            logMsg = "Factoring Process %s => Simulation Time %10.2f making peer: %s" % (self.getName(),simulation.getSimInstance().now() , pid) 
+            logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, pid) 
             Logger().resgiterLoggingInfo(logMsg)
             #print logMsg
             peer = DefaultPeer(network,pid)
@@ -47,9 +47,8 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             network.addPeer(peer)
             
           
-            yield hold, self, simulation.getNetwork().getNewPeerTime()#*random() 
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random() 
             
-        #process = NewPeersSimulationProcess()
-        #process.start()
+       
             
       

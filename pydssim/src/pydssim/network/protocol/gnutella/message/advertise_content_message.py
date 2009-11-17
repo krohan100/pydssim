@@ -3,12 +3,12 @@ from pydssim.util.decorator.public import public
 
 class AdvertiseContentMessage(AbstractMessage):
     
-    def __init__(self, id, sourceId, targetId, ttl, priority):
-        self.initialize("ADVERTISE_CONTENT", id, sourceId, targetId, ttl, priority)
+    def __init__(self, id, source, target, ttl, priority):
+        self.initialize("ADVERTISE_CONTENT", id, source, target, ttl, priority)
     
     @public
     def clone(self):
-        message = AdvertiseContentMessage(self.getId(), self.getSourceId(), self.getTargetId(), self.getTTL(), self.getPriority())
+        message = AdvertiseContentMessage(self.getId(), self.getSource(), self.getTarget(), self.getTTL(), self.getPriority())
         message.setHop(self.getHop())
         for id in self.getTraces():
             message.registerTrace(id)
