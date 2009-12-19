@@ -7,7 +7,7 @@ Defines the module with Imessage class.
 @since: 28/10/2009
 """
 class IMessage(object):
-     chord
+     
     ADVERTISEMENT = 0
     QUERY = 1
     SERVICE = 2
@@ -83,15 +83,15 @@ class IMessage(object):
     def init(self, id, source, target, ttl, priority):
         """
         Initializes peer-to-peer messages.
-        @param id: the identifier of peer-to-peer message
+        @param id: the identifier of  message
         
-        @param source: source  of peer-to-peer message
+        @param source: source  of message
        
-        @param targetId: target  of peer-to-peer message
+        @param targetId: target  of  message
        
-        @param ttl: time-to-live of peer-to-peer message
+        @param ttl: time-to-live of  message
        
-        @param priority: priority of peer-to-peer message
+        @param priority: priority of  message
         
         """
         raise NotImplementedError()
