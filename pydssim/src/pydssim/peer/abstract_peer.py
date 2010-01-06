@@ -7,6 +7,12 @@ Defines the module with objective the implementation of AbstractPeer class.
 @since: 20/08/2009
 """
 
+import hashlib
+
+from twisted.internet import defer
+
+from pydssim.network.protocol.dht.dht_peer import DHTPeer
+
 from pydssim.util.protected import Protected
 from pydssim.peer.i_peer import IPeer
 from pydssim.util.decorator.public import public, createURN
@@ -26,6 +32,22 @@ from pydssim.peer.resource.service_resource import Service
 
 from random import randint
 
+def createPeer(udpport=4000,ipaddress=None,startport=None):
+        
+        import sys, os
+        
+        if ipaddress != None:
+            knownPeers = [(ipaddress, startport)]
+            
+        else:
+            knownPeers = None
+    
+        #print knownPeers, port
+        peer = DHTPeer(udpPort=udpport)
+        
+        #peer.joinNetwork(knownPeers)
+        return peer
+        
 
 class AbstractPeer(Protected,IPeer):
     
@@ -33,8 +55,17 @@ class AbstractPeer(Protected,IPeer):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self,  network,pid):
-        self.__pid = pid
+    
+    
+    
+    def initialize(self,  network,urn, udpPort=4000):
+        
+        self.__dhtPeer = DHTPeer(udpPort=udpPort) #DHTPeer(udpPort=udpport)createPeer(udpPort)
+        self.invalidKeywords = []
+        self.keywordSplitters = ['_', '.', '/']
+        self.__urn = urn
+        self.__pid = self.__dhtPeer.id
+        
         self.__network = network
         self.__isConnected = False
         self.__dispatcher = MessageDispatcher(self)
@@ -47,18 +78,25 @@ class AbstractPeer(Protected,IPeer):
         self.__disconnectionTime = 0
         self.__scheduledDisconnection = False
         
-        Logger().resgiterLoggingInfo("Initialize Peer => pid  = %s "%(pid))
+        Logger().resgiterLoggingInfo("Initialize Peer => pid  = %s end URN = %s"%(id,urn))
         
-        
+   
     @public
     def getPID(self):
         return self.__pid
     
     @public
+    def getDHTPeer(self):
+        return self.__dhtPeer
+    
+    @public
+    def getURN(self):
+        return self.__urn
+    
+    @public
     def getType(self):
         return self.__type
     
-   
     
     @public
     def input(self,  data):

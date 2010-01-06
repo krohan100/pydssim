@@ -11,7 +11,7 @@ from twisted.internet import defer
 import constant_variable
 import abstract_router_table
 from pydssim.network.protocol.dht.kademlia.default_router_table import DefaultRouterTable
-import i_datastore
+import pydssim.network.protocol.dht.kademlia.datastore.i_datastore
 
 from pydssim.network.protocol.dht.kademlia.kademlia_protocol import KademliaProtocol 
 from pydssim.network.protocol.dht.kademlia.time_error_protocol import TimeoutErrorProtocol 
@@ -106,6 +106,9 @@ class Peer(object):
     def __del__(self):
         self._persistState()
         self._listeningPort.stopListening()
+        
+    def getID(self):
+        return self.id
 
     def joinNetwork(self, knownPeerAddresses=None):
         """ Causes the Peer to join the Kademlia network; normally, this
@@ -118,6 +121,7 @@ class Peer(object):
         @type knownPeerAddresses: tuple
         """
         # Prepare the underlying Kademlia protocol
+       
         self._listeningPort = twisted.internet.reactor.listenUDP(self.port, self._protocol)
         # Create temporary neighbor information for the list of addresses of known peers
        
