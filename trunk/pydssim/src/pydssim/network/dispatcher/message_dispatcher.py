@@ -11,7 +11,7 @@ class MessageDispatcher(Protected):
     def initialize(self, peer):
         self.__peer = peer
         self.__messageHandlers = {}
-        Logger().resgiterLoggingInfo("Initialize Repository pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getPID()))
+        Logger().resgiterLoggingInfo("Initialize Repository pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
     
     @public
     def registerMessageHandler(self, messageHandler):

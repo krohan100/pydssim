@@ -19,9 +19,9 @@ class DefaultPeer(AbstractPeer):
     @since: 22/08/2009
     """
 
-    def __init__(self,network, pid=createURN("peer")):
+    def __init__(self,network, pid=createURN("peer"),udpPort=4000):
         
-        AbstractPeer.initialize(self,  network, pid)
+        AbstractPeer.initialize(self,  network, pid,udpPort)
     
     
 

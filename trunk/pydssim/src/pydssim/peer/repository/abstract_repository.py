@@ -13,7 +13,7 @@ class AbstractRepository(Protected):
     def initialize(self, peer):
         self.__peer = peer
         self.__elements = {}
-        Logger().resgiterLoggingInfo("Initialize Repository pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getPID()))
+        Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         
     
     @public
@@ -22,12 +22,12 @@ class AbstractRepository(Protected):
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
-        Logger().resgiterLoggingInfo("Add Service %s - %s in Repository pid  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getPID()))
+        Logger().resgiterLoggingInfo("Add Service %s - %s in Repository URN  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getURN()))
         return element
     
     @public
     def removeElement(self, element):
-        key = element.getUUID()#+self.__peer.getPID()
+        key = element.getUUID()#+self.__peer.getURN()
         if not self.__elements.has_key(key):
             raise StandardError()
         if self.__elements[key] > 0:

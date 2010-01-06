@@ -7,18 +7,21 @@ import hashlib
 
 from twisted.internet import defer
 
-import kademlia.peer
-from kademlia.peer import rpcmethod
+from pydssim.network.protocol.dht.kademlia.peer import Peer, rpcmethod
 
 
-class DHTPeer(kademlia.peer.Peer):
+
+
+class DHTPeer(Peer):
     """ DHT DHT peer
     
     This is basically a Kademlia peer, but with a few more (non-standard, but
     useful) RPCs defined.
     """
     def __init__(self, id=None, udpPort=4000, dataStore=None, routingTable=None, networkProtocol=None):
-        kademlia.peer.Peer.__init__(self, id, udpPort, dataStore, routingTable, networkProtocol)
+       
+        Peer.__init__(self, id, udpPort, dataStore, routingTable, networkProtocol)
+       
         self.invalidKeywords = []
         self.keywordSplitters = ['_', '.', '/']
 

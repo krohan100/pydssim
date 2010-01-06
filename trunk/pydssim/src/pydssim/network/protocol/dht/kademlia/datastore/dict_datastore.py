@@ -4,7 +4,7 @@ Created on 19/07/2009
 @author: LGustavo
 '''
 
-from pydssim.network.protocol.dht.kademlia.i_datastore import IDataStore
+from pydssim.network.protocol.dht.kademlia.datastore.i_datastore import IDataStore
 
 class DictDataStore(IDataStore):
     """ A datastore using an in-memory Python dictionary """

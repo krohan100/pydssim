@@ -24,9 +24,11 @@ class AbstractNetwork(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, simulation, peers , newPeerTime, neighbors):
+    def initialize(self, simulation, peers , newPeerTime, neighbors,startPort=4000):
        
         self.__simulation = simulation
+        
+        self.__startPort = startPort
         
         self.__connectedPeers = {}
         self.__advertisedPeers = []
