@@ -396,16 +396,6 @@ class Peer(object):
             
             return self.findPeer(key, **kwargs)
 
-#    def _distance(self, keyOne, keyTwo):
-#        """ Calculate the XOR result between two string variables
-#        
-#        @return: XOR result of two long variables
-#        @rtype: long
-#        """
-#        valKeyOne = long(keyOne.encode('hex'), 16)
-#        valKeyTwo = long(keyTwo.encode('hex'), 16)
-#        return valKeyOne ^ valKeyTwo
-
     def _generateID(self):
         """ Generates a 160-bit pseudo-random identifier
         
@@ -685,38 +675,5 @@ class Peer(object):
             del self._dataStore[key]
         #print 'done with threadedDataRefresh()'
 
-
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) < 2:
-        print 'Usage:\n%s UDP_PORT  [KNOWN_NODE_IP  KNOWN_NODE_PORT]' % sys.argv[0]
-        print 'or:\n%s UDP_PORT  [FILE_WITH_KNOWN_NODES]' % sys.argv[0]
-        print '\nIf a file is specified, it should containg one IP address and UDP port\nper line, seperated by a space.'
-        sys.exit(1)
-    try:
-        usePort = int(sys.argv[1])
-    except ValueError:
-        print '\nUDP_PORT must be an integer value.\n'
-        print 'Usage:\n%s UDP_PORT  [KNOWN_NODE_IP  KNOWN_NODE_PORT]' % sys.argv[0]
-        print 'or:\n%s UDP_PORT  [FILE_WITH_KNOWN_NODES]' % sys.argv[0]
-        print '\nIf a file is specified, it should contain one IP address and UDP port\nper line, seperated by a space.'
-        sys.exit(1)
-
-    if len(sys.argv) == 4:
-        knownPeers = [(sys.argv[2], int(sys.argv[3]))]
-    elif len(sys.argv) == 3:
-        knownPeers = []
-        f = open(sys.argv[2], 'r')
-        lines = f.readlines()
-        f.close()
-        for line in lines:
-            ipAddress, udpPort = line.split()
-            knownPeers.append((ipAddress, int(udpPort)))
-    else:
-        knownPeers = None
-
-    peer = Peer( udpPort=usePort )
-    peer.joinNetwork(knownPeers)
-    twisted.internet.reactor.run()
 
         

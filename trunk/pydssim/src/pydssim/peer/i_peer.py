@@ -22,7 +22,7 @@ class IPeer(object):
     def getPID(self):
         raise NotImplementedError()
     
-    def isConnected(self):
+    def isConnected(self,target):
         raise NotImplementedError()
     
     def setProtocol(self):

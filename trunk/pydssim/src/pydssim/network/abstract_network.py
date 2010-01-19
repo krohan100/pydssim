@@ -24,7 +24,7 @@ class AbstractNetwork(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, simulation, peers , newPeerTime, neighbors,startPort=4000):
+    def initialize(self, simulation, peers , newPeerTime, maxNeighbors,startPort=4000):
        
         self.__simulation = simulation
         
@@ -35,8 +35,8 @@ class AbstractNetwork(Protected):
         self.__layout = {} 
         self.__peers = peers
         self.__newPeerTime = newPeerTime
-        self.__neighbors = neighbors
-        Logger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(peers,newPeerTime,neighbors))
+        self.__maxNeighbors = maxNeighbors
+        Logger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(peers,newPeerTime,maxNeighbors))
     
     @public
     def getSimulation(self):
@@ -115,6 +115,10 @@ class AbstractNetwork(Protected):
         return flag
 
     @public
+    def getMaxNeighbor(self):
+        return self.__maxNeighbors
+         
+    @public
     def getPeer(self, peerId):
         
         semaphore = Semaphore()
@@ -157,18 +161,19 @@ class AbstractNetwork(Protected):
             raise StandardError()
         
        
-        if (not self.__layout.has_key(source.getPID()) or (not self.__layout.has_key(target.getPID()))):
-            raise StandardError()
+        #if (not self.__layout.has_key(source.getPID()) or (not self.__layout.has_key(target.getPID()))):
+        #    raise StandardError()
         if (source.hasNeighbor( target)):
             return True
         
-        
+      
         
         sem = Semaphore()
         sem.acquire()
        
         self.getPeer(source.getPID()).addNeighbor(Neighbor(target))
         self.getPeer(target.getPID()).addNeighbor(Neighbor(source))
+       
         
         self.__connectedPeers[target.getPID()] = target
         self.__connectedPeers[source.getPID()] = source

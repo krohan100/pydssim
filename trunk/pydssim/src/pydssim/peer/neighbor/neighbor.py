@@ -1,10 +1,10 @@
-from pydssim.util.protected import Protected
-from pydssim.util.decorator.public import public, createURN
+
+from pydssim.util.decorator.public import  createURN
 from pydssim.util.logger import Logger
 from pydssim.peer.neighbor.i_neighbor import INeighbor
 
 
-class Neighbor(Protected,INeighbor):
+class Neighbor(INeighbor):
     
     """
     Defines the module with objective the implementation of Neighbor class.
@@ -22,25 +22,25 @@ class Neighbor(Protected,INeighbor):
         """
         self.initialize(neighborPeer,id)
         
-    def initialize(self,neighborpeer,id):
+    def initialize(self,neighborPeer,id):
         """
         Initialize the object.
         
         """
         self.__neighborPeer = neighborPeer
         self.__id = id
-        Logger().resgiterLoggingInfo("Create Neighbor "+ self.__neighborPeer.getId())
+        Logger().resgiterLoggingInfo("Create Neighbor "+ self.__neighborPeer.getPID())
         
-    @public
+   
     def getId(self):
         return self.__id
     
           
-    @public
+   
     def getNeighborPeer(self):
         return self.__neighborPeer
     
-    @public
+    
     def dispatchData(self, data):
         """
         Dispatches data to neighborPeer

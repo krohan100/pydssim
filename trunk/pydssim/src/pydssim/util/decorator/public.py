@@ -24,5 +24,5 @@ def createURN(type):
     
     
    
-    urn = "urn:"+type+":id:"+uuid.uuid1().__str__()
+    urn = "urn:"+type+":"+uuid.uuid1().__str__()
     return urn
