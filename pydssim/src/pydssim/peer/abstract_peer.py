@@ -13,7 +13,7 @@ from twisted.internet import defer
 
 from pydssim.network.protocol.dht.dht_peer import DHTPeer
 
-from pydssim.util.protected import Protected
+
 from pydssim.peer.i_peer import IPeer
 from pydssim.util.decorator.public import public, createURN
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
@@ -32,35 +32,20 @@ from pydssim.peer.resource.service_resource import Service
 
 from random import randint
 
-def createPeer(udpport=4000,ipaddress=None,startport=None):
-        
-        import sys, os
-        
-        if ipaddress != None:
-            knownPeers = [(ipaddress, startport)]
-            
-        else:
-            knownPeers = None
-    
-        #print knownPeers, port
-        peer = DHTPeer(udpPort=udpport)
-        
-        #peer.joinNetwork(knownPeers)
-        return peer
-        
 
-class AbstractPeer(Protected,IPeer):
+class AbstractPeer(IPeer):
     
         
     def __init__(self):
         raise NotImplementedError()
     
     
-    
-    
     def initialize(self,  network,urn, udpPort=4000):
+        import socket
         
-        self.__dhtPeer = DHTPeer(udpPort=udpPort) #DHTPeer(udpPort=udpport)createPeer(udpPort)
+        self.__ipAddress = socket.gethostbyname(socket.gethostname())
+        self.__port = udpPort
+        self.__dhtPeer = DHTPeer(udpPort=self.__port) 
         self.invalidKeywords = []
         self.keywordSplitters = ['_', '.', '/']
         self.__urn = urn
@@ -78,12 +63,22 @@ class AbstractPeer(Protected,IPeer):
         self.__disconnectionTime = 0
         self.__scheduledDisconnection = False
         
-        Logger().resgiterLoggingInfo("Initialize Peer => pid  = %s end URN = %s"%(id,urn))
+        
+        
+        Logger().resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__ipAddress,self.__port))
         
    
     @public
     def getPID(self):
         return self.__pid
+    
+    @public
+    def getPort(self):
+        return self.__port
+    
+    @public
+    def getIPAddress(self):
+        return self.__ipAddress
     
     @public
     def getDHTPeer(self):
@@ -154,14 +149,22 @@ class AbstractPeer(Protected,IPeer):
     @public
     def receiveMessage(self, message):
         return self.__protocol.receiveMessage(message)
-       
+    
+    
+    def connected(self): 
+        self.__isConnected = True
+    
     @public
+    def isConnected(self,neighbor):
+        return self.hasNeighbor(neighbor)
+       
+    
     def createConnection(self, target):
        
         if self.__network.createConnection(self, target):
             self.addNeighbor(target)
             self.connected()
-        return self.isConnected(target)
+        
     
     @public
     def removeConnection(self, target):
@@ -197,7 +200,7 @@ class AbstractPeer(Protected,IPeer):
     
     @public
     def hasNeighbor(self, neighbor):
-        return self.__neighbors.has_key(neighbor.getId())
+        return self.__neighbors.has_key(neighbor.getPID())
     
     @public
     def getNeighbor(self, peerID):
@@ -212,6 +215,7 @@ class AbstractPeer(Protected,IPeer):
     def addNeighbor(self, neighbor):
         self.__neighbors[neighbor.getId()] = neighbor
         
+          
     @public
     def removeNeighbor(self, neighbor):
         ''' coloar mesange de desconectar '''
