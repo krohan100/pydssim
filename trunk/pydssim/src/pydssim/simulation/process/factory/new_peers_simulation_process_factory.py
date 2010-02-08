@@ -56,6 +56,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         tp = threading.Thread( target = portal.mainLoop,
                               args = [] )
         tp.start()
+        yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
       
         while ( ( simulation.getSimInstance().now() < simulation.getSimulationTime() ) and ( peer_number < simulation.getNetwork().getPeers())):
             peer_number+=1 
@@ -68,12 +69,13 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
            
             peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
+            peer.connectPortal(portal.getPID())
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
             t.start()
             
-            peer.connectSuperPeers(portal.getPID()) 
+            
            
             port += 1
            

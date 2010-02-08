@@ -7,10 +7,10 @@ from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageH
 from pydssim.util.logger import Logger
 import traceback
 
-class MessageHandlerInsertPeer(AbstractMessageHandler):
+class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
     
     def __init__(self,peer):
-        self.initialize(peer,"INSERTPEER",AbstractMessageHandler.INSERTPEER)
+        self.initialize(peer,"INSERTSPEER",AbstractMessageHandler.INSERTSPEER)
         
     def executeHandler(self,peerConn,data):
         
@@ -27,16 +27,10 @@ class MessageHandlerInsertPeer(AbstractMessageHandler):
                 
                 peerID,host,port = data.split()
                 
-              
-                if self.getPeer().maxPeersReached():
-                    #print 'maxPeers %d reached: connection terminating' % self.getMaxPeers()
-                    #peerConn.sendData(ERROR, 'Join: too many peers')
-                    peerConn.sendData(AbstractMessageHandler.PEERFULL,"" )
-                    return
-                
+                             
                 if peerID not in self.getPeer().getPeerIDs() and peerID != self.getPeer().getPID():
                     
-                    self.getPeer().addPeerNeighbor(peerID, host, port)
+                    self.getPeer().addSuperPeer("%s:%s"%( host, port))
                     
                     peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
                     
