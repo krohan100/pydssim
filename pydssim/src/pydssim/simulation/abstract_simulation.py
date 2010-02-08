@@ -132,8 +132,10 @@ class AbstractSimulation(Protected, ISimulation):
         
     @public
     def start(self):
+        
         mySim = self.getSimInstance()
         
+        Logger().resgiterLoggingInfo("Start Simulation ")
         factoryProcess = 0
         for factory in self.__simulationProcessFactory:
             print factory.getName()

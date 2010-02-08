@@ -9,15 +9,19 @@ from peer_connection import PeerConnection
 
 
 
-
 class Peer:
     """ Implements the core functionality that might be used by a peer in a
     P2P network.
 
     """
+    NUMBER = 1
+    SUPER  = "SUPER_PEER"
+    SIMPLE = "SIMPLE_PEER"
+    NULL   = "NULL"
+
 
     
-    def __init__( self, maxPeers=7, serverPort=3000, myID=None, serverHost = None ):
+    def __init__( self, maxPeers=7, serverPort=3000, myID=None, serverHost = None, peerType = SIMPLE, mySuperPeer = NULL ):
    
     	""" Initializes a peer servent (sic.) with the ability to catalog
     	information for up to maxpeers number of peers (maxpeers may
@@ -26,10 +30,12 @@ class Peer:
     	and host address. 
     
     	"""
-    	self.debug = 0
-        
+    	
+        self.__peerType = peerType
+        self.__mySuperPeer = mySuperPeer
     	self.__maxPeers = int(maxPeers)
     	self.__serverPort = int(serverPort)
+        self.__attemptedConnectionNumber = 0
     	if serverHost:
             self.__serverHost = serverHost
     	else:
@@ -41,7 +47,8 @@ class Peer:
             self.__myID = '%s:%d' % (self.__serverHost, self.__serverPort)
     
     	self.__peerLock = threading.Lock()  
-    	self.__peers = {}        
+    	self.__peers = {} 
+                
     	self.__shutdown = False  
     
     	self.__handlers = {}
@@ -52,9 +59,22 @@ class Peer:
     
     def getRouter(self):
         return self.__router
-       
+    
+    def getAttemptedConnectionNumber(self):
+        return self.__attemptedConnectionNumber
+    
+    def setAttemptedConnectionNumber(num):
+        self.__attemptedConnectionNumber = num
+           
     def getMyID(self):
         return self.__myID
+    
+    def getMySuperPeer(self):
+        return self.__mySuperPeer
+    
+    def setMySuperPeer(self,super):
+        
+        self.__mySuperPeer = super
     
     def getServerHost(self):
         return self.__serverHost
@@ -70,6 +90,13 @@ class Peer:
     
     def getMaxPeers(self):
         return self.__maxPeers
+    
+    def getPeerType(self):
+        return self.__peerType
+    
+    def setPeerType(self,type):
+        
+        self.__peerType = type
         
     
     def __handlepeer( self, clientSock ):
@@ -159,14 +186,21 @@ class Peer:
 
 
    
-    def addPeer( self, peerID, host, port ):
+    def addPeer( self, peerID, host, port, superPeer=NULL ):
     
     	""" Adds a peer name and host:port mapping to the known list of peers.
     	
     	"""
+       
+        if superPeer == Peer.NULL:
+            superPeer = self.getMySuperPeer()
+            
+        
+        
     	if peerID not in self.getPeers() and (self.getMaxPeers() == 0 or len(self.getPeers()) < self.getMaxPeers()):
-    	    self.getPeers()[ peerID ] = (host, int(port))
-            print "added peer -----"
+    	    self.getPeers()[ peerID ] = (host, int(port),superPeer)
+            
+            
     	    return True
     	else:
     	    return False
@@ -192,7 +226,7 @@ class Peer:
 
 
     
-    def addPeerAt( self, loc, peerID, host, port ):
+    def addPeerAt( self, loc, peerID, host, port,super ):
     
     	""" Inserts a peer's information at a specific position in the 
     	list of peers. The functions addpeerat, getpeerat, and removepeerat
@@ -200,7 +234,7 @@ class Peer:
     	removepeer. 
     
     	"""
-    	self.getPeers()[ loc ] = (peerID, host, int(port))
+    	self.getPeers()[ loc ] = (peerID, host, int(port),super)
 
 
 
@@ -289,27 +323,32 @@ class Peer:
 			pid=None, waitreply=True ):
    
     	msgreply = []
-        print "ConnectAndSend peers from (%s,%s) %s" % (host,port,msgType)
-    	try:
+        num = self.getAttemptedConnectionNumber()
+        
+        while  num != Peer.NUMBER:
             
-    	    peerConn = PeerConnection( pid, host, port)
-    	    peerConn.sendData( msgType, msgData )
-    	    
-    	    
-    	    if waitreply:
-        		onereply = peerConn.recvData()
-        		while (onereply != (None,None)):
-        		    msgreply.append( onereply )
-        		    print 'Got reply %s: %s' % ( pid, str(msgreply) ) 
-        		    onereply = peerConn.recvData()
-    	    peerConn.close()
-    	except KeyboardInterrupt:
-    	    raise
-    	except:
-            #if False:
-            traceback.print_exc()
-    	
-       
+            print "ConnectAndSend peers from (%s,%s) %s number %d" % (host,port,msgType,num)
+            try:
+                peerConn = PeerConnection( pid, host, port)
+                peerConn.sendData( msgType, msgData )
+                if waitreply:
+                    onereply = peerConn.recvData()
+                    while (onereply != (None,None)):
+                        msgreply.append( onereply )
+                        print 'Got reply %s: %s' % ( pid, str(msgreply) )
+                        onereply = peerConn.recvData()
+                peerConn.close()
+                break
+            except KeyboardInterrupt:
+                raise
+            except:
+                num += 1
+                print "Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num)
+        
+        if num == Peer.NUMBER:
+            self.setMySuperPeer(self.getMyID())
+            self.setPeerType(Peer.SUPER)
+            
     	return msgreply
 
   
@@ -326,7 +365,7 @@ class Peer:
     	    isconnected = False
     	    try:
         		
-        		host,port = self.getPeers()[pid]
+        		host,port,super = self.getPeers()[pid]
         		peerConn = PeerConnection( pid, host, port)
         		peerConn.sendData( 'PING', '' )
         		isconnected = True
@@ -348,7 +387,7 @@ class Peer:
 
    
     def mainLoop( self ):
-    
+           
     	s = self.makeServerSocket( self.getServerPort() )
     	s.settimeout(1)
     	print 'Server started: %s (%s:%d)'  % ( self.getMyID(), self.getServerHost(), self.getServerPort() )

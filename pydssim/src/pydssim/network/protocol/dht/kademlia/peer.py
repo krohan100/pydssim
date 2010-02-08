@@ -128,12 +128,14 @@ class Peer(object):
         if knownPeerAddresses != None:
             bootstrapNeighbors = []
             for address, port in knownPeerAddresses:
+               
                 neighbor = Neighbor(self._generateID(), address, port, self._protocol)
                 
                 bootstrapNeighbors.append(neighbor)
         else:
             bootstrapNeighbors = None
         # Initiate the Kademlia joining sequence - perform a search for this peer's own ID
+        print "Short List", bootstrapNeighbors
         self._joinDeferred = self._iterativeFind(self.id, bootstrapNeighbors)
 
         self._joinDeferred.addCallback(self._persistState)
@@ -143,6 +145,7 @@ class Peer(object):
     def printNeighbors(self):
         print '\n\nNODE CONTACTS\n==============='
         for i in range(len(self._routerTable._buckets)):
+           
             for neighbor in self._routerTable._buckets[i]._neighbors:
                 print neighbor
         print '=================================='

@@ -3,13 +3,15 @@ from pydssim.util.logger import Logger
 class AbstractMessageHandler():
     
     PEERNAME   = "NAME"   # request a peer's canonical id
-    LISTPEERS  = "LIST"
+    LISTPEERS  = "LISP"
+    LISTSPEERS = "LISS"   # List Super Peer
     INSERTPEER = "JOIN"
     QUERY      = "QUER"
     QRESPONSE  = "RESP"
     FILEGET    = "FGET"
     PEERQUIT   = "QUIT"
     SUPERPEER  = "SUPE"
+    SSUPERPEER = "SSUP"
     REPLY      = "REPL"
     ERROR      = "ERRO"
     PEERFULL   = "PEFU"

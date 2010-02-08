@@ -7,15 +7,13 @@ Defines the module with objective the implementation of AbstractPeer class.
 @since: 20/08/2009
 """
 
-import hashlib
+import socket
+import struct
+import threading
+import time
+import traceback
 
-from twisted.internet import defer
-
-from pydssim.network.protocol.dht.dht_peer import DHTPeer
-
-
-from pydssim.peer.i_peer import IPeer
-from pydssim.util.decorator.public import public, createURN
+from pydssim.util.decorator.public import createURN
 from pydssim.network.dispatcher.message_dispatcher import MessageDispatcher
 from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
@@ -28,238 +26,649 @@ from pydssim.util.resource_maps import *
 from pydssim.peer.resource.hardware_resource import Hardware 
 from pydssim.peer.resource.abstract_resource import AbstractResource
 from pydssim.peer.resource.service_resource import Service
+from pydssim.network.dispatcher.message_handler_insert import MessageHandlerInsertPeer
+from pydssim.network.dispatcher.message_handler_list_peer import MessageHandlerListPeer
+from pydssim.network.dispatcher.message_handler_peer_exit import MessageHandlerPeerExit
+from pydssim.network.dispatcher.message_handler_peer_name import MessageHandlerPeerName
+from pydssim.network.dispatcher.message_handler_super_peer import MessageHandlerSuperPeer
+from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.peer.peer_connection import PeerConnection
 
 
 from random import randint
 
 
-class AbstractPeer(IPeer):
+class AbstractPeer:
+    
+    NUMBER = 3
+    SUPER  = "SUPER_PEER"
+    SIMPLE = "SIMPLE_PEER"
+    PORTAL = "PORTAL_PEER"
+    NULL   = "NULL"
     
         
     def __init__(self):
         raise NotImplementedError()
     
+    def __createHandleMessage(self):
+        
+        dispatcher = MessageDispatcher(self)
+        dispatcher.registerMessageHandler(MessageHandlerInsertPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerListPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerPeerExit(self))
+        dispatcher.registerMessageHandler(MessageHandlerPeerName(self))
+        dispatcher.registerMessageHandler(MessageHandlerSuperPeer(self))
+        return dispatcher
     
-    def initialize(self,  network,urn, udpPort=4000):
+    def initialize(self, network,  urn=createURN("peer"), serverPort=3000, maxPeers=57,  peerType = SIMPLE, mySuperPeer = NULL ):
         import socket
         
-        self.__ipAddress = socket.gethostbyname(socket.gethostname())
-        self.__port = udpPort
-        self.__dhtPeer = DHTPeer(udpPort=self.__port) 
-        self.invalidKeywords = []
-        self.keywordSplitters = ['_', '.', '/']
-        self.__urn = urn
-        self.__pid = self.__dhtPeer.id
+        self.__peerType = peerType
+        self.__mySuperPeer = mySuperPeer # tes so no simple pee 
+        self.__maxPeers = int(maxPeers)
+        self.__serverPort = int(serverPort)
+        self.__attemptedConnectionNumber = 0
+        self.__serverHost = socket.gethostbyname(socket.gethostname())
+        self.__pid = '%s:%d' % (self.__serverHost, self.__serverPort)
+        self.__peerLock = threading.Lock()
+        self.__peerNeighbors = {} 
+                
+        self.__shutdown = False  
+    
+        self.__handlers = {}
+        self.__router = None
         
-        self.__network = network
+        self.__urn = urn
+              
         self.__isConnected = False
-        self.__dispatcher = MessageDispatcher(self)
+        Logger().resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__serverHost,self.__serverPort))
+        self.__dispatcher = self.__createHandleMessage()
         self.__services = ServiceRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
         self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
         self.__connectionTime = 0
-        self.__neighbors = {}
+        
         self.__disconnectionTime = 0
         self.__scheduledDisconnection = False
         
         
         
-        Logger().resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__ipAddress,self.__port))
         
-   
-    @public
+        
+    def __handlePeer( self, clientSock ):
+    
+        """
+        handlepeer( new socket connection ) -> ()
+    
+        Dispatches messages from the socket connection
+        """
+    
+        Logger().resgiterLoggingInfo('New child ' + str(threading.currentThread().getName())) 
+        Logger().resgiterLoggingInfo('Connected ' + str(clientSock.getpeername()))
+    
+        host, port = clientSock.getpeername()
+        peerConn = PeerConnection( None, host, port, clientSock)
+        
+        try:
+            msgType, msgData = peerConn.recvData()
+            
+            if msgType: 
+                msgType = msgType.upper()
+                
+            if not self.__dispatcher.hasTypeMessage(msgType):   
+            #if msgType not in self.__dispatcher.getMessageHandlers():
+                Logger().resgiterLoggingInfo('Not handled: %s: %s' % (msgType, msgData))
+            else:
+                Logger().resgiterLoggingInfo('Handling peer msg: %s: %s' % (msgType, msgData))
+                self.__dispatcher.executeHandleMessage(msgType, peerConn, msgData)
+                #self.__dispatcher.getMessageHandlers()[ msgType ].e( peerConn, msgData )
+        except KeyboardInterrupt:
+            raise
+        except:
+            
+            traceback.print_exc()
+        
+        Logger().resgiterLoggingInfo('Disconnecting ' + str(clientSock.getpeername())) 
+        peerConn.close()
+        
+    
+    def mainLoop( self ):
+    
+        s = self.makeServerSocket( self.getServerPort() )
+        s.settimeout(2)
+        Logger().resgiterLoggingInfo('Server started: %s (%s:%d)'  % ( self.getPID(), self.getServerHost(), self.getServerPort() ))
+        
+        
+        while not self.getShutdown():
+            #print "Server started: %s (%s:%d)"%(self.myID, self.serverHost, self.serverPort)
+            try:
+                #print ('Listening for connections port %s'%self.getServerPort() )
+               
+                clientSock, clientAddr = s.accept()
+                clientSock.settimeout(None)
+        
+                t = threading.Thread( target = self.__handlePeer,
+                              args = [ clientSock ] )
+                t.start()
+                
+            except KeyboardInterrupt:
+                print 'KeyboardInterrupt: stopping mainloop'
+                self.getShutdown = True
+                continue
+            except:
+            
+                #traceback.print_exc()
+                continue
+    
+        
+        print 'Main loop exiting' 
+    
+        s.close()
+        
+    def getShutdown(self):
+        return self.__shutdown
+    
+    def getRouter(self):
+        return self.__router
+    
+    def getAttemptedConnectionNumber(self):
+        return self.__attemptedConnectionNumber
+    
+    def setAttemptedConnectionNumber(num):
+        self.__attemptedConnectionNumber = num
+           
+        
+    def getMySuperPeer(self):
+        return self.__mySuperPeer
+    
+    def setMySuperPeer(self,super):
+        
+        self.__mySuperPeer = super
+    
+    def getServerHost(self):
+        return self.__serverHost
+    
+    def getServerPort(self):
+        return self.__serverPort
+    
+    def getPeerLock(self):
+        return self.__peerLock
+    
+    def getPeerNeighbors(self):
+        return self.__peerNeighbors
+    
+    def getMaxPeers(self):
+        return self.__maxPeers
+    
+    def getPeerType(self):
+        return self.__peerType
+    
+    def setPeerType(self,type):
+        
+        self.__peerType = type
+        
     def getPID(self):
         return self.__pid
     
-    @public
+   
     def getPort(self):
         return self.__port
     
-    @public
-    def getIPAddress(self):
-        return self.__ipAddress
-    
-    @public
-    def getDHTPeer(self):
-        return self.__dhtPeer
-    
-    @public
+      
     def getURN(self):
         return self.__urn
     
-    @public
+    
     def getType(self):
         return self.__type
     
+    def __runstabilizer( self, stabilizer, delay ):
     
-    @public
-    def input(self,  data):
-        raise NotImplementedError()
+        while not self.__shutdown:
+            stabilizer()
+            time.sleep( delay )
+
+      
+    def setPID( self, myID ):
     
-    @public
-    def output(self, data):
-        raise NotImplementedError()
-    
-    '''  rever 
-    
-    
-    
-    @public
-    def setP2PProtocol(self, protocol):
-        self.__protocol = protocol
-        self.__protocol.setPeer(self)
-        self.__protocol.setP2PTopology(self.__network.getP2PTopology())
-        
-        for h in self.__protocol.getMessageHandlers():
-            self.__dispatcher.registerMessageHandler(h)
-            
-        return self.__protocol
+           self.__pid = myID
+
   
+    def startStabilizer( self, stabilizer, delay ):
+    
+        """ Registers and starts a stabilizer function with this peer. 
+        The function will be activated every <delay> seconds. 
+    
+        """
+        t = threading.Thread( target = self.__runstabilizer, 
+                      args = [ stabilizer, delay ] )
+        t.start()
 
-
-    @public
-    def connect(self, priority):
-        if self.__isConnected == True:
-            return
-        self.__protocol.connect(priority)
-        self.__connectionTime = priority
-        
-    
-    @public
-    def disconnect(self, priority):
-        if self.__isConnected == False:
-            return
-        self.__protocol.disconnect(priority)
-    
-'''    
-   
-    
-    @public
-    def getNetwork(self):
-        return self.__network
+    def addRouter( self, router ):
     
        
-    #ve issso
-    @public
-    def sendMessage(self, message):
-        return self.__protocol.sendMessage(message)
+        self.__router = router
+
+
+
+   
+    def addPeerNeighbor( self, peerID, host, port, superPeer=NULL ):
+    
+        """ Adds a peer name and host:port mapping to the known list of peers.
+        
+        """
+       
+        if superPeer == AbstractPeer.NULL:
+            superPeer = self.getMySuperPeer()
+            
+        
+        
+        if peerID not in self.getPeerNeighbors() and (self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) < self.getMaxPeers()):
+            self.getPeerNeighbors()[ peerID ] = (host, int(port),superPeer)
+            
+            
+            return True
+        else:
+            return False
+
+
+
+    
+    def getPeer( self, peerID ):
+    
+        """ Returns the (host, port) tuple for the given peer name """
+        assert peerID in self.getPeerNeighbors()    # maybe make this just a return NULL?
+        return self.getPeerNeighbors()[ peerID ]
+
+
+
+    
+    def removePeer( self, peerID ):
+    
+        """ Removes peer information from the known list of peers. """
+        if peerID in self.getPeerNeighbors():
+            del self.getPeerNeighbors()[ peerID ]
+
+
+
+    
+    def addPeerAt( self, loc, peerID, host, port,super ):
+    
+        """ Inserts a peer's information at a specific position in the 
+        list of peers. The functions addpeerat, getpeerat, and removepeerat
+        should not be used concurrently with addpeer, getpeer, and/or 
+        removepeer. 
+    
+        """
+        self.getPeerNeighbors()[ loc ] = (peerID, host, int(port),super)
+
+
+
+    
+    def getPeerAt( self, loc ):
+    
+        if loc not in self.getPeerNeighbors():
+            return None
+        return self.getPeerNeighbors()[ loc ]
+
+
+
+    
+    def removePeerAt( self, loc ):
+    
+           removePeer( self, loc ) 
+
+
+
+    
+    def getPeerIDs( self ):
+    
+        """ Return a list of all known peer id's. """
+        return self.getPeerNeighbors().keys()
+
+
+    def numberOfPeers( self ):
+   
+        """ Return the number of known peer's. """
+        return len(self.getPeerNeighbors())
+ 
+    def maxPeersReached( self ):
+       
+        """ Returns whether the maximum limit of names has been added to the
+        list of known peers. Always returns True if maxPeers is set to
+        0.
+    
+        """
+        assert self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) <= self.getMaxPeers()
+        return self.getMaxPeers() > 0 and len(self.getPeerNeighbors()) == self.getMaxPeers()
+
+
+    def makeServerSocket( self, port, backlog=5 ):
+  
+        """ Constructs and prepares a server socket listening on the given 
+        port.
+    
+        """
+        s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+        s.setsockopt( socket.SOL_SOCKET, socket.SO_REUSEADDR, 1 )
+        s.bind( ( '', port ) )
+        s.listen( backlog )
+        return s
+
+
+    def sendToPeer( self, peerID, msgType, msgData, waitreply=True ):
+   
+        """
+        sendtopeer( peer id, message type, message data, wait for a reply )
+         -> [ ( reply type, reply data ), ... ] 
+    
+        Send a message to the identified peer. In order to decide how to
+        send the message, the router handler for this peer will be called.
+        If no router function has been registered, it will not work. The
+        router function should provide the next immediate peer to whom the 
+        message should be forwarded. The peer's reply, if it is expected, 
+        will be returned.
+    
+        Returns None if the message could not be routed.
+        """
+    
+        if self.__router:
+            nextpid, host, port = self.__router( peerID )
+        if not self.__router or not nextpid:
+            Logger().resgiterLoggingInfo('Unable to route %s to %s' % (msgType, peerID))
+            return None
+        #host,port = self.peers[nextpid]
+        return self.connectAndSend( host, port, msgType, msgData,
+                        pid=nextpid,
+                        waitreply=waitreply )
+    
+
+
+   
+    def connectAndSend( self, host, port, msgType, msgData, 
+            pid=None, waitreply=True ):
+   
+        msgreply = []
+        num = self.getAttemptedConnectionNumber()
+        
+        while  num != AbstractPeer.NUMBER:
+            
+            Logger().resgiterLoggingInfo("ConnectAndSend peers from (%s,%s) %s number %d" % (host,port,msgType,num))
+            
+            try:
+                peerConn = PeerConnection( pid, host, port)
+                peerConn.sendData( msgType, msgData )
+                if waitreply:
+                    onereply = peerConn.recvData()
+                    while (onereply != (None,None)):
+                        msgreply.append( onereply )
+                        Logger().resgiterLoggingInfo('Got reply %s: %s' % ( pid, str(msgreply) ))
+                        onereply = peerConn.recvData()
+                peerConn.close()
+                break
+            except KeyboardInterrupt:
+                raise
+            except:
+                num += 1
+                Logger().resgiterLoggingInfo("Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num))
+        
+        if num == AbstractPeer.NUMBER:
+            self.setMySuperPeer(self.getPID())
+            self.setPeerType(AbstractPeer.SUPER)
+            
+        return msgreply
+    '''
+
+    def connectSuperPeer(self,portalID):
+        
+        """ buildpeers(host, port, hops) 
+    
+        Attempt to build the local peer list up to the limit stored by
+        self.maxPeers, using a simple depth-first search given an
+        initial host and port as starting point. The depth of the
+        search is limited by the hops parameter.
+    
+        """
+       
+        host,port = portalID.split(":")    
+        Logger().resgiterLoggingInfo ("Building Super peers from (%s,%s)" % (host,port))
+         
+    
+        try:
+            #print "contacting " #+ peerID
+            _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
+    
+            #print "contacted " + peerID
+            resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTPEER, 
+                        '%s %s %s %d' % (self.getPID(),self.getMySuperPeer(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+           
+            
+            if (resp[0][0] != AbstractMessageHandler.REPLY) or (peerID in self.getPeerIDs()):
+                return
+            
+                      
+            self.addPeerNeighbor(peerID, host, port,resp[1][1])
+            
+            
+        except:
+            traceback.print_exc()
+            #print "eerrroooo" 
+            self.removePeer(peerID)
+            
+    ''' 
+    
+    def connectSuperPeers(self, portalID, hops=1):
+    
+        """ ConnectPeers(host, port, hops) 
+    
+        Attempt to build the local peer list up to the limit stored by
+        self.maxPeers, using a simple depth-first search given an
+        initial host and port as starting point. The depth of the
+        search is limited by the hops parameter.
+    
+        """
+        if self.maxPeersReached() or not hops:
+            return
+    
+        peerID = None
+        
+        host,port = portalID.split(":")
+    
+        Logger().resgiterLoggingInfo ("Connecting to SuperPeers (%s,%s)" % (host,port))
+        
+        try:
+            #print "contacting " #+ peerID
+            _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
+    
+             
+            # do recursive depth first search to add more peers
+            resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTSPEERS, '',
+                        pid=peerID)
+            
+            if len(resp) > 1:
+                resp.reverse()
+            resp.pop()    # get rid of header count reply
+            
+            
+            while len(resp):
+                nextpid,host,port = resp.pop()[1].split()
+                
+                
+                if nextpid != self.getPID():
+                    self.connectPeers(host, port, hops )
+                    
+                
+        except:
+            #traceback.print_exc()
+            #print "eerrroooo" 
+            self.removePeer(peerID)       
     
     
-    @public
-    def receiveMessage(self, message):
-        return self.__protocol.receiveMessage(message)
     
+    def connectPeers(self, host, port, hops=1):
     
+        """ ConnectPeers(host, port, hops) 
+    
+        Attempt to build the local peer list up to the limit stored by
+        self.maxPeers, using a simple depth-first search given an
+        initial host and port as starting point. The depth of the
+        search is limited by the hops parameter.
+    
+        """
+        if self.maxPeersReached() or not hops:
+            return
+    
+        peerID = None
+    
+        Logger().resgiterLoggingInfo ("Connecting to peers (%s,%s)" % (host,port))
+        
+        try:
+            #print "contacting " #+ peerID
+            _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
+    
+            #print "contacted " + peerID
+            resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTPEER, 
+                        '%s %s %s %d' % (self.getPID(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+           
+            
+            if (resp[0][0] != AbstractMessageHandler.REPLY) or (peerID in self.getPeerIDs()):
+                
+                if resp[0][0] == AbstractMessageHandler.PEERFULL:
+                    
+                    self.setMySuperPeer(self.getPID())
+                    self.setPeerType(AbstractPeer.SUPER)
+                    shost,sport = resp[0][1].split(":")
+                   
+                    self.connectSuperPeer(shost, sport, hops)
+                return
+            
+            
+            if (resp[1][0] == AbstractMessageHandler.SUPERPEER) and self.getMySuperPeer() == AbstractPeer.NULL:
+                self.setMySuperPeer(resp[1][1])
+                 
+            
+            self.addPeerNeighbor(peerID, host, port,resp[1][1])
+            
+            '''
+            
+            # do recursive depth first search to add more peers
+            resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTPEERS, '',
+                        pid=peerID)
+            
+            if len(resp) > 1:
+                resp.reverse()
+            resp.pop()    # get rid of header count reply
+            
+            
+            
+            while len(resp):
+                nextpid,host,port,super = resp.pop()[1].split()
+                
+                
+                if nextpid != self.getPID():
+                    self.connectPeers(host, port, hops - 1)
+                    
+            '''        
+        except:
+            #traceback.print_exc()
+            #print "eerrroooo" 
+            self.removePeer(peerID)
+    
+    def checkLivePeers( self ):
+    
+        """ Attempts to ping all currently known peers in order to ensure that
+        they are still active. Removes any from the peer list that do
+        not reply. This function can be used as a simple stabilizer.
+    
+        """
+        todelete = []
+        for pid in self.getPeerNeighbors():
+            isconnected = False
+            try:
+                
+                host,port,super = self.getPeerNeighbors()[pid]
+                peerConn = PeerConnection( pid, host, port)
+                peerConn.sendData( 'PING', '' )
+                isconnected = True
+            except:
+                todelete.append( pid )
+            if isconnected:
+                peerConn.close()
+    
+        self.getPeerLock().acquire()
+        try:
+            for pid in todelete: 
+                if pid in self.getPeerNeighbors():
+                    del self.getPeerNeighbors()[pid]
+        finally:
+            self.getPeerLock().release()
+        
+
+  
     def connected(self): 
         self.__isConnected = True
     
-    @public
-    def isConnected(self,neighbor):
-        return self.hasNeighbor(neighbor)
-       
-    
-    def createConnection(self, target):
-       
-        if self.__network.createConnection(self, target):
-            self.addNeighbor(target)
-            self.connected()
-        
-    
-    @public
-    def removeConnection(self, target):
-        if self.__neighbors.has_key(target.getPID()):
-            del self.__neighbors[target.getPID()]
-        return not self.isConnected(target)
    
-     
-    @public
-    def getServices(self):
-        return self.__services
-    
-    @public
+    def isConnected(self,peerNeighbor):
+        return self.hasNeighbor(peerNeighbor)
+       
+         
     def setServices(self, serviceRepository):
         self.__services = serviceRepositoy
         return self.__services
     
-    @public
-    def loaderServices(self,fileName=None):
-        pass
+  
     
-    @public
-    def share(self, type):
-        pass
-    
-    @public
     def setConnectionTime(self, time):
         self.__connectionTime = time
     
-    @public
+    
     def getConnectionTime(self):
         return self.__connectionTime
     
-    @public
-    def hasNeighbor(self, neighbor):
-        return self.__neighbors.has_key(neighbor.getPID())
     
-    @public
-    def getNeighbor(self, peerID):
-        return self.__neighbors[peerID]
+    def hasPeerNeighbor(self, peerNeighborID):
+        return self.__peerNeighbors.has_key(peerNeighborID)
     
-       
-    @public
-    def getNeighbors(self):
-        return ImmutableSet(self.__neighbors.values())    
-    
-    @public
-    def addNeighbor(self, neighbor):
-        self.__neighbors[neighbor.getId()] = neighbor
-        
-          
-    @public
-    def removeNeighbor(self, neighbor):
-        ''' coloar mesange de desconectar '''
-        if not self.__neighbors.has_key(neighbor.getId()):
-            return False
-        del self.__neighbors[neighbors.getId()]
-        return not self.__neighbors.has_key(neighbors.getId())    
-    
-    @public
-    def countNeighbor(self):
-        return len(self.__neighbors)
-    
-    @public    
+   
+    def getPeerNeighbor(self, peerID):
+        return self.__peerNeighbors[peerID]
+           
     def setDisconnectionTime(self, time):
         self.__disconnectionTime = time
     
-    @public
+    
     def getDisconnectionTime(self):
         return self.__disconnectionTime
     
-    @public
+    
     def setScheduledForDisconnection(self, flag):
         self.__scheduledDisconnection = flag
     
-    @public
     def getScheduledForDisconnection(self):
         return self.__scheduledDisconnection
     
-    @public
+    
     def getServices(self):
         return self.__services
         
-    @public
+    
     def getSharedResource(self):    
         return self.__sharedResource
     
-    @public
+    
     def getHistoryResource(self):    
         return self.__historyResource
-    @public
+    
     def getEquivalences(self):
         return self.__equivalences
     
-    @public
+    
     def createServices(self,tam=7):
         optionMap   = [ServiceMap(),HardwareMap()]
         optionClass = [Service,Hardware]

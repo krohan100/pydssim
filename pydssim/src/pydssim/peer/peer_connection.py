@@ -9,7 +9,7 @@ import struct
 import threading
 import time
 import traceback
-
+from pydssim.util.logger import Logger
 
 class PeerConnection:
 
@@ -27,7 +27,7 @@ class PeerConnection:
             self.__socket = sock
          
         self.__socketd = self.__socket.makefile( 'rw', 0 )
-        print "PeersConnection from (%s,%s)" % (host,port)
+        Logger().resgiterLoggingInfo("PeersConnection from (%s,%s)" % (host,port))
 
 
     

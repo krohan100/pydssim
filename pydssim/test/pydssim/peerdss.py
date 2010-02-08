@@ -15,9 +15,11 @@ QUERY = "QUER"
 QRESPONSE = "RESP"
 FILEGET = "FGET"
 PEERQUIT = "QUIT"
-
+SUPERPEER    = "SUPE"
 REPLY = "REPL"
 ERROR = "ERRO"
+PEERFULL = "PEFU"
+
 
 
 
@@ -44,7 +46,8 @@ class PeerDSS(Peer):
                 QUERY: self.__handle_query,
                 QRESPONSE: self.__handle_qresponse,
                 FILEGET: self.__handle_fileget,
-                PEERQUIT: self.__handle_quit
+                PEERQUIT: self.__handle_quit,
+                SUPERPEER: self.__handle_superpeer
                }
         for mt in handlers:
             self.addHandler(mt, handlers[mt])
@@ -76,19 +79,23 @@ class PeerDSS(Peer):
         try:
             try:
                 
-                peerID,host,port = data.split()
-        
-                if self.maxPeersReached():
-                    print 'maxPeers %d reached: connection terminating' % self.getMaxPeers()
-                    peerConn.sendData(ERROR, 'Join: too many peers')
+                peerID,super,host,port = data.split()
+                
+               
+                 
+                if self.maxPeersReached() and peerID != super:
+                    #print 'maxPeers %d reached: connection terminating' % self.getMaxPeers()
+                    #peerConn.sendData(ERROR, 'Join: too many peers')
+                    peerConn.sendData(PEERFULL ,self.getMySuperPeer())
                     return
                  
                 #peerid = '%s:%s' % (host,port)
                 if peerID not in self.getPeerIDs() and peerID != self.getMyID():
                   
-                    self.addPeer(peerID, host, port)
-                    print 'added peer: %s' % peerID
+                    self.addPeer(peerID, host, port,super)
+                    
                     peerConn.sendData(REPLY, 'Join: peer added: %s' % peerID)
+                    peerConn.sendData(SUPERPEER,"%s"%self.getMySuperPeer())
                 else:
                    
                     peerConn.sendData(ERROR, 'Join: peer already inserted %s'
@@ -105,11 +112,12 @@ class PeerDSS(Peer):
 
         self.getPeerLock().acquire()
         try:
-            print 'Listing peers %d' % self.numberOfPeers()
+            #print 'Listing peers %d' % self.numberOfPeers()
             peerConn.sendData(REPLY, '%d' % self.numberOfPeers())
             for pid in self.getPeerIDs():
-                host,port = self.getPeer(pid)
-                peerConn.sendData(REPLY, '%s %s %d' % (pid, host, port))
+                host,port,super = self.getPeer(pid)
+                
+                peerConn.sendData(REPLY, '%s %s %d %s' % (pid, host, port, super))
         finally:
             self.getPeerLock().release()
 
@@ -118,8 +126,28 @@ class PeerDSS(Peer):
     
     def __handle_peername(self, peerConn, data):
     
-        """ Handles the NAME message type. Message data is not used. """
-        peerConn.sendData(REPLY, self.getMyID())
+       """ Handles the NAME message type. Message data is not used. """
+       peerConn.sendData(REPLY, self.getMyID())
+        
+    def __handle_superpeer(self, peerConn, data):
+    
+        
+        self.getPeerLock().acquire()
+        try:
+            try:
+                
+                super = data.split()
+                print " super ",super
+                 
+                if self.getMySuperPeer() == Peer.NULL:
+                    self.setMySuperPeer(super)                    
+                    return
+                
+            except:
+                print 'invalid insert %s: %s' % (str(peerConn), data)
+                peerConn.sendData(ERROR, 'Super: incorrect arguments')
+        finally:
+            self.getPeerLock().release()    
 
 
     def __handle_query(self, peerConn, data):
@@ -136,7 +164,7 @@ class PeerDSS(Peer):
             peerID, key, ttl = data.split()
             peerConn.sendData(REPLY, 'Query ACK: %s' % key)
         except:
-            print 'invalid query %s: %s' % (str(peerConn), data)
+            #print 'invalid query %s: %s' % (str(peerConn), data)
             peerConn.sendData(ERROR, 'Query: incorrect arguments')
         # self.peerlock.release()
     
@@ -191,7 +219,8 @@ class PeerDSS(Peer):
                 self.files[fname] = fpeerID
         except:
             #if self.debug:
-            traceback.print_exc()
+            #traceback.print_exc()
+            pass
 
 
     def __handle_fileget(self, peerConn, data):
@@ -247,9 +276,47 @@ class PeerDSS(Peer):
 
 
 
-    # precondition: may be a good idea to hold the lock before going
-    #               into this function
-    #--------------------------------------------------------------------------
+    def buildSuperPeer(self,host, port, hops):
+        
+        """ buildpeers(host, port, hops) 
+    
+        Attempt to build the local peer list up to the limit stored by
+        self.maxPeers, using a simple depth-first search given an
+        initial host and port as starting point. The depth of the
+        search is limited by the hops parameter.
+    
+        """
+       
+    
+        print "Building Super peers from (%s,%s)" % (host,port)
+    
+        try:
+            #print "contacting " #+ peerID
+            _, peerID = self.connectAndSend(host, port, PEERNAME, '')[0]
+    
+            #print "contacted " + peerID
+            resp = self.connectAndSend(host, port, INSERTPEER, 
+                        '%s %s %s %d' % (self.getMyID(),self.getMySuperPeer(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+           
+            
+            if (resp[0][0] != REPLY) or (peerID in self.getPeerIDs()):
+                return
+            
+            print "rest super",resp           
+            self.addPeer(peerID, host, port,resp[1][1])
+            
+            
+        except:
+            #traceback.print_exc()
+            #print "eerrroooo" 
+            self.removePeer(peerID)
+    
+    
+        
+        
+        
     def buildPeers(self, host, port, hops=1):
     
         """ buildpeers(host, port, hops) 
@@ -268,33 +335,56 @@ class PeerDSS(Peer):
         print "Building peers from (%s,%s)" % (host,port)
     
         try:
-            print "contacting " #+ peerID
+            #print "contacting " #+ peerID
             _, peerID = self.connectAndSend(host, port, PEERNAME, '')[0]
     
-            print "contacted " + peerID
+            #print "contacted " + peerID
             resp = self.connectAndSend(host, port, INSERTPEER, 
-                        '%s %s %d' % (self.getMyID(), 
+                        '%s %s %s %d' % (self.getMyID(),self.getMySuperPeer(),
                                   self.getServerHost(), 
-                                  self.getServerPort()))[0]
-            print "response",str(resp)
-            if (resp[0] != REPLY) or (peerID in self.getPeerIDs()):
+                                  self.getServerPort()))#[0]
+           
+            
+            if (resp[0][0] != REPLY) or (peerID in self.getPeerIDs()):
+                
+                if resp[0][0] == PEERFULL:
+                    
+                    self.setMySuperPeer(self.getMyID())
+                    self.setPeerType(Peer.SUPER)
+                    shost,sport = resp[0][1].split(":")
+                   
+                    self.buildSuperPeer(shost, sport, hops)
                 return
+            
+            
+            if (resp[1][0] == SUPERPEER) and self.getMySuperPeer() == Peer.NULL:
+                self.setMySuperPeer(resp[1][1])
+                 
+            
+            self.addPeer(peerID, host, port,resp[1][1])
+            
+            
     
-            self.addPeer(peerID, host, port)
     
             # do recursive depth first search to add more peers
             resp = self.connectAndSend(host, port, LISTPEERS, '',
                         pid=peerID)
+            
             if len(resp) > 1:
                 resp.reverse()
             resp.pop()    # get rid of header count reply
+            
+            print "Responta ", resp
+            
             while len(resp):
-                nextpid,host,port = resp.pop()[1].split()
+                nextpid,host,port,super = resp.pop()[1].split()
+                
+                
                 if nextpid != self.getMyID():
                     self.buildPeers(host, port, hops - 1)
         except:
-            traceback.print_exc()
-            print "eerrroooo" 
+            #traceback.print_exc()
+            #print "eerrroooo" 
             self.removePeer(peerID)
     
     

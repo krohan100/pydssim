@@ -174,7 +174,7 @@ class AbstractRouterTable(IRouterTable):
         bucketIndex = startIndex
         refreshIDs = []
         for bucket in self._buckets[startIndex:]:
-            if force or (int(time.time()) - bucket.lastAccessed >= constant_varible.refreshTimeout):
+            if force or (int(time.time()) - bucket.lastAccessed >= constant_variable.refreshTimeout):
                 searchID = self._randomIDInBucketRange(bucketIndex)
                 refreshIDs.append(searchID)
             bucketIndex += 1

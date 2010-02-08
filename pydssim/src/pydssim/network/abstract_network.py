@@ -1,8 +1,4 @@
-from pydssim.util.protected import Protected
-from pydssim.util.decorator.require import require
-from pydssim.util.decorator.public import public
-from pydssim.util.decorator.return_type import return_type
-from pydssim.peer.i_peer import IPeer
+
 from sets import ImmutableSet
 from multiprocessing import Semaphore
 from pydssim.peer.neighbor.neighbor import Neighbor
@@ -11,7 +7,7 @@ from pydssim.util.logger import Logger
 
 
 
-class AbstractNetwork(Protected):
+class AbstractNetwork():
     """
     Defines the operations of Network .
 
@@ -24,9 +20,10 @@ class AbstractNetwork(Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, simulation, peers , newPeerTime, maxNeighbors,startPort=4000):
-       
+    def initialize(self, simulation, peers , newPeerTime, maxNeighbors,portal,startPort=3999):
+        
         self.__simulation = simulation
+        self.__portalID = portal+":%s"%startPort
         
         self.__startPort = startPort
         
@@ -38,33 +35,35 @@ class AbstractNetwork(Protected):
         self.__maxNeighbors = maxNeighbors
         Logger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(peers,newPeerTime,maxNeighbors))
     
-    @public
+    
     def getSimulation(self):
         return self.__simulation
     
-    @public
+    def getPortalID(self):
+        return self.__portalID
+    
     def setSimulation(self, simulation):
         self.__simulation = simulation
         return self.__simulation
     
-    @public
+    
     def getPeers(self):
         return self.__peers
     
-    @public
+    
     def getNewPeerTime(self):
         return self.__newPeerTime
     
-    @public
+    
     def getLayout(self):
         return self.__layout
     
-    @public
+    
     def setLayout(self, layout):
         self.__layout = layout
         return self.__layout
     
-    @public
+    
     def countPeers(self):
         semaphore = Semaphore()
         semaphore.acquire()
@@ -72,7 +71,7 @@ class AbstractNetwork(Protected):
         semaphore.release()
         return tamPeers
    
-    @public
+    
     def addPeer(self, peer):
         
         if self.__layout.has_key(peer.getPID()):
@@ -86,7 +85,7 @@ class AbstractNetwork(Protected):
         Logger().resgiterLoggingInfo("Add peer %s in Layout Network "%(peer.getPID()))
         return self.__layout.has_key(peer.getPID())
 
-    @public
+    
     def removePeer(self, peer):
         
         flag = True
@@ -114,11 +113,11 @@ class AbstractNetwork(Protected):
         
         return flag
 
-    @public
+   
     def getMaxNeighbor(self):
         return self.__maxNeighbors
          
-    @public
+    
     def getPeer(self, peerId):
         
         semaphore = Semaphore()
@@ -127,7 +126,7 @@ class AbstractNetwork(Protected):
         semaphore.release()
         return peer
     
-    @public
+    
     def getNeighbors(self, peer):
         
         if not self.__layout.has_key(peer.getPID()):
@@ -135,7 +134,7 @@ class AbstractNetwork(Protected):
         return layout[peer.getPID()].getNeighbors()
     
      
-    @public
+    
     def dispatchMessage(self, message):
         sem = Semaphore()
         sem.acquire()
@@ -144,7 +143,7 @@ class AbstractNetwork(Protected):
         sem.release()
         return message
     
-    @public
+    
     def isNeighbor(self, source, target):
         sem = Semaphore()
         sem.acquire()
@@ -154,7 +153,7 @@ class AbstractNetwork(Protected):
         sem.release()
         return aux
     
-    @public
+    
     def createConnection(self, source, target):
        
         if source == target:
@@ -181,7 +180,7 @@ class AbstractNetwork(Protected):
         sem.release()
         return self.isNeighbor(source, target)
     
-    @public
+    
     def removeConnection(self, source, target):
         
         if isinstance(source.getPID(), bool) or isinstance(target.getPID(), bool):
@@ -213,7 +212,7 @@ class AbstractNetwork(Protected):
         return not self.isNeighbor(source, target)
     
    
-    @public
+    
     def getPeerForConnection(self):
          
         if (len(self.__layout) == 0) or (len(self.__layout) == len(self.__connectedPeers)):
@@ -225,7 +224,7 @@ class AbstractNetwork(Protected):
                 return self.__layout[peerKey]
         
     
-    @public
+    
     def getPeerForDisconnection(self):
         if len(self.__connectedPeers) == 0:
             return None
@@ -234,31 +233,15 @@ class AbstractNetwork(Protected):
         
         return self.__connectedPeers[peerKey]
     
-    @public
+   
     def countConnectedPeers(self):
         return len(self.__connectedPeers)
     
-    @public
+    
     def countDisconnectedPeers(self):
         return len(self.__layout) - self.countConnectedPeers()
     
-    '''
-    
-    @public
-    def registerPeerForAdvertisement(self, peer):
-        self.__advertisedPeers.append(peer)
-        return self.__advertisedPeers[self.__advertisedPeers.index(peer)]
-    
-    @public
-    def getPeerForAdvertisement(self):
-        return self.__advertisedPeers[0]
-    
-    @public
-    def unregisterPeerForAdvertisement(self, peer):
-        return self.__advertisedPeers.pop(self.__advertisedPeers.index(peer))
-    '''
-    
-    @public
+   
     def getConnectedPeers(self):
         return self.__connectedPeers
     
