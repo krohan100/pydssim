@@ -39,7 +39,7 @@ class ChatClient(object):
         self.txt_host = gtk.Entry()
         self.txt_host.set_text("127.0.0.1")
         self.txt_host.show()
-        self.txt_host.connect("activate", self.on_connect, "via-text")
+        self.txt_host.connect("activate", self.on_connect1, "via-text")
         hbox1.pack_start(self.txt_host)
         
         lbl_port = gtk.Label("Port:")
@@ -48,7 +48,7 @@ class ChatClient(object):
         self.txt_port = gtk.Entry()
         self.txt_port.set_text("19912")
         self.txt_port.show()
-        self.txt_port.connect("activate", self.on_connect, "via-text")
+        self.txt_port.connect("activate", self.on_connect1, "via-text")
         hbox1.pack_start(self.txt_port)
 
         lbl_user = gtk.Label("Username:")
@@ -56,7 +56,7 @@ class ChatClient(object):
         hbox2.pack_start(lbl_user, padding = 10)
         self.txt_user = gtk.Entry()
         self.txt_user.show()
-        self.txt_user.connect("activate", self.on_connect, "via-text")
+        self.txt_user.connect("activate", self.on_connect1, "via-text")
         hbox2.pack_start(self.txt_user)
 
         lbl_password = gtk.Label("Password:")
@@ -65,12 +65,12 @@ class ChatClient(object):
         self.txt_password = gtk.Entry()
         self.txt_password.set_visibility(False)
         self.txt_password.show()
-        self.txt_password.connect("activate", self.on_connect, "via-text")
+        self.txt_password.connect("activate", self.on_connect1, "via-text")
         hbox2.pack_start(self.txt_password)
         
         self.btn_connect = gtk.Button("Connect")
         self.btn_connect.show()
-        self.btn_connect.connect("clicked", self.on_connect)
+        self.btn_connect.connect("clicked", self.on_connect1)
         hbox2.pack_start(self.btn_connect, padding = 10)
 
         sw = gtk.ScrolledWindow()
@@ -117,7 +117,7 @@ class ChatClient(object):
     #
     # connect/disconnect logic
     #
-    def on_connect(self, widget, data = None):
+    def on_connect1(self, widget, data = None):
         if self.btn_connect.get_label() == "Connect":
             try:
                 self.conn = rpyc.connect(self.txt_host.get_text(), int(self.txt_port.get_text()))

@@ -23,6 +23,7 @@ class Logger(Protected):
         self.initialize(fileMode)
     
     def initialize(self,fileMode='w'):
+        self.debug = False
         #today = datetime.today().strftime("%Y_%m_%d_%H_%M_%S")
         #LOG_FILENAME = 'logging_simulatorfile_'+today+'.log'
         LOG_FILENAME = 'logging_simulation_file.log'
@@ -35,10 +36,14 @@ class Logger(Protected):
         
     @public
     def resgiterLoggingInfo(self, msg):
-        self.logger.info(msg)     
+        self.logger.info(msg)
+        if self.debug:
+            print msg     
     
     @public
     def resgiterLoggingError(self, msg):
-        self.logger.error(msg) 
+        self.logger.error(msg)
+        if self.debug:
+            print msg 
         
         

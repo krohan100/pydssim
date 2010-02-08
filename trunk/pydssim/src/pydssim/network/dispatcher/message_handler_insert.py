@@ -25,15 +25,13 @@ class MessageHandlerInsertPeer(AbstractMessageHandler):
         try:
             try:
                 
-                peerID,super,host,port = data.split()
+                peerID,host,port = data.split()
                 
-                
-               
-                 
-                if self.getPeer().maxPeersReached() and peerID != super:
+              
+                if self.getPeer().maxPeersReached():
                     #print 'maxPeers %d reached: connection terminating' % self.getMaxPeers()
                     #peerConn.sendData(ERROR, 'Join: too many peers')
-                    peerConn.sendData(AbstractMessageHandler.PEERFULL ,self.getPeer().getMySuperPeer())
+                    peerConn.sendData(AbstractMessageHandler.PEERFULL )
                     return
                 
                 if peerID not in self.getPeer().getPeerIDs() and peerID != self.getPeer().getPID():
