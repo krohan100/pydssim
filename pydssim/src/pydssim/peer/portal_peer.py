@@ -9,6 +9,9 @@ Defines the module with the implementation AbstractPeer class.
 
 from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.util.decorator.public import public,createURN
+from pydssim.util.logger import Logger
+from random import randint
+import math
 
 class PortalPeer(AbstractPeer):
     """
@@ -45,9 +48,11 @@ class PortalPeer(AbstractPeer):
     def updatePeerLevel(self,peerId,peerLevel): 
         self.__superPeers[peerId]=peerLevel
            
-    def addSuperPeer(self,peerId,peerLevel):
+    def addSuperPeer(self,peerId,peerLevel=1):
         self.__superPeers[peerId]=peerLevel
-        
+        Logger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, peerLevel))
+        ###
+        #fazer o al do hyper
         
         if math.log(len(self.__superPeers),2) > self.__dimension:
             self.__dimension = int(math.log(len(self.__superPeers),2))+1
