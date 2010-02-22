@@ -6,14 +6,10 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 @contact: lglmoura@cos.ufrj.br 
 @since: 28/10/2009
 """
-from __future__ import with_statement
-#from rpyc import Service, async
-#from rpyc.utils.server import ThreadedServer
-import thread 
+
 import threading
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
-from pydssim.util.decorator.public import public
-from pydssim.simulation.process.new_peers_simulation_process import NewPeersSimulationProcess
+
 from pydssim.peer.default_peer import DefaultPeer
 from pydssim.peer.portal_peer import PortalPeer
 from pydssim.peer.abstract_peer import AbstractPeer
