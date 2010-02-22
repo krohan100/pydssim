@@ -90,10 +90,12 @@ class AbstractPeer:
         self.__isConnected = False
         Logger().resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__serverHost,self.__serverPort))
         self.__dispatcher = self.__createHandleMessage()
+        
         self.__services = ServiceRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
         self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
+        
         self.__connectionTime = 0
         
         self.__disconnectionTime = 0
@@ -462,6 +464,16 @@ class AbstractPeer:
             
     ''' 
     
+    def __newSuperPeer(self,host,port):
+        resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTSPEER, 
+                        '%s %s %d' % (self.getPID(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+        Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+        self.setMySuperPeer(self.getPID())
+        self.setPeerType(AbstractPeer.SUPER)
+        
+    
     def connectPortal(self, portalID, hops=1):
     
         """ ConnectPeers(host, port, hops) 
@@ -493,14 +505,7 @@ class AbstractPeer:
             if (resp[0][0] != AbstractMessageHandler.REPLY):
                 
                 if resp[0][0] == AbstractMessageHandler.FIRSTSP:
-                    resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTSPEER, 
-                        '%s %s %d' % (self.getPID(),
-                                  self.getServerHost(), 
-                                  self.getServerPort()))#[0]
-                    Logger().resgiterLoggingInfo ("Insert First  SuperPeers (%s,%s)" % (host,port))
-                    self.setMySuperPeer(self.getPID())
-                    self.setPeerType(AbstractPeer.SUPER)
-                    
+                    self.__newSuperPeer(host, port)
                    
                     
                 return
@@ -512,17 +517,20 @@ class AbstractPeer:
                 resp.reverse()
             resp.pop()    # get rid of header count reply
             
-            
+            super = True
             while len(resp):
                 
-                nextpid,host,port = resp.pop()[1].split()
                 
+                nextpid,hostSuper,portSuper = resp.pop()[1].split()
                 
                 if nextpid != self.getPID():
-                    if self.connectSuperPeers(host, port, hops ):
+                    if self.connectSuperPeers(hostSuper, portSuper, hops ):
                         Logger().resgiterLoggingInfo ("Connected to SUperPeers (%s,%s)" % (host,port))
+                        super = False
                         break
-                    
+            
+            if super:
+                self.__newSuperPeer(host, port)       
                 
         except:
             traceback.print_exc()

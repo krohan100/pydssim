@@ -38,7 +38,7 @@ def createPeer(port=4000,ipaddress=None,startport=None):
 
 if __name__ == '__main__':
    
-    amount = 5 #int(sys.argv[1])
+    amount = 30 #int(sys.argv[1])
     import socket
     ipAddress = socket.gethostbyname(socket.gethostname())
     print 'Network interface IP address omitted; using %s   ...' % ipAddress

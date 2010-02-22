@@ -10,7 +10,7 @@ class AbstractRepository():
     def initialize(self, peer):
         self.__peer = peer
         self.__elements = {}
-        Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
+        #Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         
     
     
@@ -19,7 +19,7 @@ class AbstractRepository():
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
-        Logger().resgiterLoggingInfo("Add Service %s - %s in Repository URN  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getURN()))
+        #Logger().resgiterLoggingInfo("Add Service %s - %s in Repository URN  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getURN()))
         return element
     
     

@@ -26,7 +26,7 @@ class AbstractMessageHandler():
         self.__messageName = messageName
         self.__peer = peer
         self.__canID = canID
-        Logger().resgiterLoggingInfo("Message => Create Message Handler %s can %s"%(self.__messageName,self.__canID))
+        #Logger().resgiterLoggingInfo("Message => Create Message Handler %s can %s"%(self.__messageName,self.__canID))
                                      
     
     
