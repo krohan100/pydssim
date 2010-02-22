@@ -16,6 +16,7 @@ from pydssim.util.decorator.public import public
 from pydssim.simulation.process.new_peers_simulation_process import NewPeersSimulationProcess
 from pydssim.peer.default_peer import DefaultPeer
 from pydssim.peer.portal_peer import PortalPeer
+from pydssim.peer.abstract_peer import AbstractPeer
 
 from pydssim.util.logger import Logger
 from SimPy.Simulation import *
@@ -67,21 +68,21 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peer = DefaultPeer(network,urn,port)
            
-            peer.createServices(simulation.getResourcePeer())
+            #peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
             peer.connectPortal(portal.getPID())
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
             t.start()
-            
-            
-           
+                      
             port += 1
            
             
           
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random() 
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
+            
+        print portal.getSuperPeers() 
        
        
             
