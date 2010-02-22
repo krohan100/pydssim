@@ -7,8 +7,8 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 @since: 28/10/2009
 """
 from __future__ import with_statement
-from rpyc import Service, async
-from rpyc.utils.server import ThreadedServer
+#from rpyc import Service, async
+#from rpyc.utils.server import ThreadedServer
 import thread 
 import threading
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
