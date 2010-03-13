@@ -21,7 +21,7 @@ class DefaultPeer(AbstractPeer):
 
     def __init__(self,network, urn=createURN("peer"),serverPort=4000):
         
-        AbstractPeer.initialize(self,  network,urn,serverPort,network.getMaxNeighbor())
+        AbstractPeer.initialize(self,  network,urn,serverPort,1)
     
     
 

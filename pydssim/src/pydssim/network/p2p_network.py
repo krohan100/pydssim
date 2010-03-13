@@ -17,7 +17,6 @@ class P2PNetwork(AbstractNetwork):
     """
 
     def __init__(self, simulation,peers ,newPeerTime,neighbors):
-        import socket
-        portal = socket.gethostbyname(socket.gethostname())
-        AbstractNetwork.initialize(self, simulation, peers ,newPeerTime,neighbors,portal)
+       
+        AbstractNetwork.initialize(self, simulation, peers ,newPeerTime,neighbors)
         

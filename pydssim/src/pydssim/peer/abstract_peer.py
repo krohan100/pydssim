@@ -19,7 +19,7 @@ from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from pydssim.peer.repository.shared_recource_repository import SharedRecourceRepository
 from pydssim.peer.repository.history_repository import HistoryRepository
-from sets import ImmutableSet
+#from sets import ImmutableSet
 from pydssim.util.logger import Logger
 from random import randint
 from pydssim.util.resource_maps import *
@@ -67,19 +67,18 @@ class AbstractPeer:
         
         return dispatcher
     
-    def initialize(self, network,  urn=createURN("peer"), serverPort=3000, maxPeers=57,  peerType = SIMPLE, mySuperPeer = NULL ):
+    def initialize(self, network,  urn=createURN("peer"), serverPort=3000, maxPeers=1,  peerType = SIMPLE):
         import socket
         
         self.__peerType = peerType
-        self.__mySuperPeer = mySuperPeer # tes so no simple pee 
+        
         self.__maxPeers = int(maxPeers)
         self.__serverPort = int(serverPort)
         self.__attemptedConnectionNumber = 0
         self.__serverHost = socket.gethostbyname(socket.gethostname())
         self.__pid = '%s:%d' % (self.__serverHost, self.__serverPort)
         self.__peerLock = threading.Lock()
-        self.__peerNeighbors = {} 
-                
+        self.__peerNeighbors = {}     
         self.__shutdown = False  
     
         self.__handlers = {}
@@ -203,10 +202,7 @@ class AbstractPeer:
     
     def getPeerLock(self):
         return self.__peerLock
-    
-    def getPeerNeighbors(self):
-        return self.__peerNeighbors
-    
+   
     def getMaxPeers(self):
         return self.__maxPeers
     
@@ -259,93 +255,8 @@ class AbstractPeer:
        
         self.__router = router
 
-
-
-   
-    def addPeerNeighbor( self, peerID, host, port ):
+  
     
-        """ Adds a peer name and host:port mapping to the known list of peers.
-        
-        """
-       
-        
-        if peerID not in self.getPeerNeighbors() and (self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) < self.getMaxPeers()):
-            self.getPeerNeighbors()[ peerID ] = (host, int(port))
-            
-            return True
-        else:
-            return False
-
-
-
-    
-    def getPeer( self, peerID ):
-    
-        """ Returns the (host, port) tuple for the given peer name """
-        assert peerID in self.getPeerNeighbors()    # maybe make this just a return NULL?
-        return self.getPeerNeighbors()[ peerID ]
-
-
-
-    
-    def removePeer( self, peerID ):
-    
-        """ Removes peer information from the known list of peers. """
-        if peerID in self.getPeerNeighbors():
-            del self.getPeerNeighbors()[ peerID ]
-
-
-
-    
-    def addPeerAt( self, loc, peerID, host, port,super ):
-    
-        """ Inserts a peer's information at a specific position in the 
-        list of peers. The functions addpeerat, getpeerat, and removepeerat
-        should not be used concurrently with addpeer, getpeer, and/or 
-        removepeer. 
-    
-        """
-        self.getPeerNeighbors()[ loc ] = (peerID, host, int(port),super)
-
-
-
-    
-    def getPeerAt( self, loc ):
-    
-        if loc not in self.getPeerNeighbors():
-            return None
-        return self.getPeerNeighbors()[ loc ]
-
-
-
-    
-    def removePeerAt( self, loc ):
-    
-           removePeer( self, loc ) 
-
-
-
-    
-    def getPeerIDs( self ):
-    
-        """ Return a list of all known peer id's. """
-        return self.getPeerNeighbors().keys()
-
-
-    def numberOfPeers( self ):
-   
-        """ Return the number of known peer's. """
-        return len(self.getPeerNeighbors())
- 
-    def maxPeersReached( self ):
-       
-        """ Returns whether the maximum limit of names has been added to the
-        list of known peers. Always returns True if maxPeers is set to
-        0.
-    
-        """
-        assert self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) <= self.getMaxPeers()
-        return self.getMaxPeers() > 0 and len(self.getPeerNeighbors()) == self.getMaxPeers()
 
 
     def makeServerSocket( self, port, backlog=5 ):
@@ -464,14 +375,7 @@ class AbstractPeer:
             
     ''' 
     
-    def __newSuperPeer(self,host,port):
-        resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTSPEER, 
-                        '%s %s %d' % (self.getPID(),
-                                  self.getServerHost(), 
-                                  self.getServerPort()))#[0]
-        Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
-        self.setMySuperPeer(self.getPID())
-        self.setPeerType(AbstractPeer.SUPER)
+    
         
     
     def connectPortal(self, portalID, hops=1):
@@ -501,17 +405,7 @@ class AbstractPeer:
             resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTSPEERS, '',
                         pid=peerID)
             
-            ##
-            if (resp[0][0] != AbstractMessageHandler.REPLY):
-                
-                if resp[0][0] == AbstractMessageHandler.FIRSTSP:
-                    self.__newSuperPeer(host, port)
-                   
-                    
-                return
             
-          
-            ##
             
             if len(resp) > 1:
                 resp.reverse()
@@ -574,26 +468,7 @@ class AbstractPeer:
             
             return True
             
-            '''
-            
-            # do recursive depth first search to add more peers
-            resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTPEERS, '',
-                        pid=peerID)
-            
-            if len(resp) > 1:
-                resp.reverse()
-            resp.pop()    # get rid of header count reply
-            
-            
-            
-            while len(resp):
-                nextpid,host,port,super = resp.pop()[1].split()
                 
-                
-                if nextpid != self.getPID():
-                    self.connectPeers(host, port, hops - 1)
-                    
-            '''        
         except:
             #traceback.print_exc()
             #print "eerrroooo" 
@@ -651,14 +526,7 @@ class AbstractPeer:
     def getConnectionTime(self):
         return self.__connectionTime
     
-    
-    def hasPeerNeighbor(self, peerNeighborID):
-        return self.__peerNeighbors.has_key(peerNeighborID)
-    
-   
-    def getPeerNeighbor(self, peerID):
-        return self.__peerNeighbors[peerID]
-           
+               
     def setDisconnectionTime(self, time):
         self.__disconnectionTime = time
     
@@ -689,6 +557,88 @@ class AbstractPeer:
         return self.__equivalences
     
     
+    def getPeerNeighbors(self):
+        return self.__peerNeighbors
+    
+    def hasPeerNeighbor(self, peerNeighborID):
+        return self.__peerNeighbors.has_key(peerNeighborID)
+    
+   
+    def getPeerNeighbor(self, peerID):
+        return self.__peerNeighbors[peerID]
+    
+    
+    def addPeerNeighbor( self, peerID, host, port ):
+    
+        """ Adds a peer name and host:port mapping to the known list of peers.
+        
+        """
+       
+        
+        if peerID not in self.getPeerNeighbors() and (self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) < self.getMaxPeers()):
+            self.getPeerNeighbors()[ peerID ] = (host, int(port))
+            
+            return True
+        else:
+            return False
+
+    def getPeer( self, peerID ):
+    
+        """ Returns the (host, port) tuple for the given peer name """
+        assert peerID in self.getPeerNeighbors()    # maybe make this just a return NULL?
+        return self.getPeerNeighbors()[ peerID ]
+    
+    def removePeer( self, peerID ):
+    
+        """ Removes peer information from the known list of peers. """
+        if peerID in self.getPeerNeighbors():
+            del self.getPeerNeighbors()[ peerID ]
+
+    
+    def addPeerAt( self, loc, peerID, host, port,super ):
+    
+        """ Inserts a peer's information at a specific position in the 
+        list of peers. The functions addpeerat, getpeerat, and removepeerat
+        should not be used concurrently with addpeer, getpeer, and/or 
+        removepeer. 
+    
+        """
+        self.getPeerNeighbors()[ loc ] = (peerID, host, int(port),super)
+
+   
+    def getPeerAt( self, loc ):
+    
+        if loc not in self.getPeerNeighbors():
+            return None
+        return self.getPeerNeighbors()[ loc ]
+
+   
+    def removePeerAt( self, loc ):
+    
+           removePeer( self, loc ) 
+
+   
+    def getPeerIDs( self ):
+    
+        """ Return a list of all known peer id's. """
+        return self.getPeerNeighbors().keys()
+
+
+    def numberOfPeers( self ):
+   
+        """ Return the number of known peer's. """
+        return len(self.getPeerNeighbors())
+ 
+    def maxPeersReached( self ):
+       
+        """ Returns whether the maximum limit of names has been added to the
+        list of known peers. Always returns True if maxPeers is set to
+        0.
+    
+        """
+        assert self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) <= self.getMaxPeers()
+        return self.getMaxPeers() > 0 and len(self.getPeerNeighbors()) == self.getMaxPeers()
+    
     def createServices(self,tam=7):
         optionMap   = [ServiceMap(),HardwareMap()]
         optionClass = [Service,Hardware]
@@ -708,7 +658,7 @@ class AbstractPeer:
         
        
         
-   
+
     '''
    
    
