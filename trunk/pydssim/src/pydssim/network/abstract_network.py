@@ -20,9 +20,10 @@ class AbstractNetwork():
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self, simulation, peers , newPeerTime, maxNeighbors,portal,startPort=3999):
+    def initialize(self, simulation, peers , newPeerTime, maxNeighbors,portal="127.0.0.1",startPort=3999):
         
         self.__simulation = simulation
+        
         self.__portalID = portal+":%s"%startPort
         
         self.__startPort = startPort
@@ -41,6 +42,9 @@ class AbstractNetwork():
     
     def getPortalID(self):
         return self.__portalID
+    
+    def setPortalID(self, portalID):
+        self.__portalID = portalID
     
     def setSimulation(self, simulation):
         self.__simulation = simulation

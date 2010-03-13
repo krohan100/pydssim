@@ -10,8 +10,8 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 import threading
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
 
-from pydssim.peer.default_peer import DefaultPeer
-from pydssim.peer.portal_peer import PortalPeer
+from pydssim.peer.super_peer import SuperPeer
+
 from pydssim.peer.abstract_peer import AbstractPeer
 
 from pydssim.util.logger import Logger
@@ -19,7 +19,7 @@ from SimPy.Simulation import *
 from random import random
 import uuid
 
-class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
+class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
     Defines the the implementation of BeginSimulationProcessFactory.
     @author: Luiz Gustavo 
@@ -29,35 +29,34 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"NEW SIMPLEPEER PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"NEW SUPERPEER PROCESS FACTORY")
         
    
     def factorySimulationProcess(self):
         
-        
-        
+               
         simulation = self.getSimulation()
         network    = simulation.getNetwork()
         peer_number = 0
        
         ###
-        port = 4000
-        
+        port = 3000
       
         portalID = network.getPortalID()
-      
-        while ( ( simulation.getSimInstance().now() < simulation.getSimulationTime() ) and ( peer_number < simulation.getNetwork().getPeers())):
+        totalSP = simulation.getNetwork().getPeers()/simulation.getNetwork().getMaxNeighbor()
+        
+        while ( ( simulation.getSimInstance().now() < simulation.getSimulationTime() ) and ( peer_number < totalSP )):
             peer_number+=1 
             
-            urn = "urn:peer:"+uuid.uuid1().__str__()
+            urn = "urn:superpeer:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
             Logger().resgiterLoggingInfo(logMsg)
             
-            peer = DefaultPeer(network,urn,port)
+            peer = SuperPeer(network,urn,port)
            
             #peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
-            peer.connectPortal(portalID)
+            peer.newSuperPeer(portalID)
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
@@ -65,10 +64,9 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                       
             port += 1
            
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*10
             
-        #print portal.getSuperPeers() 
-       
+        
        
             
       
