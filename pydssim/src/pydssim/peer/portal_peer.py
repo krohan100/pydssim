@@ -10,6 +10,7 @@ Defines the module with the implementation AbstractPeer class.
 from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.util.decorator.public import public,createURN
 from pydssim.util.logger import Logger
+from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from random import randint
 import math
 
@@ -22,15 +23,26 @@ class PortalPeer(AbstractPeer):
     @since: 22/08/2009
     """
 
-    def __init__(self,network, urn=createURN("peer"),serverPort=4000):
+    def __init__(self, urn=createURN("peer"),serverPort=4000, maxNeighbor=1):
         
-        AbstractPeer.initialize(self,  network,urn,serverPort,network.getMaxNeighbor(),peerType = AbstractPeer.PORTAL)
+        AbstractPeer.initialize(self,  urn,serverPort,maxNeighbor,peerType = AbstractPeer.PORTAL)
         self.__superPeers = {}
         
         self.__dimension = 1
     
     def getSuperPeers(self):
         return self.__superPeers
+    
+    def notifyNewSuperPeer(self,superID):
+        
+        host,port = superID.split(":")
+        for pid in self.getSuperPeerIDs():
+            if superID != pid:
+                hostid,portid = pid.split(":")
+                resp = self.connectAndSend(hostid, portid, AbstractMessageHandler.NOTIFYSUPERPEER, 
+                                '%s %s %s %d' % (superID,host,port,self.__dimension))#[0]
+                Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+       
     
     def numberOfSuperPeers( self ):
    
@@ -56,6 +68,8 @@ class PortalPeer(AbstractPeer):
         
         if math.log(len(self.__superPeers),2) > self.__dimension:
             self.__dimension = int(math.log(len(self.__superPeers),2))+1
+        
+        print self.__superPeers, self.__dimension
           
     
     def getSuperPeerWithLevel(self,level):
