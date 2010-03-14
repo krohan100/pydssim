@@ -33,6 +33,7 @@ from pydssim.network.dispatcher.message_handler_peer_name import MessageHandlerP
 from pydssim.network.dispatcher.message_handler_super_peer import MessageHandlerSuperPeer
 from pydssim.network.dispatcher.message_handler_insert_super_peer import MessageHandlerInsertSuperPeer
 from pydssim.network.dispatcher.message_handler_list_super_peer import MessageHandlerListSuperPeer
+from pydssim.network.dispatcher.message_handler_notify_super_peer import MessageHandlerNotifySuperPeer
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.peer_connection import PeerConnection
 
@@ -62,15 +63,18 @@ class AbstractPeer:
         dispatcher.registerMessageHandler(MessageHandlerSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerInsertSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerListSuperPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerNotifySuperPeer(self))
         
         
         
         return dispatcher
     
-    def initialize(self, network,  urn=createURN("peer"), serverPort=3000, maxPeers=1,  peerType = SIMPLE):
+    def initialize(self,  urn=createURN("peer"), serverPort=3000, maxPeers=1,  peerType = SIMPLE):
         import socket
         
         self.__peerType = peerType
+        
+        
         
         self.__maxPeers = int(maxPeers)
         self.__serverPort = int(serverPort)
@@ -424,7 +428,8 @@ class AbstractPeer:
                         break
             
             if super:
-                self.__newSuperPeer(host, port)       
+                Logger().resgiterLoggingInfo ("sem super")
+                #self.__newSuperPeer(host, port)       
                 
         except:
             traceback.print_exc()

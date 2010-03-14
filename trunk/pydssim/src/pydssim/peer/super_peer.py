@@ -21,11 +21,25 @@ class SuperPeer(AbstractPeer):
     @since: 22/08/2009
     """
 
-    def __init__(self,network, urn=createURN("peer"),serverPort=4000):
-        
-        AbstractPeer.initialize(self, network,urn,serverPort,network.getMaxNeighbor(), peerType = AbstractPeer.SUPER)
+    def __init__(self, urn=createURN("peer"),serverPort=4000, maxNeighbor=1):
         
         self.__superPeerNeighbors = {}
+        self.__dimension = 1
+        
+        AbstractPeer.initialize(self, urn,serverPort, maxNeighbor, peerType = AbstractPeer.SUPER)
+        
+   
+        
+    def addSuperPeerNeighbors(self,peerId):
+        self.__superPeerNeighbors[peerId]=peerId
+        Logger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, self.getPID()))
+                
+        print "Super peer +>",self.getPID(),self.__superPeerNeighbors.keys()    
+        
+    def getSuperPeerNeighborsIDs( self ):
+    
+        """ Return a list of all known peer id's. """
+        return self.__superPeerNeighbors.keys()
         
     def newSuperPeer(self,portalID):
         
@@ -38,6 +52,7 @@ class SuperPeer(AbstractPeer):
         self.setMySuperPeer(self.getPID())
         self.setPeerType(AbstractPeer.SUPER)
         
-    
+    def setDimension(self, dimension):
+        self.__dimension = dimension
 
         

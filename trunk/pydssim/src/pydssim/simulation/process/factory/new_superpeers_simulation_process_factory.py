@@ -52,7 +52,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
             Logger().resgiterLoggingInfo(logMsg)
             
-            peer = SuperPeer(network,urn,port)
+            peer = SuperPeer(urn,port,simulation.getNetwork().getMaxNeighbor())
            
             #peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
@@ -64,7 +64,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                       
             port += 1
            
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*10
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*(peer_number*2)
             
         
        

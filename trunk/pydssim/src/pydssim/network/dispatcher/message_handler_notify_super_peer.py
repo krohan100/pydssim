@@ -7,10 +7,10 @@ from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageH
 from pydssim.util.logger import Logger
 import traceback
 
-class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
+class MessageHandlerNotifySuperPeer(AbstractMessageHandler):
     
     def __init__(self,peer):
-        self.initialize(peer,"INSERTSPEER",AbstractMessageHandler.INSERTSPEER)
+        self.initialize(peer,"NOTIFYSUPERPEER",AbstractMessageHandler.NOTIFYSUPERPEER)
         
     def executeHandler(self,peerConn,data):
         
@@ -25,16 +25,16 @@ class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
         try:
             try:
                 
-                peerID,host,port = data.split()
+                peerID,host,port,dimension = data.split()
                 
                              
-                if peerID not in self.getPeer().getPeerIDs() and peerID != self.getPeer().getPID():
+                if peerID not in self.getPeer().getSuperPeerNeighborsIDs() and peerID != self.getPeer().getPID():
                     
-                    self.getPeer().addSuperPeer("%s:%s"%( host, port))
+                    self.getPeer().addSuperPeerNeighbors("%s:%s"%( host, port))
+                    
+                    self.getPeer().setDimension(dimension)
                     
                     peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
-                    
-                    self.getPeer().notifyNewSuperPeer(peerID)
                     
                     
                 else:

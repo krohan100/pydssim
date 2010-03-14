@@ -53,7 +53,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
             Logger().resgiterLoggingInfo(logMsg)
             
-            peer = DefaultPeer(network,urn,port)
+            peer = DefaultPeer(urn,port)
            
             #peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)

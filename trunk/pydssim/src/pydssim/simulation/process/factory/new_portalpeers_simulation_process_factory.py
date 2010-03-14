@@ -43,7 +43,7 @@ class NewPortalPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         startPort = 2000
        
       
-        portal = PortalPeer(network, "urn:portalpeer:"+uuid.uuid1().__str__(), startPort)
+        portal = PortalPeer( "urn:portalpeer:"+uuid.uuid1().__str__(), startPort)
         
         network.setPortalID(portal.getPID())
         tp = threading.Thread( target = portal.mainLoop,
