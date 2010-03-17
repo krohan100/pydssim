@@ -2,23 +2,24 @@ from pydssim.util.logger import Logger
 
 class AbstractMessageHandler():
     
-    PEERNAME        = "NAME"   # request a peer's canonical id
-    LISTPEERS       = "LISP"
-    LISTSPEERS      = "LISS"   # List Super Peer
-    INSERTPEER      = "JOIN"
-    INSERTSPEER     = "SJIN"
-    QUERY           = "QUER"
-    QRESPONSE       = "RESP"
-    FILEGET         = "FGET"
-    PEERQUIT        = "QUIT"
-    SUPERPEER       = "SUPE"
-    SSUPERPEER      = "SSUP"
-    REPLY           = "REPL"
-    ERROR           = "ERRO"
-    PEERFULL        = "PEFU"
-    PEEREXIT        = "EXIT" 
-    FIRSTSP         = "FTST"
-    NOTIFYSUPERPEER = "NSPE" # MSG sen from porta for all sp
+    PEERNAME        = "0001"# request a peer's canonical id
+    LISTPEERS       = "0002"
+    LISTSPEERS      = "0003"   # List Super Peer
+    INSERTPEER      = "0004"
+    INSERTSPEER     = "0005"
+    QUERY           = "0006"
+    QRESPONSE       = "0007"
+    FILEGET         = "0008"
+    PEERQUIT        = "0009"
+    SUPERPEER       = "0010"
+    SSUPERPEER      = "0012"
+    REPLY           = "0013"
+    ERROR           = "0014"
+    PEERFULL        = "0015"
+    PEEREXIT        = "0016" 
+    FIRSTSP         = "0017"
+    NOTIFYSUPERPEER = "0018" # MSG sen from porta for all sp
+    NOTIFYSUPERPEERNEIGHBORS = "0019" # MSG sen from porta for all sp
     
     def __init__(self):
         raise NotImplementedError()
