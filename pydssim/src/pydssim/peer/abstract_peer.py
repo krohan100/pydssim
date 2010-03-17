@@ -33,7 +33,7 @@ from pydssim.network.dispatcher.message_handler_peer_name import MessageHandlerP
 from pydssim.network.dispatcher.message_handler_super_peer import MessageHandlerSuperPeer
 from pydssim.network.dispatcher.message_handler_insert_super_peer import MessageHandlerInsertSuperPeer
 from pydssim.network.dispatcher.message_handler_list_super_peer import MessageHandlerListSuperPeer
-from pydssim.network.dispatcher.message_handler_notify_super_peer import MessageHandlerNotifySuperPeer
+
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.peer_connection import PeerConnection
 
@@ -64,6 +64,7 @@ class AbstractPeer:
         dispatcher.registerMessageHandler(MessageHandlerInsertSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerListSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerNotifySuperPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerNotifySuperPeerNeighbors(self))
         
         
         
@@ -379,10 +380,8 @@ class AbstractPeer:
             
     ''' 
     
-    
-        
-    
-    def connectPortal(self, portalID, hops=1):
+     
+    def connectPortal(self, portalID, hops=1,type=SIMPLE):
     
         """ ConnectPeers(host, port, hops) 
     
@@ -404,6 +403,15 @@ class AbstractPeer:
             #print "contacting " #+ peerID
             _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
     
+            
+            if type == AbstractPeer.SUPER:
+                resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTSPEER, 
+                        '%s %s %d' % (self.getPID(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+                Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+            
+            
              
             # do recursive depth first search to add more peers
             resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTSPEERS, '',
@@ -422,10 +430,13 @@ class AbstractPeer:
                 nextpid,hostSuper,portSuper = resp.pop()[1].split()
                 
                 if nextpid != self.getPID():
-                    if self.connectSuperPeers(hostSuper, portSuper, hops ):
+                    if self.connectSuperPeers(hostSuper, portSuper, hops,type ):
                         Logger().resgiterLoggingInfo ("Connected to SUperPeers (%s,%s)" % (host,port))
+                        
                         super = False
-                        break
+                        if type == AbstractPeer.SIMPLE:
+                            break
+                        self.addSuperPeerNeighbors(nextpid)
             
             if super:
                 Logger().resgiterLoggingInfo ("sem super")
@@ -438,7 +449,7 @@ class AbstractPeer:
     
     
     
-    def connectSuperPeers(self, host, port, hops=1):
+    def connectSuperPeers(self, host, port, hops=1,type=SIMPLE):
     
         """ ConnectPeers(host, port, hops) 
     
@@ -460,7 +471,15 @@ class AbstractPeer:
             _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
     
             #print "contacted " + peerID
-            resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTPEER, 
+            
+            if type == AbstractPeer.SIMPLE:
+                msgHandler = AbstractMessageHandler.INSERTPEER
+                
+            else:
+                msgHandler = AbstractMessageHandler.INSERTSPEER
+                Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+            
+            resp = self.connectAndSend(host, port, msgHandler, 
                         '%s %s %d' % (self.getPID(),
                                   self.getServerHost(), 
                                   self.getServerPort()))#[0]
@@ -582,7 +601,7 @@ class AbstractPeer:
         
         if peerID not in self.getPeerNeighbors() and (self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) < self.getMaxPeers()):
             self.getPeerNeighbors()[ peerID ] = (host, int(port))
-            
+           
             return True
         else:
             return False
