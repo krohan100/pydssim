@@ -54,9 +54,10 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peer = SuperPeer(urn,port,simulation.getNetwork().getMaxNeighbor())
            
-            #peer.createServices(simulation.getResourcePeer())
+           
             network.addPeer(peer)
-            peer.newSuperPeer(portalID)
+            #peer.newSuperPeer(portalID)
+            peer.connectPortal(portalID,1 , peer.getPeerType())
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
@@ -64,7 +65,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                       
             port += 1
            
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*(peer_number*2)
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*(peer_number)#*2)
             
         
        
