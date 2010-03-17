@@ -221,11 +221,11 @@ def main():
    
    '''
    
-   serverport = 4052
+   serverport = 4003
    #int(sys.argv[1])
    maxpeers = 2# sys.argv[2]
    #peerid = "127.0.0.1:%s"%(serverport-1)#sys.argv[3]
-   peerid = "127.0.0.1:%s"%(4003)#sys.argv[3]
+   peerid = "127.0.0.1:%s"%(4004)#sys.argv[3]
    app = BTGui( firstpeer=peerid, maxpeers=maxpeers, serverport=serverport )
    app.mainloop()
 
