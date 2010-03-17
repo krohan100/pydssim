@@ -34,7 +34,6 @@ class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
                     
                     peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
                     
-                    self.getPeer().notifyNewSuperPeer(peerID)
                     
                     
                 else:

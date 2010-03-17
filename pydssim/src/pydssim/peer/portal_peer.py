@@ -36,13 +36,17 @@ class PortalPeer(AbstractPeer):
     def notifyNewSuperPeer(self,superID):
         
         host,port = superID.split(":")
+        
+        
         for pid in self.getSuperPeerIDs():
+           
             if superID != pid:
                 hostid,portid = pid.split(":")
                 resp = self.connectAndSend(hostid, portid, AbstractMessageHandler.NOTIFYSUPERPEER, 
-                                '%s %s %s %d' % (superID,host,port,self.__dimension))#[0]
-                Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
-       
+                                '%s %s %s %d' % (superID,host,port,self.__dimension))
+                Logger().resgiterLoggingInfo ("NotiFy SuperPeers (%s:%s)" % (self.getServerHost(),self.getServerPort()))
+                
+        
     
     def numberOfSuperPeers( self ):
    
@@ -60,6 +64,21 @@ class PortalPeer(AbstractPeer):
     def updatePeerLevel(self,peerId,peerLevel): 
         self.__superPeers[peerId]=peerLevel
            
+    def notifyNewSuperPeer(self,superID):
+        
+        host,port = superID.split(":")
+        
+        
+        for pid in self.getSuperPeerIDs():
+            
+            if superID != pid:
+                hostid,portid = pid.split(":")
+                resp = self.connectAndSend(hostid, portid, AbstractMessageHandler.NOTIFYSUPERPEER, 
+                                '%s %s %s %d' % (superID,host,port,self.__dimension))
+                Logger().resgiterLoggingInfo ("Insert and NotiFy SuperPeers (%s:%s)" % (self.getServerHost(),self.getServerPort()))
+                
+               
+           
     def addSuperPeer(self,peerId,peerLevel=1):
         self.__superPeers[peerId]=peerLevel
         Logger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, peerLevel))
@@ -68,6 +87,8 @@ class PortalPeer(AbstractPeer):
         
         if math.log(len(self.__superPeers),2) > self.__dimension:
             self.__dimension = int(math.log(len(self.__superPeers),2))+1
+        
+        self.notifyNewSuperPeer(peerId)
         
         print self.__superPeers, self.__dimension
           

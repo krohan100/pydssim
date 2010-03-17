@@ -29,12 +29,32 @@ class SuperPeer(AbstractPeer):
         AbstractPeer.initialize(self, urn,serverPort, maxNeighbor, peerType = AbstractPeer.SUPER)
         
    
+    def getDimension(self):
+        return self.__dimension
+    
+    def addSuperPeer(self,peerId,peerLevel=1):
+        
+        self.addSuperPeerNeighbors(peerId)
+        
         
     def addSuperPeerNeighbors(self,peerId):
         self.__superPeerNeighbors[peerId]=peerId
-        Logger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, self.getPID()))
-                
-        print "Super peer +>",self.getPID(),self.__superPeerNeighbors.keys()    
+        Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (peerId, self.getPID()))
+        
+        
+        
+       
+        '''
+        host,port = peerId.split(":")
+        
+        resp = self.connectAndSend(host, port, AbstractMessageHandler.NOTIFYSUPERPEERNEIGHBORS, 
+                                '%s %s %s %d' % (self.getPID(),
+                                                 self.getServerHost(),
+                                                 self.getServerPort(),self.getDimension()))
+        msg = "NotiFy my SuperPeers NeighborsIDs (%s:%s)" % (host,port)
+        Logger().resgiterLoggingInfo (msg)
+        print msg
+        '''   
         
     def getSuperPeerNeighborsIDs( self ):
     
