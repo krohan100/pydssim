@@ -42,10 +42,11 @@ class SuperPeer(AbstractPeer):
         Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (peerId, self.getPID()))
         
         
+        '''       
         print "Iam =------->",self.getPID()        
         print "Super peer +>",peerId
         print "SuperPeer neighbors",self.__superPeerNeighbors.keys() 
-       
+       '''
         
         
     def getSuperPeerNeighborsIDs( self ):
