@@ -601,10 +601,10 @@ class AbstractPeer:
         if peerID not in self.getPeerNeighbors() and (self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) < self.getMaxPeers()):
             self.getPeerNeighbors()[ peerID ] = (host, int(port))
            
-            print "Iam =------->",self.getPID()        
+            '''print "Iam =------->",self.getPID()        
             print "Super peer +>",peerID
             print "neighbors",self.getPeerNeighbors().keys() 
-           
+           '''
             return True
         else:
             return False
