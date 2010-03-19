@@ -24,7 +24,15 @@ class Portal:
     def updatePeerLevel(self,peerId,peerLevel): 
         self.__superPeers[peerId]=peerLevel
            
-    def addSuperPeer(self,peerId,peerLevel):
+    def addSuperPeer(self,peer):
+        #host,port = peer.getID().split(":")
+        self.__superPeers[peer.getID()]=(peer.getLevelNeighbor(),peer)
+        
+        
+        if math.log(len(self.__superPeers),2) > self.__dimension:
+            self.__dimension = int(math.log(len(self.__superPeers),2))+1
+    
+    def addSuperPeer1(self,peerId,peerLevel):
         host,port = peerId.split(":")
         self.__superPeers[peerId]=(peerLevel,host,port)
         
@@ -36,8 +44,10 @@ class Portal:
     def getSuperPeerWithLevel(self,level):
         superPeers = {}
         try:
-            superPeers = dict([(pID,pLevel) for pID, pLevel in self.getSuperPeers().iteritems() if pLevel == level])
+            superPeers = dict([(peerID,(pLevel,peer)) for peerID, (pLevel,peer) in self.getSuperPeers().iteritems() if pLevel == level])
+            
         except:
+            print "erro"
             pass    
         return superPeers
     
