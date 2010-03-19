@@ -18,19 +18,23 @@ if __name__ == '__main__':
     #print math.log(5,2)
     #print math.trunc(math.log(5,2))
     portal = Portal()
-    super1 = portal.getSuperPeerWithLevelMin()
-    print "Super 1",super1
-    for i in range(1,9):
+   
+   
+    for i in range(1,5):
         peer = Peer(i)
-        portal.addSuperPeer(peer.getID(),peer.getLevelNeighbor())
+        #portal.addSuperPeer(peer.getID(),peer.getLevelNeighbor())
+        
+        portal.addSuperPeer(peer)
+        peer.discoverNewNeighbor(portal, portal.getDimension())
     
     print len(portal.getSuperPeers())
-        
+    
+    '''    
     for k,v in portal.getSuperPeers().iteritems():
         print k,v 
    
+   
     
-    '''
     opp = portal.getPeers().pop(3)
     print opp
     
@@ -46,11 +50,11 @@ if __name__ == '__main__':
     '''
     #super = find_key(portal.getSuperPeers(), min(portal.getSuperPeers().values())) 
     #super = portal.getSuperPeerWithLevel(min(portal.getSuperPeers().values()))
-    super = portal.getSuperPeerWithLevelMin()
+    super = portal.getSuperPeers()
     print "con -> ",portal.getDimension()
-    print "super" ,super,super1  
-    for k,v in super.iteritems():
-        print k,v    
+    print "super" ,super 
+    #for k,v in super.iteritems():
+    #    print k,v    
        
         
         
