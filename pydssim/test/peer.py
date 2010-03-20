@@ -9,7 +9,8 @@ class Peer():
     def __init__( self, id = 0):
         
         self.__neighbor = {}
-        self.__id = "127.0.0.1:%s000"%id
+        #127.0.0.1:
+        self.__id = "%s"%id
         self.__levelNeighbor = 1
         
     def getID(self):
@@ -22,82 +23,81 @@ class Peer():
         return self.__neighbor
     
     def setLevelNeighbor(self,level):
+        
+        while self.__hasLevelNeighbor(level):
+           level+=1 
         self.__levelNeighbor = level
     
     def addNeighbor(self,id,level=1):
-        self.__neighbor[id]= level
+        
+        if not (id in self.getNeighbor().keys()):
+            self.__neighbor[id]= level
     
     def __discoverMinLevel(self):
         
         if max(self.getNeighbor().values())> self.getLevelNeighbor():
             return self.getLevelNeighbor()
+    
+    def __hasLevelNeighbor(self,level):
+          
+          return level in self.getNeighbor().values()
+       
+    def __hasPeerNeighbor(self,peer):
+        
+          return peer.getID() in self.getNeighbor().keys()
+         
         
     def getSuperPeerWithLevel(self,peers,level):
-        superPeers = {}
-        try:
-            superPeers = dict([(peerID,(pLevel,peer)) for peerID, (pLevel,peer) in peers.iteritems() if (pLevel == level and peerID != self.getID())])
-            
-        except:
-            print "erro"
-            pass    
-        return superPeers
+        return dict([(peerID,(pLevel,peer)) for peerID, (pLevel,peer) in peers.iteritems() if (pLevel == level and peerID != self.getID())])
     
     
     def getPeerLevels(self,dportal,peers):
         pass
     
     def discoverNewNeighbor(self,portal,dportal):
+       
         peers = portal.getSuperPeers()
-        myLevel = self.getLevelNeighbor()
-        print "DP = %s id = %s  l = %s "%(dportal,self.getID(),self.getLevelNeighbor())
-        while dportal >= myLevel:
+         
+        auxLevel = self.getLevelNeighbor()
+         
+        while dportal >= auxLevel:
             
-            peerLevel =  self.getSuperPeerWithLevel(peers, myLevel)
-            auxlevel = myLevel
-            while peerLevel == {} and dportal >= auxlevel:
-                
-                auxlevel+=1
-                peerLevel =  self.getSuperPeerWithLevel(peers, auxlevel)
-                
-            myLevel+=1
+            peerLevel =  self.getSuperPeerWithLevel(peers, auxLevel)
             
-            if  peerLevel != {}:
-                id,(level,peer) = peerLevel.popitem()
-            else:
+            if (not peerLevel) :
+               auxLevel+=1
+               continue 
+            
+            if (peerLevel) and (self.__hasLevelNeighbor(auxLevel)):
+               auxLevel+=1
+               continue 
+            
+             
+            id,(level,peer) = peerLevel.popitem()
+            
+            
+            if (self.__hasPeerNeighbor(peer)):
+               
+               auxLevel+=1
                continue
             
             self.addNeighbor(id, level)
+           
             peer.addNeighbor(self.getID(),level) 
             
-            self.setLevelNeighbor(myLevel)
-            portal.addSuperPeer(self)
+            if self.getLevelNeighbor() == level:
+                
+               self.setLevelNeighbor(self.getLevelNeighbor()+1)
+               portal.addSuperPeer(self)
             
-            peer.setLevelNeighbor(myLevel)
+            peer.setLevelNeighbor(level+1)
             portal.addSuperPeer(peer)
-            
-            print myLevel
+            print "peerid", self.getID()
+            print "SID Neig level",self.getID(),self.getNeighbor(),self.getLevelNeighbor()
+            print "PID Neig level",id,peer.getNeighbor(),peer.getLevelNeighbor()
+            print " "
+ 
              
-            print "--->>>", id,level,peer
-            print self.getNeighbor()
+           
             
-      
-        
-        
-    def discoverNewNeighbor1(self,peers,level=1):
-        
-        
-        for idKey,npeer in peers.iteritems():
-            if idKey in self.__neighbor:
-                return False
-            if npeer.getLevelNeighbor() == self.__levelNeighbor:
-                self.addNeighbor(npeer.getID(), self.__levelNeighbor)
-                npeer.addNeighbor(self.getID(),self.__levelNeighbor)
-                self.setLevelNeighbor(self.getLevelNeighbor()+1)
-                npeer.setLevelNeighbor(max(self.getNeighbor().values()))
-                return True
-        
-        for idKey,npeer in peers.iteritems():
-            pass   
-            
-            
-        
+    

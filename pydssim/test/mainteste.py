@@ -20,41 +20,25 @@ if __name__ == '__main__':
     portal = Portal()
    
    
-    for i in range(1,5):
+    for i in range(1,17):
         peer = Peer(i)
         #portal.addSuperPeer(peer.getID(),peer.getLevelNeighbor())
         
         portal.addSuperPeer(peer)
         peer.discoverNewNeighbor(portal, portal.getDimension())
     
-    print len(portal.getSuperPeers())
     
-    '''    
-    for k,v in portal.getSuperPeers().iteritems():
-        print k,v 
+    
+    
+       
+    for (peerID,(level,peer)) in portal.getSuperPeers().iteritems():
+        print peerID,level,peer
+        for npeerID,nlevel in peer.getNeighbor().iteritems():
+            print npeerID,"->",nlevel
    
    
     
-    opp = portal.getPeers().pop(3)
-    print opp
-    
-    
-    print "max",max(portal.getSuperPeers().values())  
-    print "mim",min(portal.getSuperPeers().values())
-    
-    
-    for k in portal.getSuperPeers().values():
-        print k
-    
-    
-    '''
-    #super = find_key(portal.getSuperPeers(), min(portal.getSuperPeers().values())) 
-    #super = portal.getSuperPeerWithLevel(min(portal.getSuperPeers().values()))
-    super = portal.getSuperPeers()
-    print "con -> ",portal.getDimension()
-    print "super" ,super 
-    #for k,v in super.iteritems():
-    #    print k,v    
+       
        
         
         
