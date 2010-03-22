@@ -33,20 +33,20 @@ class SuperPeer(AbstractPeer):
     def getSuperPeerNeighbor(self):
         return self.__superPeerNeighbors
     
-    def __insertSuperPeer(self,peerID,pid,level):
+    def insertSuperPeer(self,peerID,pid,level):
         
         dhost,dport = peerID.split(":")
         resp = self.connectAndSend(dhost, dport, AbstractMessageHandler.INSERTSPEER, 
                     '%s %d' % (pid,
-                               level))#[0]
+                               int(level)))#[0]
         Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
         
-    def __updateLeveSuperPeer(self,peerID,level):
+    def updateLeveSuperPeer(self,portalID,peerID,level):
         
         dhost,dport = peerID.split(":")
         
         resp = self.connectAndSend(dhost, dport, AbstractMessageHandler.UPDATEPEERLEVEL, 
-                    '%d' % (level))#[0]
+                    '%s %d' % (portalID,level))#[0]
         Logger().resgiterLoggingInfo ("Update %s in level %d" % (peerID,level))       
     
     def connectPortal(self, portalID, hops=1):
@@ -73,7 +73,7 @@ class SuperPeer(AbstractPeer):
     
             
            
-            self.__insertSuperPeer(portalID,self.getPID(),self.getLevelNeighbor())
+            self.insertSuperPeer(portalID,self.getPID(),self.getLevelNeighbor())
              
             # do recursive depth first search to add more peers
             resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTSPEERS, '',
@@ -100,17 +100,22 @@ class SuperPeer(AbstractPeer):
     
     def addSuperPeer(self,id,level):
         self.addSuperPeerNeighbor(id, level)
+        
     
     def addSuperPeerNeighbor(self,id,level=1):
         
         if not (id in self.getSuperPeerNeighbor().keys()):
             Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (id, self.getPID()))
             self.getSuperPeerNeighbor()[id]= level
+            print "MyID and myneighbor",self.getPID()
+            for x,v in self.getSuperPeerNeighbor().iteritems():
+                print x,v
     
     def setLevelNeighbor(self,level):
         
         while self.__hasLevelNeighbor(level):
            level+=1 
+        print "LPID level",self.getPID(),level
         self.__levelNeighbor = level
         
     def __hasLevelNeighbor(self,level):
@@ -135,7 +140,7 @@ class SuperPeer(AbstractPeer):
          
         auxLevel = int(self.getLevelNeighbor())
         dportal = int(dportal)
-        print "Peers",peers 
+         
         print "dportal, auxLevel",dportal,auxLevel
         while dportal >= auxLevel:
             
@@ -158,19 +163,16 @@ class SuperPeer(AbstractPeer):
             
             self.addSuperPeerNeighbor(peerID, level)
             
-            self.__insertSuperPeer(peerID,self.getPID(),level)
+            self.insertSuperPeer(peerID,self.getPID(),level)
             
             if self.getLevelNeighbor() == level:
                self.setLevelNeighbor(self.getLevelNeighbor()+1)
-               self.__insertSuperPeer(portalID,self.getPID(),self.getLevelNeighbor())
+               self.insertSuperPeer(portalID,self.getPID(),self.getLevelNeighbor())
                        
-            self.__updateLeveSuperPeer(peerID, level+1)
-            self.__insertSuperPeer(peerID,peerID,level+1)
+            self.updateLeveSuperPeer(portalID,peerID, level+1)
+            #self.insertSuperPeer(portalID,peerID,level+1)
             
-            print "Mypeerid", self.getPID()
-            print "SID Neig level",self.getPID(),self.getSuperPeerNeighbor(),self.getLevelNeighbor()
-           
-            print " "
+            
         
     
 

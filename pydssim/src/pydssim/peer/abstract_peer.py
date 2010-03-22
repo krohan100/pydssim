@@ -33,6 +33,7 @@ from pydssim.network.dispatcher.message_handler_peer_name import MessageHandlerP
 from pydssim.network.dispatcher.message_handler_super_peer import MessageHandlerSuperPeer
 from pydssim.network.dispatcher.message_handler_insert_super_peer import MessageHandlerInsertSuperPeer
 from pydssim.network.dispatcher.message_handler_list_super_peer import MessageHandlerListSuperPeer
+from pydssim.network.dispatcher.message_handler_update_level import MessageHandlerUpdatePeerLevel
 
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.peer_connection import PeerConnection
@@ -63,6 +64,7 @@ class AbstractPeer:
         dispatcher.registerMessageHandler(MessageHandlerSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerInsertSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerListSuperPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerUpdatePeerLevel(self))
        
         
         

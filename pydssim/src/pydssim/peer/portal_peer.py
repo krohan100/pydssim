@@ -63,7 +63,7 @@ class PortalPeer(AbstractPeer):
             self.__dimension = int(math.log(len(self.__superPeers),2))+1
         
                 
-        #print self.__superPeers, self.__dimension
+        print self.__superPeers, self.__dimension
           
     
     def getSuperPeerWithLevel(self,level):
