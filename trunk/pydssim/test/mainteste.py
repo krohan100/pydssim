@@ -20,7 +20,7 @@ if __name__ == '__main__':
     portal = Portal()
    
    
-    for i in range(1,9):
+    for i in range(1,17):
         peer = Peer(i)
         #portal.addSuperPeer(peer.getID(),peer.getLevelNeighbor())
         
