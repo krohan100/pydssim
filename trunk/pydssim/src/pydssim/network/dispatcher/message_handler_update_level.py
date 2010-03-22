@@ -7,10 +7,10 @@ from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageH
 from pydssim.util.logger import Logger
 import traceback
 
-class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
+class MessageHandlerUpdatePeerLevel(AbstractMessageHandler):
     
     def __init__(self,peer):
-        self.initialize(peer,"INSERTSPEER",AbstractMessageHandler.INSERTSPEER)
+        self.initialize(peer,"UPDATEPEERLEVEL",AbstractMessageHandler.UPDATEPEERLEVEL)
         
     def executeHandler(self,peerConn,data):
         
@@ -25,24 +25,13 @@ class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
         try:
             try:
                 
-                peerID,level = data.split()
+                level = data.split()
                 
-                             
-                if peerID not in self.getPeer().getPeerIDs() and peerID != self.getPeer().getPID():
-                    
-                    self.getPeer().addSuperPeer(peerID,level)
-                    
-                    peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
-                    
-                    
-                    
-                else:
-                   
-                    peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: peer already inserted %s'
-                               % peerID)
+                self.getPeer().setLevelNeighbor(level)
+                
             except:
                 
-                Logger().resgiterLoggingInfo('invalid insert %s: %s' % (str(peerConn), data))
+                Logger().resgiterLoggingInfo('invalid update Peerleve %s: %s' % (str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: incorrect arguments')
                 traceback.print_exc()
         finally:

@@ -31,7 +31,9 @@ class Peer():
     def addNeighbor(self,id,level=1):
         
         if not (id in self.getNeighbor().keys()):
-            self.__neighbor[id]= level
+            self.getNeighbor()[id]= level
+            
+           
     
     def __discoverMinLevel(self):
         
@@ -50,9 +52,7 @@ class Peer():
     def getSuperPeerWithLevel(self,peers,level):
         return dict([(peerID,(pLevel,peer)) for peerID, (pLevel,peer) in peers.iteritems() if (pLevel == level and peerID != self.getID())])
     
-    
-    def getPeerLevels(self,dportal,peers):
-        pass
+ 
     
     def discoverNewNeighbor(self,portal,dportal):
        
@@ -71,31 +71,26 @@ class Peer():
             if (peerLevel) and (self.__hasLevelNeighbor(auxLevel)):
                auxLevel+=1
                continue 
-            
              
             id,(level,peer) = peerLevel.popitem()
             
-            
             if (self.__hasPeerNeighbor(peer)):
-               
                auxLevel+=1
                continue
             
             self.addNeighbor(id, level)
-           
             peer.addNeighbor(self.getID(),level) 
             
             if self.getLevelNeighbor() == level:
-                
                self.setLevelNeighbor(self.getLevelNeighbor()+1)
                portal.addSuperPeer(self)
             
             peer.setLevelNeighbor(level+1)
             portal.addSuperPeer(peer)
-            print "peerid", self.getID()
-            print "SID Neig level",self.getID(),self.getNeighbor(),self.getLevelNeighbor()
-            print "PID Neig level",id,peer.getNeighbor(),peer.getLevelNeighbor()
-            print " "
+            #print "peerid", self.getID()
+            #print "SID Neig level",self.getID(),self.getNeighbor(),self.getLevelNeighbor()
+            #print "PID Neig level",id,peer.getNeighbor(),peer.getLevelNeighbor()
+            #print " "
  
              
            

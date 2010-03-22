@@ -21,12 +21,11 @@ class MessageHandlerListSuperPeer(AbstractMessageHandler):
             try:
                 
                 if self.getPeer().numberOfSuperPeers() > 0:
-                    
+                    dimension = self.getPeer().getDimension()
                     peerConn.sendData(AbstractMessageHandler.REPLY, '%d' % self.getPeer().numberOfSuperPeers())
-                    for pid in self.getPeer().getSuperPeerIDs():
-                        host,port = pid.split(":")
+                    for pid,level in self.getPeer().getSuperPeers().iteritems():
                         
-                        peerConn.sendData(AbstractMessageHandler.REPLY, '%s %s %s' % (pid, host, port))
+                        peerConn.sendData(AbstractMessageHandler.REPLY, '%s %d %d' % (pid,int(level),dimension))
                 else:
                     
                     peerConn.sendData(AbstractMessageHandler.FIRSTSP, '%d'%self.getPeer().numberOfSuperPeers())
