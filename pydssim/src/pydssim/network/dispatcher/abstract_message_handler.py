@@ -18,8 +18,7 @@ class AbstractMessageHandler():
     PEERFULL        = "0015"
     PEEREXIT        = "0016" 
     FIRSTSP         = "0017"
-    NOTIFYSUPERPEER = "0018" # MSG sen from porta for all sp
-    NOTIFYSUPERPEERNEIGHBORS = "0019" # MSG sen from porta for all sp
+    UPDATEPEERLEVEL = "0018"
     
     def __init__(self):
         raise NotImplementedError()

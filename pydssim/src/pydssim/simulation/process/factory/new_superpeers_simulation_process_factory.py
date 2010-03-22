@@ -40,7 +40,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         peer_number = 0
        
         ###
-        port = 3000
+        port = 3001
       
         portalID = network.getPortalID()
         totalSP = simulation.getNetwork().getPeers()/simulation.getNetwork().getMaxNeighbor()
@@ -57,7 +57,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
            
             network.addPeer(peer)
             #peer.newSuperPeer(portalID)
-            peer.connectPortal(portalID,1 , peer.getPeerType())
+            peer.connectPortal(portalID,1)
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )

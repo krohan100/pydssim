@@ -402,16 +402,7 @@ class AbstractPeer:
             #print "contacting " #+ peerID
             _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
     
-            
-            if type == AbstractPeer.SUPER:
-                resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTSPEER, 
-                        '%s %s %d' % (self.getPID(),
-                                  self.getServerHost(), 
-                                  self.getServerPort()))#[0]
-                Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
-            
-            
-             
+           
             # do recursive depth first search to add more peers
             resp = self.connectAndSend(host, port, AbstractMessageHandler.LISTSPEERS, '',
                         pid=peerID)
@@ -426,9 +417,10 @@ class AbstractPeer:
             while len(resp):
                 
                 
-                nextpid,hostSuper,portSuper = resp.pop()[1].split()
+                nextpid,level,dimension = resp.pop()[1].split()
                 
                 if nextpid != self.getPID():
+                    hostSuper,portSuper = nextpid.split(":")
                     if self.connectSuperPeers(hostSuper, portSuper, hops,type ):
                         Logger().resgiterLoggingInfo ("Connected to SUperPeers (%s,%s)" % (host,port))
                         
