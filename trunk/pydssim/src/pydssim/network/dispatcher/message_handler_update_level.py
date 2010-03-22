@@ -25,9 +25,11 @@ class MessageHandlerUpdatePeerLevel(AbstractMessageHandler):
         try:
             try:
                 
-                level = data.split()
-                
+                portalID,level = data.split()
+                print "UPpid, UPlevel",self.getPeer().getPID(),level
                 self.getPeer().setLevelNeighbor(level)
+                
+                self.getPeer().insertSuperPeer(portalID,self.getPeer().getPID(),self.getPeer().getLevelNeighbor())
                 
             except:
                 
