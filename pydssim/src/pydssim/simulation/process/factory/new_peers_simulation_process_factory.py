@@ -16,7 +16,8 @@ from pydssim.peer.abstract_peer import AbstractPeer
 
 from pydssim.util.logger import Logger
 from SimPy.Simulation import *
-from random import random
+from random import random,randint
+
 import uuid
 
 class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
@@ -66,8 +67,10 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             port += 1
            
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
+            print "Randon Peer",network.getRandonPeer()
             
         #print portal.getSuperPeers() 
+        
        
        
             
