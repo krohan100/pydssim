@@ -30,7 +30,7 @@ class MessageHandlerInsertSuperPeer(AbstractMessageHandler):
                              
                 if peerID not in self.getPeer().getPeerIDs() and peerID != self.getPeer().getPID():
                     
-                    self.getPeer().addSuperPeer(peerID,level)
+                    self.getPeer().addSuperPeer(peerID,int(level))
                     
                     peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
                     

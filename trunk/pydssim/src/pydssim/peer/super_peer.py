@@ -107,25 +107,28 @@ class SuperPeer(AbstractPeer):
         if not (id in self.getSuperPeerNeighbor().keys()):
             Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (id, self.getPID()))
             self.getSuperPeerNeighbor()[id]= int(level)
+            '''
             print "MyID and myneighbor",self.getPID()
             for x,v in self.getSuperPeerNeighbor().iteritems():
                 print x,v
-    
+                
+                '''
     def setLevelNeighbor(self,level):
         
         while self.__hasLevelNeighbor(level):
-            print "level2",self.getPID(),level
             level+=1 
-        print "LPID level",self.getPID(),level
+        
         self.__levelNeighbor = level
         
     def __hasLevelNeighbor(self,level):
-          print "values",self.getPID(),self.getSuperPeerNeighbor().values(),level,level in self.getSuperPeerNeighbor().values()
-          return (level in self.getSuperPeerNeighbor().values())
+        
+        #level = int(level)
+        #print "values",self.getPID(),self.getSuperPeerNeighbor().values(),level,level in self.getSuperPeerNeighbor().values()
+        return (level in self.getSuperPeerNeighbor().values())
        
     def __hasPeerNeighbor(self,peer):
         
-          return (peer in self.getSuperPeerNeighbor().keys())  
+        return (peer in self.getSuperPeerNeighbor().keys())  
         
      
     
@@ -142,8 +145,7 @@ class SuperPeer(AbstractPeer):
         auxLevel = int(self.getLevelNeighbor())
         dportal = int(dportal)
          
-        print "dportal, auxLevel",dportal,auxLevel,self.getPID(
-                                                               )
+        #print "---->>>>>  dportal, auxLevel",dportal,auxLevel,self.getPID()
         while dportal >= auxLevel:
             
             peerLevel =  self.getSuperPeerWithLevel(peers, auxLevel)
@@ -162,9 +164,6 @@ class SuperPeer(AbstractPeer):
             if (self.__hasPeerNeighbor(peerID)):
                auxLevel+=1
                continue
-            
-            
-            print "myescolha :", self.getPID(),peerID,level
             
             self.addSuperPeerNeighbor(peerID, level)
             
