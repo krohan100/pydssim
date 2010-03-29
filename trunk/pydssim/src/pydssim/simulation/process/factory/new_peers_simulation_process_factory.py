@@ -56,7 +56,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peer = DefaultPeer(urn,port)
            
-            #peer.createServices(simulation.getResourcePeer())
+            peer.createServices(simulation.getResourcePeer())
             network.addPeer(peer)
             peer.connectPortal(portalID)
             
@@ -67,7 +67,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             port += 1
            
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
-            print "Randon Peer",network.getRandonPeer()
+            
             
         #print portal.getSuperPeers() 
         

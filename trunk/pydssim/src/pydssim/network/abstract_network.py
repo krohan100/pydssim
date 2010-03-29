@@ -128,10 +128,8 @@ class AbstractNetwork():
         return peer
     
     def getRandonPeer(self):
-        
-        key = self.__layout.keys()[randint(0,self.countPeers())]
-        
-        return self.__layout[key]
+       
+        return self.getPeerID(self.__layout.keys()[randint(0,self.countPeers()-1)])
     
        
     
