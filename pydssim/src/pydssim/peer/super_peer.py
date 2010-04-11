@@ -107,12 +107,7 @@ class SuperPeer(AbstractPeer):
         if not (id in self.getSuperPeerNeighbor().keys()):
             Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (id, self.getPID()))
             self.getSuperPeerNeighbor()[id]= int(level)
-            '''
-            print "MyID and myneighbor",self.getPID()
-            for x,v in self.getSuperPeerNeighbor().iteritems():
-                print x,v
-                
-                '''
+            
     def setLevelNeighbor(self,level):
         
         while self.__hasLevelNeighbor(level):
@@ -122,8 +117,7 @@ class SuperPeer(AbstractPeer):
         
     def __hasLevelNeighbor(self,level):
         
-        #level = int(level)
-        #print "values",self.getPID(),self.getSuperPeerNeighbor().values(),level,level in self.getSuperPeerNeighbor().values()
+      
         return (level in self.getSuperPeerNeighbor().values())
        
     def __hasPeerNeighbor(self,peer):

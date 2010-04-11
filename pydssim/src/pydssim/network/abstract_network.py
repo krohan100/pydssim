@@ -131,6 +131,10 @@ class AbstractNetwork():
        
         return self.getPeerID(self.__layout.keys()[randint(0,self.countPeers()-1)])
     
+    def getPeersFromLayout(self,peer):
+       
+        return dict([(peerID,peerN) for (peerID,peerN) in self.getLayout().iteritems() if (peerN.getPID() != peer.getPID())])
+    
        
     
     
