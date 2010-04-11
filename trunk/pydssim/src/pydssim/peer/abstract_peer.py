@@ -19,6 +19,8 @@ from pydssim.peer.repository.service_repository import ServiceRepository
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 from pydssim.peer.repository.shared_recource_repository import SharedRecourceRepository
 from pydssim.peer.repository.history_repository import HistoryRepository
+from pydssim.peer.repository.direct_trust_repository import DirectTrustRepository
+from pydssim.peer.repository.trust_final_repository import TrustFinalRepository
 #from sets import ImmutableSet
 from pydssim.util.logger import Logger
 from random import randint
@@ -97,9 +99,12 @@ class AbstractPeer:
         self.__dispatcher = self.__createHandleMessage()
         
         self.__services = ServiceRepository(self)
+        self.__directTrust= DirectTrustRepository(self)
+        self.__trustFinal = TrustFinalRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
         self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
+        #self.__trust = 
         
         self.__connectionTime = 0
         
@@ -561,6 +566,9 @@ class AbstractPeer:
     
     def getServices(self):
         return self.__services
+    
+    def getDirectTrust(self):
+        return self.__directTrust
         
     
     def getSharedResource(self):    
@@ -675,7 +683,7 @@ class AbstractPeer:
             resour  = randint(0, (len(map[concept]) - 1))
                     
             service = optionClass[option](pid=createURN("peer"),resource=map[concept][resour])
-            self.__services.addElement(service)
+            self.getServices().addElement(service)
         
        
         

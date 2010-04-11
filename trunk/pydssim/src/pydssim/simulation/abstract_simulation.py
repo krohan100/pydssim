@@ -7,16 +7,15 @@ Defines the module with the implementation of AbstractSimulation class.
 @since: 5/07/2009
 """
 
-from pydssim.util.protected import Protected
+
 from pydssim.simulation.i_simulation import ISimulation
-from pydssim.util.decorator.public import public
 from multiprocessing import Semaphore
 from SimPy.Simulation import Simulation
 from pydssim.util.logger import Logger
 
 import time
 
-class AbstractSimulation(Protected, ISimulation):
+class AbstractSimulation(ISimulation):
     """
     Defines the interface of simulation objects.
     @author: Luiz Gustavo
@@ -39,14 +38,15 @@ class AbstractSimulation(Protected, ISimulation):
         self.__network = None
         self.__simulationProcessFactory = []
         self.__resourcePeer = 0
+        self.__transactionNumber = 0
         Logger().resgiterLoggingInfo("Create Simulation ")
 
     
-    @public
+   
     def initializeNetwork(self, peers ,newPeerTime ,neighbors):
         raise NotImplementedError() 
 
-    @public
+    
     def addSimulationProcessFactory(self, simulationProcessFactory):
        
         if simulationProcessFactory in self.__simulationProcessFactory:
@@ -57,7 +57,7 @@ class AbstractSimulation(Protected, ISimulation):
         
         return self.__simulationProcessFactory[self.__simulationProcessFactory.index(simulationProcessFactory)]
 
-    @public
+    
     def removeSimulationProcessFactory(self, simulationProcessFactory):
        
         if not simulationProcessFactory in self.__simulationProcessFactory:
@@ -65,50 +65,58 @@ class AbstractSimulation(Protected, ISimulation):
         self.__simulationProcessFactory.remove(simulationProcessFactory)
         return simulationProcessFactory
 
-    @public
+    
     def getSimulationProcessFactorys(self):
         return self.__simulationProcessFactory
 
-    @public
+    
     def countSimulationProcessFactorys(self):
         return len(self.__simulationProcessFactory)
     
-    @public    
+       
     def configure(self):
         raise NotImplementedError()
     
-    @public    
+        
     def getNetwork(self):
         return self.__network
     
-    @public
+    
     def setNetwork(self, network):
         
         self.__network = network
         self.__network.setSimulation(self)
         return self.__network
     
-    @public    
+       
     def getSimulationTime(self):
         return self.__simulationTime
 
-    @public
+    
     def setSimulationTime(self, simulationTime):
         
         self.__simulationTime = simulationTime
         return self.__simulationTime
     
-    @public    
+        
     def getResourcePeer(self):
         return self.__resourcePeer
 
-    @public
+    
     def setResourcePeer(self, resourcePeer):
         
         self.__resourcePeer = resourcePeer
         return self.__resourcePeer
     
-    @public
+    def getTransactionNumber(self):
+        return self.__transactionNumber
+    
+    def setTransactionNumber(self, number):
+        
+        self.__transactionNumber = number
+        return self.__transactionNumber
+    
+    
     def getCurrentSimulationTime(self):
         semaphore = Semaphore()
         semaphore.acquire()
@@ -116,7 +124,7 @@ class AbstractSimulation(Protected, ISimulation):
         semaphore.release()
         return time
     
-    @public
+    
     def setCurrentSimulationTime(self, currentSimulationTime):
        
         semaphore = Semaphore()
@@ -125,12 +133,12 @@ class AbstractSimulation(Protected, ISimulation):
         semaphore.release()
         return self.__currentSimulationTime
     
-    @public
+    
     def getSimInstance(self):
         return self.__simInstance
     
         
-    @public
+    
     def start(self):
         
         mySim = self.getSimInstance()
@@ -147,7 +155,7 @@ class AbstractSimulation(Protected, ISimulation):
         return factoryProcess
        
     
-    @public
+    
     def stop(self):
         raise NotImplementedError()
        

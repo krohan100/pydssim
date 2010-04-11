@@ -13,11 +13,14 @@ from pydssim.simulation.process.factory.abstract_simulation_process_factory impo
 from pydssim.peer.default_peer import DefaultPeer
 from pydssim.peer.portal_peer import PortalPeer
 from pydssim.peer.abstract_peer import AbstractPeer
+from pydssim.peer.trust.direct_trust import DirectTrust
+from pydssim.peer.trust.abstract_trust import AbstractTrust
 
 from pydssim.util.logger import Logger
 from SimPy.Simulation import *
-from random import random,randint
+from random import random,randint,shuffle
 
+from pydssim.util.data_util import randomDate
 import uuid
 
 class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
@@ -32,9 +35,51 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     def __init__(self):
         AbstractSimulationProcessFactory.initialize(self,"NEW SIMPLEPEER PROCESS FACTORY")
         
-   
-    def factorySimulationProcess(self):
+    
+    def createTrust(self,peer,peers,transactionNumber):
+       
         
+        keys= peers.keys()
+        shuffle(keys)
+       
+       
+            
+        directTrust = peer.getDirectTrust()
+        status = [True,False]
+        for i in keys: 
+        
+            peerID,peerN = i, peers[i]
+            
+        
+            '''
+            for i in range(0,randint(0,len(peers))):
+            
+            peerID,peerN = peers.popitem()
+        
+            '''
+                  
+            services = peerN.getServices()
+            
+           
+            for countEle in range(0,randint(0,services.countElements())):
+                
+                element = services.getRandonElement()
+                #print element.getUUID(),element.getResource()
+                
+                for countTrans in range(0,randint(0,transactionNumber)):
+                    rating= random()
+                    
+                    
+                    period = randomDate("1/1/2009 1:30 PM", "12/31/2009 4:50 AM", random())
+                    option = randint(0,1)
+                    
+                    directTrust.addElement(DirectTrust(peerID,element.getUUID(),element.getResource(),AbstractTrust.DIRECT,rating,period,status[option]))
+                
+                    
+             
+         
+               
+    def factorySimulationProcess(self):
         
         
         simulation = self.getSimulation()
@@ -57,6 +102,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             peer = DefaultPeer(urn,port)
            
             peer.createServices(simulation.getResourcePeer())
+            
             network.addPeer(peer)
             peer.connectPortal(portalID)
             
@@ -66,10 +112,13 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                       
             port += 1
            
+            self.createTrust(peer,network.getPeersFromLayout(peer),simulation.getTransactionNumber())
+            #print peer.getDirectTrust().countElements()
+              
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
             
             
-        #print portal.getSuperPeers() 
+        #print network.getRandonPeer() 
         
        
        

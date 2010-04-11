@@ -1,13 +1,19 @@
 
 from sets import ImmutableSet
 from pydssim.util.logger import Logger
+from pydssim.util.decorator.public import  createURN
+from random import random,randint
+from multiprocessing import Semaphore
 
 class AbstractRepository():
     
     def __init__(self, peer):
         raise NotImplementedError()
     
-    def initialize(self, peer):
+    def initialize(self, peer,typeRepository):
+        
+        self.__uuid = createURN(typeRepository)
+        self.__typeRepository = typeRepository
         self.__peer = peer
         self.__elements = {}
         Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
@@ -19,12 +25,12 @@ class AbstractRepository():
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
-        Logger().resgiterLoggingInfo("Add Service %s - %s in Repository URN  %s of peer %s "%(element.getUUID(),element.getResource(),self.__class__.__name__,self.__peer.getURN()))
+        Logger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(element.getUUID(),self.__class__.__name__,self.__peer.getURN()))
         return element
     
     
     def removeElement(self, element):
-        key = element.getUUID()#+self.__peer.getURN()
+        key = element.getUUID()
         if not self.__elements.has_key(key):
             raise StandardError()
         if self.__elements[key] > 0:
@@ -32,6 +38,8 @@ class AbstractRepository():
             
         return element
     
+    def lookForElement(self,uuid):
+        pass
     
     def countElements(self):
         return len(self.__elements)
@@ -41,6 +49,24 @@ class AbstractRepository():
         return self.__elements
     
     
+    def getTypeRepository(self):
+        return self.__typeRepository
+    
     def getPeer(self):
         return self.__peer
+    
+    def getUUID(self):
+        return self.__uuid
+    
+    def getElementID(self, Id):
+        
+        semaphore = Semaphore()
+        semaphore.acquire()
+        element = self.__elements[Id]
+        semaphore.release()
+        return element
+    
+    def getRandonElement(self):
+       
+        return self.getElementID(self.__elements.keys()[randint(0,self.countElements()-1)])
     
