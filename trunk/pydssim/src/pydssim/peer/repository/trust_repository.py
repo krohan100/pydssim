@@ -15,3 +15,6 @@ class TrustRepository(AbstractRepository):
         
         self.addElement(self.__direct)
         self.addElement(self.__trustf)
+        
+   
+    

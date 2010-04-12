@@ -26,6 +26,7 @@ class AbstractSimulation(ISimulation):
     def __init__(self):
         raise NotImplementedError()
 
+    
     def initialize(self):
         """
         Initializes the object.
@@ -39,6 +40,9 @@ class AbstractSimulation(ISimulation):
         self.__simulationProcessFactory = []
         self.__resourcePeer = 0
         self.__transactionNumber = 0
+        self.__transactionDateTimeStart = ""
+        self.__transactionDateTimeStop = ""
+        
         Logger().resgiterLoggingInfo("Create Simulation ")
 
     
@@ -116,6 +120,22 @@ class AbstractSimulation(ISimulation):
         self.__transactionNumber = number
         return self.__transactionNumber
     
+    def getTransactionDateTimeStart(self):
+        return self.__transactionDateTimeStart
+    
+    def setTransactionDateTimeStart(self, date):
+        
+        self.__transactionDateTimeStart = date
+        return self.__transactionDateTimeStart
+    
+    
+    def getTransactionDateTimeStop(self):
+        return self.__transactionDateTimeStop
+    
+    def setTransactionDateTimeStop(self, date):
+        
+        self.__transactionDateTimeStop = date
+        return self.__transactionDateTimeStop
     
     def getCurrentSimulationTime(self):
         semaphore = Semaphore()
