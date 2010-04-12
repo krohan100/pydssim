@@ -21,6 +21,7 @@ from pydssim.peer.repository.shared_recource_repository import SharedRecourceRep
 from pydssim.peer.repository.history_repository import HistoryRepository
 from pydssim.peer.repository.direct_trust_repository import DirectTrustRepository
 from pydssim.peer.repository.trust_final_repository import TrustFinalRepository
+from pydssim.peer.trust.trust_manager import TrustManager
 #from sets import ImmutableSet
 from pydssim.util.logger import Logger
 from random import randint
@@ -78,8 +79,6 @@ class AbstractPeer:
         
         self.__peerType = peerType
         
-        
-        
         self.__maxPeers = int(maxPeers)
         self.__serverPort = int(serverPort)
         self.__attemptedConnectionNumber = 0
@@ -99,8 +98,9 @@ class AbstractPeer:
         self.__dispatcher = self.__createHandleMessage()
         
         self.__services = ServiceRepository(self)
-        self.__directTrust= DirectTrustRepository(self)
-        self.__trustFinal = TrustFinalRepository(self)
+        self.__trustManager = TrustManager(self)
+        #self.__directTrust= DirectTrustRepository(self)
+        #self.__trustFinal = TrustFinalRepository(self)
         self.__sharedResource = SharedRecourceRepository(self)
         self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
@@ -111,10 +111,7 @@ class AbstractPeer:
         self.__disconnectionTime = 0
         self.__scheduledDisconnection = False
         
-        
-        
-        
-        
+         
     def __handlePeer( self, clientSock ):
     
         """
@@ -569,6 +566,9 @@ class AbstractPeer:
     
     def getDirectTrust(self):
         return self.__directTrust
+    
+    def getTrustManager(self):
+        return self.__trustManager
         
     
     def getSharedResource(self):    

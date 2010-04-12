@@ -40,8 +40,12 @@ class AbstractTrust():
         self.__status = status
         self.__trustType = trustType
         
-        Logger().resgiterLoggingInfo("Initialize Trust =>  URN = %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__resourceDescription,self.__rating,self.__status))
+        Logger().resgiterLoggingInfo("Initialize Trust = URN = %s,Time %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__period,self.__resourceDescription,self.__rating,self.__status))
+     
         
+    def getResourceDescription(self):
+        return self.__resourceDescription 
+    
       
     def getResourceUUID(self):
         return self.__resourceUUID
@@ -68,6 +72,8 @@ class AbstractTrust():
     def getPeriod(self):
         return self.__period
     
+    def getStatus(self):
+        return self.__status
     
     def getUUID(self):
         return self.__uuid

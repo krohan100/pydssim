@@ -18,8 +18,7 @@ class AbstractRepository():
         self.__elements = {}
         Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         
-    
-    
+   
     def addElement(self, element):
         key = element.getUUID()
         if not self.__elements.has_key(key):
