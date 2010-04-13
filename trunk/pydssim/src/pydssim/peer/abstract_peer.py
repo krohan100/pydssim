@@ -673,7 +673,8 @@ class AbstractPeer:
         
         for i in range(0,randint(1,tam)):
             option = randint(0,1)
-            resourceMap = ResourceMap(optionMap[option])
+            #resourceMap = ResourceMap(optionMap[option])
+            resourceMap = ResourceMap(optionMap[1])
          
             map = resourceMap.Map()
             

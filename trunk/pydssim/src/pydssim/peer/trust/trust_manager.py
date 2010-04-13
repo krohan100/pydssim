@@ -41,16 +41,21 @@ class TrustManager(object):
         
         directTrusts = self.getDirectTrust().getElements()
         
-        transaction = 0
-        totalTransaction = 0
-        sConfDir = 0.0
+        transaction = 0.0
+        totalTransaction = 0.0
+        sConfDir = 0.1
         
-        print peerID,service,startDate,stopDate
+        
+        
         for key in directTrusts.keys():
             
             directTrust = directTrusts[key]
             
+            #print directTrust.getResourceDescription(),startDate,directTrust.getPeriod(),stopDate,(startDate<=directTrust.getPeriod()<=stopDate)
+            
             if ((directTrust.getPeerUUID() == peerID) and (startDate<=directTrust.getPeriod()<=stopDate)):
+                #print peerID,service,startDate,stopDate
+                #print " "
                 totalTransaction+=1
                 if directTrust.getStatus() == True:
                     transaction +=1
@@ -60,8 +65,8 @@ class TrustManager(object):
                         
                 
         if nRating != 0:        
-            sConfDir = float(((transaction/totalTransaction)*(rating/nRating)))
-        
+            #print "----------->",transaction,totalTransaction,rating,nRating,float(transaction/totalTransaction),(rating/nRating)
+            sConfDir = ((transaction/totalTransaction)*(rating/nRating))       
         
         return sConfDir
     
