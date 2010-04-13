@@ -102,7 +102,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peerT = network.getRandonPeer()
             
-            print "direct ===>>",peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30 PM"),strTime("12/31/2009 4:50 AM"))
+            print "direct ===>>",peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30 PM"),strTime("1/1/2009 4:50 PM"))
               
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
        

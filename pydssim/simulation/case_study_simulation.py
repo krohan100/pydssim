@@ -12,7 +12,7 @@ from pydssim.simulation.process.factory.new_peers_simulation_process_factory imp
 simulation = ReciprocalTradeSimulationP2P()
 simulation.setSimulationTime(500000000000000)
 simulation.setResourcePeer(7)
-simulation.initializeTrust(20, "1/1/2009 1:30 PM", "12/31/2009 4:50 AM")
+simulation.initializeTrust(20, "1/1/2009 1:30 PM", "1/1/2009 4:50 PM")
 simulation.initializeNetwork(80, 30000000, 10)
 
 simulation.addSimulationProcessFactory(NewPortalPeersSimulationProcessFactory())
