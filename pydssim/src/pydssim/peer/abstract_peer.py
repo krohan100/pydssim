@@ -93,7 +93,8 @@ class AbstractPeer:
         self.__urn = urn
               
         self.__isConnected = False
-        Logger().resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__serverHost,self.__serverPort))
+        self.__logger = Logger('w','logging_simulation_peer.log')
+        self.__logger.resgiterLoggingInfo("Initialize Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__serverHost,self.__serverPort))
         self.__dispatcher = self.__createHandleMessage()
         
         self.__services = ServiceRepository(self)
