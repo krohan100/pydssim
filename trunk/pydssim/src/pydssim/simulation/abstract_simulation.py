@@ -42,8 +42,8 @@ class AbstractSimulation(ISimulation):
         self.__transactionNumber = 0
         self.__transactionDateTimeStart = ""
         self.__transactionDateTimeStop = ""
-        
-        Logger().resgiterLoggingInfo("Create Simulation ")
+        self.__logger = Logger() 
+        self.__logger.resgiterLoggingInfo("Create Simulation ")
 
     
    

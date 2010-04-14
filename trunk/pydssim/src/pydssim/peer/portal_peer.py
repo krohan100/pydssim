@@ -26,6 +26,8 @@ class PortalPeer(AbstractPeer):
     def __init__(self, urn=createURN("peer"),serverPort=4000, maxNeighbor=1):
         
         AbstractPeer.initialize(self,  urn,serverPort,maxNeighbor,peerType = AbstractPeer.PORTAL)
+        
+        
         self.__superPeers = {}
         
         self.__dimension = 1
