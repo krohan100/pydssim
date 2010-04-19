@@ -1,4 +1,4 @@
-from pydssim.util.logger import Logger
+from pydssim.util.log.message_logger import MessageLogger
 
 class AbstractMessageHandler():
     
@@ -19,6 +19,7 @@ class AbstractMessageHandler():
     PEEREXIT        = "0016" 
     FIRSTSP         = "0017"
     UPDATEPEERLEVEL = "0018"
+    TRUSTFINAL      = "0019" # Consult Trust Final
     
     def __init__(self):
         raise NotImplementedError()
@@ -27,7 +28,7 @@ class AbstractMessageHandler():
         self.__messageName = messageName
         self.__peer = peer
         self.__canID = canID
-        #Logger().resgiterLoggingInfo("Message => Create Message Handler %s can %s"%(self.__messageName,self.__canID))
+        #MessageLogger().resgiterLoggingInfo("Message => Create Message Handler %s can %s"%(self.__messageName,self.__canID))
                                      
     
     

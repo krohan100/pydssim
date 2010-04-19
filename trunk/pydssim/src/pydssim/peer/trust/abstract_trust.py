@@ -11,7 +11,7 @@ COLOCAR PARA LE DE ARQUIVO YAAM
 from pydssim.util.decorator.public import  createURN
 from pydssim.util.data_util import randomDate
 from random import random,randint
-from pydssim.util.logger import Logger
+from pydssim.util.log.trust_logger import TrustLogger
 
 
 class AbstractTrust():
@@ -19,7 +19,7 @@ class AbstractTrust():
     classdocs
     '''
     
-    DIRECT = "DIRECTTRUSTRATING"
+    DIRECT = "DIRECTTRUST"
     TRUSTF = "TRUSTFINAL"
     
 
@@ -29,7 +29,7 @@ class AbstractTrust():
         '''
         raise NotImplementedError()
     
-    def initialize(self, peerUUID,resourceUUID, resourceDescription , trustType= DIRECT ,rating =0.5, period = randomDate("1/1/2010 1:30 PM", "1/12/2010 4:50 AM", random()), status=False):
+    def initialize(self, peerUUID,resourceUUID, resourceDescription , trustType= DIRECT ,rating =0.5, period = randomDate("1/1/2010 1:30", "1/12/2010 4:50", random()), status=False):
       
         self.__uuid = createURN(trustType)
         self.__resourceUUID = resourceUUID
@@ -40,7 +40,7 @@ class AbstractTrust():
         self.__status = status
         self.__trustType = trustType
         
-        Logger().resgiterLoggingInfo("Initialize Trust = URN = %s,Time %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__period,self.__resourceDescription,self.__rating,self.__status))
+        TrustLogger().resgiterLoggingInfo("Initialize Trust = URN = %s,Peer = %s ,Time %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__peerUUID,self.__period,self.__resourceDescription,self.__rating,self.__status))
      
         
     def getResourceDescription(self):

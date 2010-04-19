@@ -1,6 +1,7 @@
 
 from sets import ImmutableSet
-from pydssim.util.logger import Logger
+#from pydssim.util.logger import Logger
+from pydssim.util.log.repository_logger import RepositoryLogger
 from pydssim.util.decorator.public import  createURN
 from random import random,randint
 from multiprocessing import Semaphore
@@ -16,7 +17,9 @@ class AbstractRepository():
         self.__typeRepository = typeRepository
         self.__peer = peer
         self.__elements = {}
-        Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
+        self.__logger = RepositoryLogger()
+        self.__logger.resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
+        #Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         
    
     def addElement(self, element):
@@ -24,7 +27,7 @@ class AbstractRepository():
         if not self.__elements.has_key(key):
             self.__elements[key] = element
         
-        Logger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(element.getUUID(),self.__class__.__name__,self.__peer.getURN()))
+        RepositoryLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(element.getUUID(),self.__class__.__name__,self.__peer.getURN()))
         return element
     
     

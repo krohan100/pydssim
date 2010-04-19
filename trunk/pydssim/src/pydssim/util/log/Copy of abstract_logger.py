@@ -8,21 +8,25 @@ from datetime import datetime
 import logging
 
 
-class Logger():
+class AbstractLogger():
     '''
     Class for logging
-    '''
-    
+    line = str(priority) + " " + opportunityId + " " + self.getId() + " " + str(deviceType) + " " +  str(capacity)
+        messagesLogFile.write(str(line)+"\n")
+        messagesLogFile.close() 
      
-    
-    def __init__(self,fileMode='w',logFileName = 'logging_simulation_file.log'):
+    '''
         
-       
-        self.initialize(fileMode,logFileName)
     
-    def initialize(self,fileMode='w',logFileName= 'logging_simulation_file.log'):
+    def __init__(self):
+        
+        raise NotImplementedError()
+        
+    
+    def initialize(self,fileMode="w",logFileName="log.log"):
         
         self.debug = False
+        self.__messagesLogFile = self.openFileLog(logFileName, fileMode)
         #today = datetime.today().strftime("%Y_%m_%d_%H_%M_%S")
         #LOG_FILENAME = 'logging_simulatorfile_'+today+'.log'
         
@@ -44,6 +48,10 @@ class Logger():
     def resgiterLoggingError(self, msg):
         self.logger.error(msg)
         if self.debug:
-            print msg 
+            print msg
+            
+    def openFileLog(self,nameFile,fileMode):
+        
+        messagesLogFile = open(nameFile, fileMode)
         
         

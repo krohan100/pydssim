@@ -14,7 +14,7 @@ from pydssim.peer.default_peer import DefaultPeer
 from pydssim.peer.portal_peer import PortalPeer
 from pydssim.peer.abstract_peer import AbstractPeer
 
-from pydssim.util.logger import Logger
+
 from SimPy.Simulation import *
 from random import random
 import uuid

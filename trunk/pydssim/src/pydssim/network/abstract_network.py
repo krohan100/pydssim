@@ -1,8 +1,7 @@
 
 from sets import ImmutableSet
 from multiprocessing import Semaphore
-from pydssim.peer.neighbor.neighbor import Neighbor
-from pydssim.util.logger import Logger
+from pydssim.util.log.network_logger import NetworkLogger
 from random import randint
 
 
@@ -35,7 +34,9 @@ class AbstractNetwork():
         self.__peers = numberPeers
         self.__newPeerTime = newPeerTime
         self.__maxNeighbors = maxNeighbors
-        Logger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(numberPeers,newPeerTime,maxNeighbors))
+        #self.__looger = NetworkLogger()
+        #self.__looger.resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d "%(numberPeers,newPeerTime,maxNeighbors))
+        NetworkLogger().resgiterLoggingInfo("Initialize Network => peers = %d , New Peer Time = %d, neighbors/peer = %d gggggg"%(numberPeers,newPeerTime,maxNeighbors))
     
     
     def getSimulation(self):
@@ -87,7 +88,7 @@ class AbstractNetwork():
         
         self.__layout[peer.getPID()] = peer
         semaphore.release()
-        Logger().resgiterLoggingInfo("Add peer %s in Layout Network "%(peer.getPID()))
+        NetworkLogger().resgiterLoggingInfo("Add peer %s in Layout Network "%(peer.getPID()))
         return self.__layout.has_key(peer.getPID())
 
     

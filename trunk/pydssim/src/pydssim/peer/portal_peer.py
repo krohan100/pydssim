@@ -9,7 +9,7 @@ Defines the module with the implementation AbstractPeer class.
 
 from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.util.decorator.public import public,createURN
-from pydssim.util.logger import Logger
+from pydssim.util.log.portal_logger import PortalLogger
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from random import randint
 import math
@@ -57,7 +57,7 @@ class PortalPeer(AbstractPeer):
            
     def addSuperPeer(self,peerId,peerLevel=1):
         self.__superPeers[peerId]=peerLevel
-        Logger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, peerLevel))
+        PortalLogger().resgiterLoggingInfo('Add Super Peer %s in level : %s' % (peerId, peerLevel))
         ###
         #fazer o al do hyper
         

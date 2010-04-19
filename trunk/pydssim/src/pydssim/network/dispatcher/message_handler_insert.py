@@ -4,7 +4,7 @@ Created on 23/01/2010
 @author: LGustavo
 '''
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
-from pydssim.util.logger import Logger
+from pydssim.util.log.message_logger import MessageLogger
 import traceback
 
 class MessageHandlerInsertPeer(AbstractMessageHandler):
@@ -47,7 +47,7 @@ class MessageHandlerInsertPeer(AbstractMessageHandler):
                                % peerID)
             except:
                 
-                Logger().resgiterLoggingInfo('invalid insert %s: %s' % (str(peerConn), data))
+                MessageLogger().resgiterLoggingInfo('invalid insert %s: %s' % (str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: incorrect arguments')
                 traceback.print_exc()
         finally:

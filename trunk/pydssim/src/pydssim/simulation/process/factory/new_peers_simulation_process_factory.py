@@ -16,7 +16,7 @@ from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.peer.trust.direct_trust import DirectTrust
 from pydssim.peer.trust.abstract_trust import AbstractTrust
 
-from pydssim.util.logger import Logger
+from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random,randint,shuffle
 
@@ -60,7 +60,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                     
                     
                     period = randomDate(dateTimeStart,dateTimeStop, random())
-                    #print "--------------------->>>>>>>>>>>>>>",period, period < randomDate(dateTimeStart,dateTimeStop, random()) 
+                   
                     option = randint(0,1)
                     
                     directTrust.addElement(DirectTrust(peerID,element.getUUID(),element.getResource(),AbstractTrust.DIRECT,rating,period,status[option]))
@@ -82,7 +82,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             urn = "urn:peer:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
-            Logger().resgiterLoggingInfo(logMsg)
+            SimulationProcessLogger().resgiterLoggingInfo(logMsg)
             
             peer = DefaultPeer(urn,port)
            
@@ -101,8 +101,26 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             #print peer.getDirectTrust().countElements()
             
             peerT = network.getRandonPeer()
+            peeridT = peerT.getPID()
+            while peeridT == peer.getPID():
+              peerT = network.getRandonPeer()
+              peeridT = peerT.getPID()
             
-            print "direct ===>>",peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30 PM"),strTime("1/1/2009 4:50 PM"))
+            
+            if peerT.getPeerType() != AbstractPeer.SIMPLE:
+                
+                continue
+            
+            #x,y,z = peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
+            #print "direct ===>>",x,y,z
+            
+            #r = peer.getTrustManager().reputationCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
+            #print "Reputation", r
+            
+            tf = peer.getTrustManager().TrustFinalValueCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
+            print "trusfinal", tf
+             
+             
               
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
        

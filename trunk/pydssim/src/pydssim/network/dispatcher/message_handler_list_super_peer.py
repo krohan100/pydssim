@@ -4,7 +4,7 @@ Created on 23/01/2010
 @author: LGustavo
 '''
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
-from pydssim.util.logger import Logger
+from pydssim.util.log.message_logger import MessageLogger
 import traceback
 
 class MessageHandlerListSuperPeer(AbstractMessageHandler):
@@ -29,10 +29,12 @@ class MessageHandlerListSuperPeer(AbstractMessageHandler):
                 else:
                     
                     peerConn.sendData(AbstractMessageHandler.FIRSTSP, '%d'%self.getPeer().numberOfSuperPeers())
+                
+                MessageLogger().resgiterLoggingInfo('List Super Peer %s: %s' % (str(peerConn), data))    
                         
             except:
                 
-                Logger().resgiterLoggingInfo('invalid List Super Peer %s: %s' % (str(peerConn), data))
+                MessageLogger().resgiterLoggingInfo('invalid List Super Peer %s: %s' % (str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: incorrect arguments')
                 traceback.print_exc()        
         finally:
