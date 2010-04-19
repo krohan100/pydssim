@@ -10,7 +10,7 @@ Defines the module with the implementation AbstractPeer class.
 from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.util.decorator.public import createURN
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
-from pydssim.util.logger import Logger
+from pydssim.util.log.super_peer_logger import SuperPeerLogger
 import traceback
 
 class SuperPeer(AbstractPeer):
@@ -39,7 +39,7 @@ class SuperPeer(AbstractPeer):
         resp = self.connectAndSend(dhost, dport, AbstractMessageHandler.INSERTSPEER, 
                     '%s %d' % (pid,
                                int(level)))#[0]
-        Logger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+        SuperPeerLogger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
         
     def updateLeveSuperPeer(self,portalID,peerID,level):
         
@@ -47,7 +47,7 @@ class SuperPeer(AbstractPeer):
         
         resp = self.connectAndSend(dhost, dport, AbstractMessageHandler.UPDATEPEERLEVEL, 
                     '%s %d' % (portalID,level))#[0]
-        Logger().resgiterLoggingInfo ("Update %s in level %d" % (peerID,level))       
+        SuperPeerLogger().resgiterLoggingInfo ("Update %s in level %d" % (peerID,level))       
     
     def connectPortal(self, portalID, hops=1):
     
@@ -65,7 +65,7 @@ class SuperPeer(AbstractPeer):
         
         host,port = portalID.split(":")
     
-        Logger().resgiterLoggingInfo ("Connecting to PortalPeers (%s,%s)" % (host,port))
+        SuperPeerLogger().resgiterLoggingInfo ("Connecting to PortalPeers (%s,%s)" % (host,port))
         
         try:
             #print "contacting " #+ peerID
@@ -105,7 +105,7 @@ class SuperPeer(AbstractPeer):
     def addSuperPeerNeighbor(self,id,level=1):
         
         if not (id in self.getSuperPeerNeighbor().keys()):
-            Logger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (id, self.getPID()))
+            SuperPeerLogger().resgiterLoggingInfo('Add SuperPeer %s in level : %s' % (id, self.getPID()))
             self.getSuperPeerNeighbor()[id]= int(level)
             
     def setLevelNeighbor(self,level):

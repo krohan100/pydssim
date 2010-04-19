@@ -14,7 +14,7 @@ from pydssim.peer.super_peer import SuperPeer
 
 from pydssim.peer.abstract_peer import AbstractPeer
 
-from pydssim.util.logger import Logger
+from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random
 import uuid
@@ -50,7 +50,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             urn = "urn:superpeer:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
-            Logger().resgiterLoggingInfo(logMsg)
+            SimulationProcessLogger().resgiterLoggingInfo(logMsg)
             
             peer = SuperPeer(urn,port,simulation.getNetwork().getMaxNeighbor())
            

@@ -4,7 +4,7 @@ Created on 23/01/2010
 @author: LGustavo
 '''
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
-from pydssim.util.logger import Logger
+from pydssim.util.log.message_logger import MessageLogger
 import traceback
 
 class MessageHandlerUpdatePeerLevel(AbstractMessageHandler):
@@ -33,7 +33,7 @@ class MessageHandlerUpdatePeerLevel(AbstractMessageHandler):
                 
             except:
                 
-                Logger().resgiterLoggingInfo('invalid update Peerleve %s: %s' % (str(peerConn), data))
+                MessageLogger().resgiterLoggingInfo('invalid update Peerleve %s: %s' % (str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: incorrect arguments')
                 traceback.print_exc()
         finally:

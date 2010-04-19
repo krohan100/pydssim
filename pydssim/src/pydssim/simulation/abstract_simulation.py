@@ -11,7 +11,7 @@ Defines the module with the implementation of AbstractSimulation class.
 from pydssim.simulation.i_simulation import ISimulation
 from multiprocessing import Semaphore
 from SimPy.Simulation import Simulation
-from pydssim.util.logger import Logger
+from pydssim.util.log.simulation_logger import SimulationLogger
 
 import time
 
@@ -42,9 +42,9 @@ class AbstractSimulation(ISimulation):
         self.__transactionNumber = 0
         self.__transactionDateTimeStart = ""
         self.__transactionDateTimeStop = ""
-        self.__logger = Logger() 
-        self.__logger.resgiterLoggingInfo("Create Simulation ")
-
+        #self.__logger = SimulationLogger() 
+        #self.__logger.resgiterLoggingInfo("Create Simulation ")
+        SimulationLogger().resgiterLoggingInfo("Create Simulation ")
     
    
     def initializeNetwork(self, peers ,newPeerTime ,neighbors):
@@ -163,7 +163,8 @@ class AbstractSimulation(ISimulation):
         
         mySim = self.getSimInstance()
         
-        Logger().resgiterLoggingInfo("Start Simulation ")
+        SimulationLogger().resgiterLoggingInfo("Start Simulation ")
+        #Logger().resgiterLoggingInfo("Start Simulation ")
         factoryProcess = 0
         for factory in self.__simulationProcessFactory:
             print factory.getName()

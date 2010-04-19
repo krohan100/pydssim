@@ -1,6 +1,6 @@
 
 from threading import Thread
-from pydssim.util.logger import Logger
+from pydssim.util.log.message_logger import MessageLogger
 
 class MessageDispatcher():
     
@@ -10,7 +10,8 @@ class MessageDispatcher():
     def initialize(self, peer):
         self.__peer = peer
         self.__messageHandlers = {}
-        Logger().resgiterLoggingInfo("Initialize MessageHamdles pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
+        self.__logger = MessageLogger()
+        self.__logger.resgiterLoggingInfo("Initialize MessageHamdles pid  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
     
     def getMessageHandlers(self):
         return self.__messageHandlers

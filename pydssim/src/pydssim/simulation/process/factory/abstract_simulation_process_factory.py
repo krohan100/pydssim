@@ -10,7 +10,7 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 from pydssim.util.protected import Protected
 from pydssim.simulation.process.factory.i_simualtor_process_factory import ISimulationProcessFactory
 from SimPy.Simulation import Process
-from pydssim.util.logger import Logger
+from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 
 class AbstractSimulationProcessFactory( ISimulationProcessFactory,Process):
     """
@@ -28,7 +28,9 @@ class AbstractSimulationProcessFactory( ISimulationProcessFactory,Process):
         self.__name = name
         self.__simulation = None
         
-        Logger().resgiterLoggingInfo("Initialize "+name)
+        self.__logger = SimulationProcessLogger()
+        
+        self.__logger.resgiterLoggingInfo("Initialize "+name)
     
     
     def initializeProcess(self):

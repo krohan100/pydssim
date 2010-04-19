@@ -6,13 +6,13 @@ Defines the module with the implementation of AbstractSimulationEvent class.
 @contact: lglmoura@cos.ufrj.br 
 @since: 5/07/2009
 """
-from pydssim.util.protected import Protected
-from pydssim.simulation.process.i_simulation_process import ISimulationProcess
-from pydssim.util.decorator.public import public
-from SimPy.Simulation import Process
-from pydssim.util.logger import Logger
 
-class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
+from pydssim.simulation.process.i_simulation_process import ISimulationProcess
+
+from SimPy.Simulation import Process
+from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
+
+class AbstractSimulationProcess(Process,ISimulationProcess):
     """
     Abstract class that implemenents the ISimulationEvent interface.
     @author: Luiz Gustavo 
@@ -24,7 +24,7 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
     def __init__(self):
         raise NotImplementedError()
     
-    @public
+  
     def initialize(self, identifier, simInstance, peer=None, priority=0):
         """
         Initializes the object.
@@ -44,25 +44,25 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
         self.__peer = peer
         self.__priority = priority
         self.__isIdentified = False
-        Logger().resgiterLoggingInfo("Initialize Simulation Process => %s"%self.__identifier)
+        SimulationProcessLogger().resgiterLoggingInfo("Initialize Simulation Process => %s"%self.__identifier)
     
-    @public
+    
     def getIdentifier(self):
         return self.__identifier
 
-    @public
+   
     def getPeer(self):
         return self.__peer
 
-    @public
+    
     def getPriority(self):
         return self.__priority
     
-    @public
+    
     def identified(self):
         self.__isIdentified = True
 
-    @public
+   
     def isIdentified(self):
         return self.__isIdentified
     
@@ -81,19 +81,6 @@ class AbstractSimulationProcess(Process,ISimulationProcess, Protected):
             return False
         return self.__identifier == other.getIdentifier() and self.__peerId == other.getPeerId() and self.__priority == other.getPriority()
     
-    identifier = property(getIdentifier, None, None, None)
-    """
-    @type: str 
-    """
-
-    peer = property(getPeer, None, None, None)
-    """
-    @type: IPeer 
-    """
-
-    priority = property(getPriority, None, None, None)
-    """
-    @type: str 
-    """
+   
     
     

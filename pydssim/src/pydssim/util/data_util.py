@@ -7,7 +7,7 @@ Created on 10/04/2010
 import random
 import time
 
-def strTime(start, format='%m/%d/%Y %I:%M %p'):
+def strTime(start, format='%d/%m/%Y %H:%M'):
     """Get a time at a proportion of a range of two formatted times.
 
     start and end should be strings specifying times formated in the
@@ -20,7 +20,7 @@ def strTime(start, format='%m/%d/%Y %I:%M %p'):
     
     return time.strftime(format, time.localtime(time.mktime(time.strptime(start, format))))
 
-def strTimeProp(start, end, prop, format='%m/%d/%Y %I:%M %p'):
+def strTimeProp(start, end, prop, format='%d/%m/%Y %H:%M'):
     """Get a time at a proportion of a range of two formatted times.
 
     start and end should be strings specifying times formated in the
