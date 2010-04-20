@@ -17,8 +17,8 @@ class AbstractRepository():
         self.__typeRepository = typeRepository
         self.__peer = peer
         self.__elements = {}
-        self.__logger = RepositoryLogger()
-        self.__logger.resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
+        RepositoryLogger()
+        RepositoryLogger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         #Logger().resgiterLoggingInfo("Initialize Repository URN  %s of peer %s "%(self.__class__.__name__,self.__peer.getURN()))
         
    
