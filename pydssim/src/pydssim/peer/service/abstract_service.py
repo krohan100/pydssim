@@ -11,7 +11,7 @@ COLOCAR PARA LE DE ARQUIVO YAAM
 from pydssim.util.decorator.public import  createURN
 
 
-class AbstractResource():
+class AbstractService():
     '''
     classdocs
     '''

@@ -25,9 +25,9 @@ from pydssim.peer.trust.trust_manager import TrustManager
 from pydssim.util.log.peer_logger import PeerLogger
 from random import randint
 from pydssim.util.resource_maps import *
-from pydssim.peer.resource.hardware_resource import Hardware 
-from pydssim.peer.resource.abstract_resource import AbstractResource
-from pydssim.peer.resource.service_resource import Service
+from pydssim.peer.service.hardware_service import Hardware 
+from pydssim.peer.service.abstract_service import AbstractService
+from pydssim.peer.service.service_service import Service
 from pydssim.network.dispatcher.message_handler_insert import MessageHandlerInsertPeer
 from pydssim.network.dispatcher.message_handler_trust_final import MessageHandlerTrustFinal
 from pydssim.network.dispatcher.message_handler_list_peer import MessageHandlerListPeer
