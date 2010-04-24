@@ -19,54 +19,58 @@ class AbstractEquivalence():
     classdocs
     '''
     
-    SERVICE = "SERVICE"
-    EQUIVALENCE = "EQUIVALENCE"
-
+    
     def __init__(self):
         '''
         Constructor
         '''
         raise NotImplementedError()
     
-    def initialize(self, resourceUUID, resourceDescription , equivalenceType= SERVICE , period = randomDate("1/1/2010 1:30", "1/12/2010 4:50", random())):
+    def initialize(self, resource):
       
-        self.__uuid = createURN("equivalence")
-        self.__resourceUUID = resourceUUID
-        self.__resourceDescription = resourceDescription
-        self.__equivalenceType = equivalenceType
+        self.__uuid = resource.getUUID()
+        self.__resource = resource
+            
+        
         self.__equivalences = {}
         
-        
-        
-        
-        EquivalenceLogger().resgiterLoggingInfo("Initialize Trust = URN = %s,Peer = %s ,Time %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__peerUUID,self.__period,self.__resourceDescription,self.__rating,self.__status))
-     
+             
         
     def getResourceDescription(self):
-        return self.__resourceDescription 
+        return self.__resource.getDescription()
       
     def getResourceUUID(self):
-        return self.__resourceUUID
+        return self.__resource.getUUID()
     
-    def setResourceUUID(self,resource):
-        self.__resourceUUID = resourceUUID
-        return self.__resourceUUID
+    def getResource(self):
+        return self.__resource.getResource()
+    
     
     def getEquivalences(self):
         return self.__equivalences
     
-    def getequivalenceType(self):
-        return self.__equivalenceType
-       
+         
     def getUUID(self):
         return self.__uuid
     
+     
+    def hasEquivalences(self,recourseEquivalence,periodStart,periodEnd):
+       
+        return dict([(equivalenceID,equivalence) for equivalenceID, equivalence in self.getEquivalences().iteritems()
+                      if (equivalence.getEquivalence().getResourceUUID() == recourseEquivalence) and 
+                         (equivalence.getPeriodStart() <=periodStart) and (equivalence.getPeriodEnd()>= periodEnd)])
+    
+    
     def addEquivalence(self, equivalence):
+        
         key = equivalence.getUUID()
         if not self.__equivalences.has_key(key):
-            self.__equivalences[key] = equivalence
+            recourseEquivalentes = self.hasEquivalences(equivalence.getEquivalence().getResourceUUID(),equivalence.getPeriodStart(),equivalence.getPeriodEnd())
+            if (not recourseEquivalentes):
+                self.__equivalences[key] = equivalence
         
-        RepositoryLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(equivalence.getUUID(),self.__class__.__name__,self.__peer.getURN()))
+        #EquivalenceLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(equivalence.getUUID(),self.__class__.__name__,self.__peer.getURN()))
+        
         return equivalence
     
     
@@ -86,5 +90,3 @@ class AbstractEquivalence():
         return len(self.__equivalences)
     
    
-    def getEquivalences(self):
-        return self.__elements

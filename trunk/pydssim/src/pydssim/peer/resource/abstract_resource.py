@@ -7,9 +7,9 @@ COLOCAR PARA LE DE ARQUIVO YAAM
 
 '''
 
-from pydssim.util.protected import Protected
-from pydssim.util.decorator.public import public, createURN
-import uuid
+
+from pydssim.util.decorator.public import  createURN
+
 
 class AbstractResource():
     '''
@@ -31,41 +31,45 @@ class AbstractResource():
         self.__availability = availabity
         self.__period = period
         
+   
         
-    @public    
+        
+       
     def getResource(self):
         return self.__resource
     
-    @public
+    
     def setResource(self,resource):
         self.__resource = resource
         return self.__resource
     
-    @public 
+     
     def getDescription(self):
         return self.__description
     
-    @public
+    
     def getPeer(self):
         return self.__peer
     
-    @public
+    
     def setPeer(self,peer):
         self.__peer = peer
         return self.__peer
     
-    @public 
+     
     def getAvailability(self):
         return self.__availability
     
-    @public
+    
     def getPeriod(self):
         return self.__period
     
-    @public
+    
     def getLocal(self):
         return self.__local
     
-    @public
+    
     def getUUID(self):
         return self.__uuid
+    
+    
