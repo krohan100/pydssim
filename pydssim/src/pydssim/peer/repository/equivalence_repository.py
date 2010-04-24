@@ -4,3 +4,5 @@ class EquivalenceRepository(AbstractRepository):
     
     def __init__(self, peer):
         self.initialize(peer,typeRepository="EquivalenceRepository")
+        
+        

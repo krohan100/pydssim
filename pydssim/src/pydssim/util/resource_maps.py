@@ -32,11 +32,11 @@ class HardwareMap(object):
         #print "****** Hardware *********"
         
         mapping = {}
-       # mapping["io"] = ["hd", "dvd", "cdrom", "flash", "floppy"]
-       # mapping["process"] = ["Clic", "Time"]
-       # mapping["print"] = ["hp", "laser", "jato"]
-       # mapping["memory"] = ["memory","DDR"]
-        mapping["memory"] = ["memory"]
+        mapping["io"] = ["hd", "dvd", "cdrom", "flash", "floppy"]
+        mapping["process"] = ["Clic", "Time"]
+        mapping["print"] = ["hp", "laser", "jato"]
+        mapping["memory"] = ["memory","DDR"]
+        #mapping["memory"] = ["memory"]
         
         return mapping
 
