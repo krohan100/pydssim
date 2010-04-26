@@ -10,14 +10,14 @@ import uuid
 class Service(AbstractService):
     
     
-    def __init__(self,pid ,resource='',description='service',availabity=True,period={}):
+    def __init__(self,pid ,resource='',description='service',availabity=True):
         '''
         Constructor
         '''
-        self.initialize(pid, resource,description,availabity,period)
+        self.initialize(pid, resource,description,availabity)
         
-    def initialize(self, pid,resource,description,availabity,period):
-        AbstractService.initialize(self, pid,resource,description,availabity,period)
+    def initialize(self, pid,resource,description,availabity):
+        AbstractService.initialize(self, pid,resource,description,availabity)
             
     
     

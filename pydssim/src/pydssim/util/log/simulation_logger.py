@@ -23,7 +23,7 @@ class SimulationLogger(AbstractLogger):
 
     def __init__(self, fileMode='a',logFileName = 'simulation_logger__file.log'):
         
-               
+              
         AbstractLogger.initialize(self,fileMode,logFileName)
         
               

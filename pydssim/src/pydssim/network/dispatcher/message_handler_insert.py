@@ -38,6 +38,7 @@ class MessageHandlerInsertPeer(AbstractMessageHandler):
                     
                     self.getPeer().addPeerNeighbor(peerID, host, port)
                     
+                    
                     peerConn.sendData(AbstractMessageHandler.REPLY, 'Join: peer added: %s' % peerID)
                     
                     

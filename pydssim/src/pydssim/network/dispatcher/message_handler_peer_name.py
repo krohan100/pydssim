@@ -13,4 +13,5 @@ class MessageHandlerPeerName(AbstractMessageHandler):
     def executeHandler(self,peerConn,data):
         
         """ Handles the NAME message type. Message data is not used. """
+        
         peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())

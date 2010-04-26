@@ -18,6 +18,8 @@ class PeerConnection:
    
         
         self.__id = peerId
+        self.__host = host
+        self.__port = port
        
         if not sock:
             self.__socket = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
@@ -117,6 +119,12 @@ class PeerConnection:
 
     def getID(self):
         return self.__id
+    
+    def getHost(self):
+        return self.__host
+    
+    def getPort(self):
+        return self.__port
     def __str__( self ):
    
            return "|%s|" % self.getID()

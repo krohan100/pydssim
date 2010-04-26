@@ -14,16 +14,16 @@ class Hardware(AbstractService):
     classdocs
     '''
 
-    def __init__(self,pid ,resource='',size= randint(1,100000),sharePercente = randint(10,90),description='hardware',availabity=True,period={}):
+    def __init__(self,pid ,resource='',size= randint(1,100000),sharePercente = randint(10,90),description='hardware',availabity=True):
         '''
         Constructor
         '''
-        self.initialize(pid, resource,size,sharePercente,description,availabity,period)
+        self.initialize(pid, resource,size,sharePercente,description,availabity)
        
         
-    def initialize(self, pid,resource,size,sharePercente,description,availabity,period):
+    def initialize(self, pid,resource,size,sharePercente,description,availabity):
         
-        AbstractService.initialize(self, pid,resource,description,availabity,period)
+        AbstractService.initialize(self, pid,resource,description,availabity)
         
         self.__size = size
         self.__shareSize = self.__size*(sharePercente/100)

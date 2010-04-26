@@ -21,6 +21,7 @@ from pydssim.peer.repository.shared_recource_repository import SharedRecourceRep
 from pydssim.peer.repository.history_repository import HistoryRepository
 
 from pydssim.peer.trust.trust_manager import TrustManager
+from pydssim.peer.trading.trading_manager import TradingManager
 
 from pydssim.util.log.peer_logger import PeerLogger
 from random import randint
@@ -101,10 +102,13 @@ class AbstractPeer:
         
         self.__services = ServiceRepository(self)
         self.__trustManager = TrustManager(self)
+        self.__tradingManager = TradingManager(self)
+        
        
         self.__sharedResource = SharedRecourceRepository(self)
         self.__historyResource = HistoryRepository(self)
         self.__equivalences = EquivalenceRepository(self)
+        self.__mySuperPeer  = self.__pid
         #self.__trust = 
         
         self.__connectionTime = 0
@@ -203,7 +207,6 @@ class AbstractPeer:
         return self.__mySuperPeer
     
     def setMySuperPeer(self,super):
-        
         self.__mySuperPeer = super
     
     def getServerHost(self):
@@ -228,11 +231,7 @@ class AbstractPeer:
     def getPID(self):
         return self.__pid
     
-   
-    def getPort(self):
-        return self.__port
-    
-      
+        
     def getURN(self):
         return self.__urn
     
@@ -574,6 +573,9 @@ class AbstractPeer:
     def getTrustManager(self):
         return self.__trustManager
     
+    def getTradingManager(self):
+        return self.__tradingManager
+    
     def getEquivalenceRepository(self):
         return self.__equivalences
         
@@ -585,8 +587,7 @@ class AbstractPeer:
     def getHistoryResource(self):    
         return self.__historyResource
     
-    def getEquivalences(self):
-        return self.__equivalences
+   
     
     
     def getPeerNeighbors(self):

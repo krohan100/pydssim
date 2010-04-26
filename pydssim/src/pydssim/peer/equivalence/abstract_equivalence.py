@@ -30,8 +30,7 @@ class AbstractEquivalence():
       
         self.__uuid = resource.getUUID()
         self.__resource = resource
-            
-        
+         
         self.__equivalences = {}
         
              
@@ -53,6 +52,10 @@ class AbstractEquivalence():
     def getUUID(self):
         return self.__uuid
     
+    
+    def getAllEquivalenceInPeriod(self,periodStart,periodEnd):
+        return dict([(equivalenceID,equivalence) for equivalenceID, equivalence in self.getEquivalences().iteritems()
+                      if(equivalence.getPeriodStart() <=periodStart) and (equivalence.getPeriodEnd()>= periodEnd)])
      
     def hasEquivalences(self,recourseEquivalence,periodStart,periodEnd):
        
