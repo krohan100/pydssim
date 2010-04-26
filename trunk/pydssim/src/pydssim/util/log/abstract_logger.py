@@ -8,6 +8,7 @@ from datetime import datetime
 import locale
 import os
 from threading import Semaphore
+from pydssim.util.singleton import singleton
 
 
 class AbstractLogger():
@@ -18,16 +19,28 @@ class AbstractLogger():
         messagesLogFile.close() 
      
     '''
-        
+         
+    __metaclass__ = singleton    
     
     def __init__(self):
-        
+       
         raise NotImplementedError()
         
     
     def initialize(self,fileMode="a",logFileName="log.log"):
         
+        
+        
         self.debug = False
+        
+        #'''
+        name,ext = logFileName.split(".")
+    
+        hoje = datetime.today()
+        dia = hoje.strftime('%d%m%Y-%I%M%S')
+        logFileName = "%s-%s.%s"%(name,dia,ext)
+        #'''
+        
         self.__messagesLogFile = self.openFileLog(logFileName, fileMode)
             
         
@@ -49,7 +62,7 @@ class AbstractLogger():
         #self.logger.info(msg)
         msg = self.createMessage("INFO", msg)
         self.__messagesLogFile.write( msg+"\n")
-        self.__messagesLogFile.close()
+        #self.__messagesLogFile.close()
         if self.debug:
             print msg     
     

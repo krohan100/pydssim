@@ -22,22 +22,44 @@ class AbstractService():
         '''
         raise NotImplementedError()
     
-    def initialize(self, peer,resource, description='',availabity=True,period={}):
+    def initialize(self, peer,resource, description='',availabity=True):
       
         self.__uuid = createURN(description)
         self.__resource = resource
+        self.__tag      = resource    
         self.__description = description
-        self.__peer = peer
+        self.__sourcePeer = peer
+        
         self.__availability = availabity
-        self.__period = period
-        
-   
-        
+       
+        self.__sharePeriod = {}
         
        
     def getResource(self):
         return self.__resource
     
+    
+    def getSharePeriod(self):
+        return self.__sharePeriod
+    
+        
+    def hasSharePeriods(self,periodStart,periodEnd):
+       
+        return dict([(sharePeriodID,sharePeriod) for sharePeriodID, sharePeriod in self.__sharePeriod.iteritems()
+                      if (sharePeriod.getPeriodStart() <=periodStart) and (sharePeriod.getPeriodEnd()>= periodEnd)])
+     
+     
+    def addSharePeriod(self, sharePeriod):
+        
+        key = sharePeriod.getUUID()
+        if not self.__sharePeriod.has_key(key):
+            sharePeriods = self.hasSharePeriods(sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd())
+            if (not sharePeriods):
+                self.__sharePeriod[key] = sharePeriod
+        
+        #EquivalenceLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(equivalence.getUUID(),self.__class__.__name__,self.__peer.getURN()))
+        
+        return equivalence    
     
     def setResource(self,resource):
         self.__resource = resource
@@ -49,12 +71,12 @@ class AbstractService():
     
     
     def getPeer(self):
-        return self.__peer
+        return self.__sourcePeer
     
     
     def setPeer(self,peer):
-        self.__peer = peer
-        return self.__peer
+        self.__sourcePeer = peer
+        return self.__sourcePeer
     
      
     def getAvailability(self):
@@ -63,10 +85,6 @@ class AbstractService():
     
     def getPeriod(self):
         return self.__period
-    
-    
-    def getLocal(self):
-        return self.__local
     
     
     def getUUID(self):

@@ -19,18 +19,24 @@ class Equivalence(object):
         self.__uuid = createURN("equivalence")
         self.__service = service
         self.__serviceQuantity = serviceQuantity
-        self.__equivalence     = equivalence
+        self.__equivalenceS     = equivalence
         self.__equivalenceQuantity = equivalenceQuantity
         self.__periodStart = periodStart
         self.__periodEnd   = periodEnd 
         
         EquivalenceLogger().resgiterLoggingInfo("Create Equivalence between %s and = %s periodStar = %s and periodEnd = %s"%self.getAllNeed())
     
+    def getServiceQuantity(self):
+        return self.__serviceQuantity
+    
+    def getEquivalenceQuantity(self):
+        return self.__equivalenceQuantity
+    
     def getService(self):
         return self.__service
     
     def getEquivalence(self):
-        return self.__equivalence
+        return self.__equivalenceS
     
     def getPeriodStart(self):
         return self.__periodStart
@@ -42,7 +48,7 @@ class Equivalence(object):
         return (self.getPeriodStart(),self.getPeriodEnd())
     
     def getAllNeed(self):
-        return (self.__service,self.__equivalence,self.__periodStart,self.__periodEnd)
+        return (self.__service,self.__equivalenceS,self.__periodStart,self.__periodEnd)
     
     def getUUID(self):
         return self.__uuid

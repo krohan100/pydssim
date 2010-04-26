@@ -10,7 +10,7 @@ import traceback
 class MessageHandlerTrustFinal(AbstractMessageHandler):
     
     def __init__(self,peer):
-        self.initialize(peer,"TRUSTFINAL",AbstractMessageHandler.TRUSTFINAL)
+        self.initialize(peer,"TRADINGSP",AbstractMessageHandler.TRADINGSP)
         
     def executeHandler(self,peerConn,data):
         
@@ -20,15 +20,10 @@ class MessageHandlerTrustFinal(AbstractMessageHandler):
         try:
             try:
                 #print "data", data
-                
-                peerID,service,startDate,startTime,stopDate,stopTime = data.split()
-                
-                startDate = "%s %s"%(startDate,startTime)
-                stopDate = "%s %s"%(stopDate,stopTime)
-               
-                trustFinalValue = self.getPeer().getTrustManager().getTrustFinalValue(peerID,service,startDate,stopDate)
-                MessageLogger().resgiterLoggingInfo('TrustFinalValue %s %s: %s %f' % (self.getPeer().getPID(),str(peerConn), data,trustFinalValue))
-                peerConn.sendData(AbstractMessageHandler.REPLY, '%f' % trustFinalValue)
+                               
+                self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
+                MessageLogger().resgiterLoggingInfo('TRADINGSP %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
+                peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
                 
                        
             except:

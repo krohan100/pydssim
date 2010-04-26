@@ -14,66 +14,66 @@ from random import random,randint
 from pydssim.util.log.trust_logger import TrustLogger
 
 
-class AbstractTrust():
+class AbstractTrading():
     '''
     classdocs
     '''
-    
-    DIRECT = "DIRECTTRUST"
-    TRUSTF = "TRUSTFINAL"
-    
-
+    STARTED = 1
+    COMPLETE = 2
+    NOTCOMLETE = 3
+    NULL   = 0
+  
     def __init__(self):
         '''
         Constructor
         '''
         raise NotImplementedError()
     
-    def initialize(self, peerUUID,resourceUUID, resourceDescription , trustType= DIRECT ,rating =0.5, period = randomDate("1/1/2010 1:30", "1/12/2010 4:50", random()), status=False):
+    def initialize(self, service,periodStart,periodEnd,quantity):
       
-        self.__uuid = createURN(trustType)
-        self.__resourceUUID = resourceUUID
-        self.__resourceDescription = resourceDescription
-        self.__peerUUID = peerUUID
-        self.__rating = rating
-        self.__period = period
-        self.__status = status
-        self.__trustType = trustType
+        self.__uuid = createURN("trading")
+        self.__service = service
+        self.__periodStart = periodStart
+        self.__periodEnd = periodEnd
+        self.__quantity = quantity
+        self.__status   = AbstractTrading.STARTED
+         
         
-        TrustLogger().resgiterLoggingInfo("Initialize Trust = URN = %s,Peer = %s ,Time %s, Description = %s rating = %f and status = %s"%(self.__uuid,self.__peerUUID,self.__period,self.__resourceDescription,self.__rating,self.__status))
+        TradingLogger().resgiterLoggingInfo("Initialize Trading = URN = %s,"%(self.__uuid))
      
+    
+    def setEquivalence(self,equivalence):
+        self.__equivalence = equivalence
         
-    def getResourceDescription(self):
-        return self.__resourceDescription 
+    def getEquivalence(self):
+        return self.__equivalence
+    
+    def setQuantityEquivalence(self,quantity):
+        self.__quantityEquivalnce = quantity
+        
+    def getQuantityEquvalence(self):
+        return self.__quantityEquivalnce    
+        
+        
+    def getUUID(self):
+        return self.__uuid 
     
       
-    def getResourceUUID(self):
-        return self.__resourceUUID
+    def getService(self):
+        return self.__service
     
+    def getPeriodStart(self):
+        return self.__periodStart
     
-    def setResourceUUID(self,resource):
-        self.__resourceUUID = resourceUUID
-        return self.__resourceUUID
+    def getPeriodEnd(self):
+        return self.__periodEnd
     
-    def getPeerUUID(self):
-        return self.__peerUUID
+    def getPeriods(self):
+        return (self.__periodStart,self.__periodEnd)
     
-    def getTrustType(self):
-        return self.__trustType
-     
-    def setPeerUUID(self,peer):
-        self.__peer = peerUUID
-        return self.__peerUUID
-    
-     
-    def getRating(self):
-        return self.__rating
-        
-    def getPeriod(self):
-        return self.__period
+    def getQuantity(self):
+        return self.__quantity
     
     def getStatus(self):
         return self.__status
-    
-    def getUUID(self):
-        return self.__uuid
+     

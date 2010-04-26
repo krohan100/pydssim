@@ -24,7 +24,7 @@ def strTimeProp(start, end, format, prop):
     return time.strftime(format, time.localtime(ptime))
 
 
-def strTime(start,format='%m/%d/%Y %I:%M %p'):
+def strTime(start,format='%d/%m/%Y %I:%M %p'):
     """Get a time at a proportion of a range of two formatted times.
 
     start and end should be strings specifying times formated in the
@@ -39,7 +39,7 @@ def strTime(start,format='%m/%d/%Y %I:%M %p'):
 
 
 def randomDate(start, end, prop):
-    return strTimeProp(start, end, '%m/%d/%Y %I:%M %p', prop)
+    return strTimeProp(start, end, '%d/%m/%Y %I:%M %p', prop)
 
 
 t1 = randomDate("1/1/2010 1:30 PM", "12/12/2010 4:50 AM", random.random())
@@ -73,6 +73,6 @@ format='%d/%m/%Y %I:%M:%S %p'
 hoje = datetime.today()
 
 
-print  hoje.strftime('%d/%m/%Y %I:%M:%S %p')
+print  hoje.strftime('%d-%m-%Y-%I:%M:%S %p')
 print createMessage("info", "teste")
 
