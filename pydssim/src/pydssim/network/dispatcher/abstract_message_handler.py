@@ -21,6 +21,7 @@ class AbstractMessageHandler():
     UPDATEPEERLEVEL = "0018"
     TRUSTFINAL      = "0019" # Consult Trust Final
     TRADINGSP       = "0020" # sEND msg FOR cONSULT pEER pROVIDER
+    TRADINGCH       = "0021" # SP SEND TRADIND FOR CHILDREN
     
     def __init__(self):
         raise NotImplementedError()

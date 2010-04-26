@@ -23,7 +23,18 @@ class InformationServiceAgent(object):
         return self.__tradingManager
     
     def sendTradindForChildren(self,data):
-        passs
+        
+        peerNeighbors = self.getTradingManager().getPeer().getPeerNeighbors()
+        
+        for host, port in peerNeighbors.values():
+      
+      
+            
+            self.getTradingManager().getPeer().getPeerLock().acquire()             
+            resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCH,data)#[0]
+            self.getTradingManager().getPeer().getPeerLock().release()
+        
+        
         
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd,quantity):
         
@@ -80,7 +91,7 @@ class InformationServiceAgent(object):
                                           equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),quantityTrand,
                                           sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd())
            
-           
+        print msgSend   
         self.getTradingManager().getPeer().getPeerLock().acquire()             
         resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
       
