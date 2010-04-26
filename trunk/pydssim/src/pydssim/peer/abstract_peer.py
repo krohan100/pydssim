@@ -344,47 +344,6 @@ class AbstractPeer:
             self.setPeerType(AbstractPeer.SUPER)
             
         return msgreply
-    '''
-
-    def connectSuperPeer(self,portalID):
-        
-        """ buildpeers(host, port, hops) 
-    
-        Attempt to build the local peer list up to the limit stored by
-        self.maxPeers, using a simple depth-first search given an
-        initial host and port as starting point. The depth of the
-        search is limited by the hops parameter.
-    
-        """
-       
-        host,port = portalID.split(":")    
-        Logger().resgiterLoggingInfo ("Building Super peers from (%s,%s)" % (host,port))
-         
-    
-        try:
-            #print "contacting " #+ peerID
-            _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
-    
-            #print "contacted " + peerID
-            resp = self.connectAndSend(host, port, AbstractMessageHandler.INSERTPEER, 
-                        '%s %s %s %d' % (self.getPID(),self.getMySuperPeer(),
-                                  self.getServerHost(), 
-                                  self.getServerPort()))#[0]
-           
-            
-            if (resp[0][0] != AbstractMessageHandler.REPLY) or (peerID in self.getPeerIDs()):
-                return
-            
-                      
-            self.addPeerNeighbor(peerID, host, port,resp[1][1])
-            
-            
-        except:
-            traceback.print_exc()
-            #print "eerrroooo" 
-            self.removePeer(peerID)
-            
-    ''' 
     
      
     def connectPortal(self, portalID, hops=1,type=SIMPLE):
