@@ -22,14 +22,15 @@ class InformationServiceAgent(object):
     def getTradingManager(self):
         return self.__tradingManager
     
+    def verifyTrading(self,data):
+        pass
+    
     def sendTradindForChildren(self,data):
         
         peerNeighbors = self.getTradingManager().getPeer().getPeerNeighbors()
         
         for host, port in peerNeighbors.values():
       
-      
-            
             self.getTradingManager().getPeer().getPeerLock().acquire()             
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCH,data)#[0]
             self.getTradingManager().getPeer().getPeerLock().release()
