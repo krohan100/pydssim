@@ -665,29 +665,7 @@ class AbstractPeer:
        
         
 
-    '''
-   
-   
-    def createSharedRecource(self):
-         for i in range(0,self.getServices().countElements()):
-             
-            numEle =self.getServices().countElements()
-            initial = randint(0, numEle/2 - 1)
-            if initial == 0:
-                initial =1
-            end = randint(numEle/2, numEle - 1)
-                  
-            ix = 0
-            for key in self.getServices().getElements().keys():
-                
-                if ix < initial:
-                    continue
-                if ix > end:
-                    break 
-                
-                self.getSharedResource().addElement(self.getServices().getElements()[key])
-                
-    '''
+  
                 
                 
                 

@@ -23,7 +23,20 @@ class InformationServiceAgent(object):
         return self.__tradingManager
     
     def verifyTrading(self,data):
-        pass
+        
+        peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
+        equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
+        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd = data.split()
+        
+        '''
+        
+        colocar no historico
+        
+        '''
+        
+               
+        
+
     
     def sendTradindForChildren(self,data):
         
@@ -35,6 +48,16 @@ class InformationServiceAgent(object):
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCH,data)#[0]
             self.getTradingManager().getPeer().getPeerLock().release()
         
+        '''
+        
+        colocar no historico
+        
+        ir no service.
+        verificar se tem para comartilha e tiver
+        verificar se equivale
+        mandar resotos
+        
+        '''
         
         
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd,quantity):
@@ -88,9 +111,9 @@ class InformationServiceAgent(object):
         
         
         
-        msgSend = "%s %s %s %s %d %s %s %d %s %s"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getQuantity(),
-                                          equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),quantityTrand,
-                                          sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd())
+        msgSend = "%s %s %s %s %d %s %s %d %s %s %s %s"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getQuantity(),
+                                          equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),quantityTrand,trading.getPeriodStart(),
+                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd())
            
         print msgSend   
         self.getTradingManager().getPeer().getPeerLock().acquire()             

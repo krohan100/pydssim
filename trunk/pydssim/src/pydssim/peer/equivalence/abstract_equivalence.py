@@ -33,8 +33,7 @@ class AbstractEquivalence():
          
         self.__equivalences = {}
         
-             
-        
+         
     def getResourceDescription(self):
         return self.__resource.getDescription()
       
