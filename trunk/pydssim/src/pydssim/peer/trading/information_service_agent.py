@@ -31,6 +31,11 @@ class InformationServiceAgent(object):
         '''
         
         colocar no historico
+         
+        ir no service.
+        verificar se tem para comartilha e tiver
+        verificar se equivale
+        mandar resotos
         
         '''
         
@@ -47,17 +52,7 @@ class InformationServiceAgent(object):
             self.getTradingManager().getPeer().getPeerLock().acquire()             
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCH,data)#[0]
             self.getTradingManager().getPeer().getPeerLock().release()
-        
-        '''
-        
-        colocar no historico
-        
-        ir no service.
-        verificar se tem para comartilha e tiver
-        verificar se equivale
-        mandar resotos
-        
-        '''
+      
         
         
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd,quantity):
