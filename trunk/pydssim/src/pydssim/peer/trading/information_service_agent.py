@@ -28,12 +28,28 @@ class InformationServiceAgent(object):
         equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
         tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd = data.split()
         
+        
+        for services in self.getTrading().getPeer().getServices().getElements().values():
+            
+            if tradingServiceResource == services.getResource():
+                break
+            
+        if not service:
+           return
+        
+        tradingPeriodStart = "%s %s"%(tradingDPeriodStart,tradingTPeriodStart)
+        tradingPeriodEnd = "%s %s"%(tradingDPeriodEnd,tradingTPeriodEnd)
+        
+        hasShare = service.hasSharePeriods(self,tradingPeriodStart,tradingPeriodEnd)
+        
+        if not hasShare:
+            return
+        
+        aqq ss
         '''
         
         colocar no historico
          
-        ir no service.
-        verificar se tem para comartilha e tiver
         verificar se equivale
         mandar resotos
         
