@@ -4,10 +4,10 @@ Created on 29/08/2009
 @author: LGustavo
 '''
 
-from pydssim.peer.equivalence.abstract_equivalence import AbstractEquivalence
+from pydssim.peer.equivalence.abstract_service_equivalence import AbstractServiceEquivalence
 
 
-class ServiceEquivalence(AbstractEquivalence):
+class ServiceEquivalence(AbstractServiceEquivalence):
     
     
     def __init__(self,resource ):
@@ -20,7 +20,7 @@ class ServiceEquivalence(AbstractEquivalence):
         self.initialize(resource)
         
     def initialize(self, resource):
-        AbstractEquivalence.initialize(self,resource)
+        AbstractServiceEquivalence.initialize(self,resource)
             
     
     

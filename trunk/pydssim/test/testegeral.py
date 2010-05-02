@@ -16,15 +16,37 @@ if __name__ == '__main__':
     teste["002"][1] = (10,"clara")
 
     x,y = teste["002"][0]
-    
+    print teste
     print teste["002"].keys(), teste["002"].values()
-    print x,y
-    print (2*5)/3
+    teste["002"][0] = (30,"Arhur") 
+    print teste["002"].keys(), teste["002"].values()
+    print teste.sort()
+    #print x,y
+   
     data = "danielle_gustavo.amor"
     nome,senti = data.split(".")
     
     hoje = datetime.today()
     dia = hoje.strftime('%d%m%Y')
     print "%s-%s.%s"%(nome,dia,senti)
+    equi = {}
+    tame = 6
     
     
+    '''
+    
+    
+    for i in range(1,tame+1):
+        equi[i] = {}
+        for z in range(i+1,tame+1):
+            equi[i][z]= "%s-%s"%(i,z)
+        print i, "  --  ",equi[i]
+    #print equi
+    
+    ser = equi.values()
+    print equi
+   
+   '''
+    
+   
+   

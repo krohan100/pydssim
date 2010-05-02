@@ -11,7 +11,7 @@ COLOCAR PARA LE DE ARQUIVO YAAM
 from pydssim.util.decorator.public import  createURN
 from pydssim.util.data_util import randomDate
 from random import random,randint
-from pydssim.util.log.trust_logger import TrustLogger
+from pydssim.util.log.trading_logger import TradingLogger
 
 
 class AbstractTrading():
@@ -19,8 +19,9 @@ class AbstractTrading():
     classdocs
     '''
     STARTED = 1
-    COMPLETE = 2
-    NOTCOMLETE = 3
+    COMPLETE = 2 # vencedor
+    NOTCOMLETE = 3 # nao venceu
+    ACK       = 4
     NULL   = 0
   
     def __init__(self):
@@ -29,18 +30,50 @@ class AbstractTrading():
         '''
         raise NotImplementedError()
     
-    def initialize(self, service,periodStart,periodEnd,quantity):
+    def initialize(self, service,periodStart,periodEnd,quantity,metric="MB"):
       
         self.__uuid = createURN("trading")
         self.__service = service
         self.__periodStart = periodStart
         self.__periodEnd = periodEnd
         self.__quantity = quantity
+        self.__metric   = metric
         self.__status   = AbstractTrading.STARTED
+        
+        self.__peersTrading = {}
          
         
         TradingLogger().resgiterLoggingInfo("Initialize Trading = URN = %s,"%(self.__uuid))
-     
+    
+    
+    
+    def setOwnershipCertificate(self,ownershipCertificate,service):
+        
+        sharedPeriods = service.hasSharePeriods(self.__periodStart,self.__periodEnd)
+        sharedPeriodid,share = sharedPeriods.popitem()
+        share.setOwnershipCertificate(ownershipCertificate)
+        service.updateSharePeriod(share)  
+        
+    def definyPeerTrading(self):
+        
+        value =0;
+        
+        for peer,trust in self.__peersTrading:
+            
+            if trust >= value:
+                value = trust
+                peerAux = peer 
+            
+            
+        
+        return (peerAux,value)
+
+    def getPeersTrading(self):
+        return self.__peersTrading
+    
+    def addPeerTrading(self,peer,trust):
+        
+        self.__peersTrading[peer] = trust 
     
     def setEquivalence(self,equivalence):
         self.__equivalence = equivalence
@@ -48,6 +81,9 @@ class AbstractTrading():
     def getEquivalence(self):
         return self.__equivalence
     
+    def getMetric(self):
+        return self.__metric
+        
     def setQuantityEquivalence(self,quantity):
         self.__quantityEquivalnce = quantity
         
@@ -58,7 +94,9 @@ class AbstractTrading():
     def getUUID(self):
         return self.__uuid 
     
-      
+    def setUUID(self,uuid):
+        self.__uuid = uuid
+          
     def getService(self):
         return self.__service
     

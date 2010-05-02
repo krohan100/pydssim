@@ -22,6 +22,9 @@ class AbstractMessageHandler():
     TRUSTFINAL      = "0019" # Consult Trust Final
     TRADINGSP       = "0020" # sEND msg FOR cONSULT pEER pROVIDER
     TRADINGCH       = "0021" # SP SEND TRADIND FOR CHILDREN
+    TRADINGST       = "0022" # Start Trading
+    TRADINGCP       = "0023" # cOMPLETE
+    TRADINGOC       = "0024" # certificado
     
     def __init__(self):
         raise NotImplementedError()

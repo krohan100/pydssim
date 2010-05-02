@@ -185,8 +185,8 @@ class TrustManager(object):
         hoje = datetime.today()
         period =  hoje.strftime('%d/%m/%Y %H:%M')
         
-        
-        self.getTrustFinal().addElement(TrustFinal(peerID,serviceID,"Default",AbstractTrust.TRUSTF,trustFinalValue,period,True))      
+        ## rever
+        self.getTrustFinal().addElement(TrustFinal(peerID,serviceID,serviceID,AbstractTrust.TRUSTF,trustFinalValue,period,True))      
         
         return trustFinalValue
     

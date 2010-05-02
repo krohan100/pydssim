@@ -19,7 +19,7 @@ class SharePeriod():
     NULL   = 0
 
 
-    def __init__(self,service,owner=createURN("ownershipCertificate"),periodStart,periodEnd,quantity,metric,status):
+    def __init__(self,service,owner=createURN("ownershipCertificate"),periodStart,periodEnd,quantity,metric="MB",status):
         
         '''
         Constructor
@@ -37,6 +37,11 @@ class SharePeriod():
        
     def getOwnerCertificate(self):
         return self.__ownershipCertificate
+    def setOwnerCertificate(self,ownershipCertificate):
+        self.__ownershipCertificate = ownershipCertificate 
+    
+    def getMetric(self):
+        return self.__metric
     
     def getQuantity(self):
         return self.__quantity

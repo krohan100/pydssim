@@ -38,6 +38,9 @@ class AbstractService():
     def getResource(self):
         return self.__resource
     
+    def getTag(self):
+        return self.__tag
+    
     
     def getSharePeriod(self):
         return self.__sharePeriod
@@ -48,6 +51,12 @@ class AbstractService():
         return dict([(sharePeriodID,sharePeriod) for sharePeriodID, sharePeriod in self.__sharePeriod.iteritems()
                       if (sharePeriod.getPeriodStart() <=periodStart) and (sharePeriod.getPeriodEnd()>= periodEnd)])
      
+     
+    def hasSharePeriodswithQuantity(self,periodStart,periodEnd,quantity,metric):
+       
+        return dict([(sharePeriodID,sharePeriod) for sharePeriodID, sharePeriod in self.__sharePeriod.iteritems()
+                      if (sharePeriod.getPeriodStart() <=periodStart) and (sharePeriod.getPeriodEnd()>= periodEnd) and
+                          (sharePeriod.getQuantity() >=quantity) and (sharePeriod.getmetric() == metric)])
      
     def addSharePeriod(self, sharePeriod):
         
@@ -61,6 +70,10 @@ class AbstractService():
         
         return equivalence    
     
+    def updateSharePeriod(self,share):
+        key = sharePeriod.getUUID()
+        self.__sharePeriod[key] = sharePeriod
+        
     def setResource(self,resource):
         self.__resource = resource
         return self.__resource

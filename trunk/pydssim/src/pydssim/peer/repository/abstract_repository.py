@@ -25,8 +25,8 @@ class AbstractRepository():
     def addElement(self, element):
         
         key = element.getUUID()
-        if not self.__elements.has_key(key):
-            self.__elements[key] = element
+        #if not self.__elements.has_key(key):
+        self.__elements[key] = element
         
         RepositoryLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(element.getUUID(),self.__class__.__name__,self.__peer.getURN()))
         
@@ -45,9 +45,7 @@ class AbstractRepository():
             
         return element
     
-    def lookForElement(self,uuid):
-        pass
-    
+   
     def countElements(self):
         return len(self.__elements)
     

@@ -66,12 +66,14 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                    
                     option = randint(0,1)
                     
-                    directTrust.addElement(DirectTrust(peerID,element.getUUID(),element.getResource(),AbstractTrust.DIRECT,rating,period,status[option]))
+                    directTrust.addElement(DirectTrust(peerID,element.getUUID(),element.getTag(),AbstractTrust.DIRECT,rating,period,status[option]))
      
      
          
     
     def createEquivalence(self,peer,dateTimeStart,dateTimeStop):
+       
+       # Procura nao fazer para todos
        
         equivalenceRepository = peer.getEquivalenceRepository()
                          
@@ -79,15 +81,14 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
        
         if services.countElements()< 2:
             return   
-        #print "tam", services.countElements(),services.getElements().values()
+        
         
         tam = services.countElements()
-        
-        tam = (tam*(tam-1))
-        
+       
         for countEle in range(0,tam):
             
-            serviceS = services.getRandonElement()
+            
+            serviceS = services.getElements().values()[countEle]
             
             if equivalenceRepository.hasElement(serviceS.getUUID()):
                
@@ -96,12 +97,10 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                 
                 service = ServiceEquivalence(serviceS)    
                 
-            
-            #print "s --->",service.getResource(),service.getResourceUUID()
-            equivalenceS = service
-            while equivalenceS.getResourceUUID() == service.getResourceUUID():
+            for z in range(countEle+1,tam):
                 
-                serviceE = services.getRandonElement()
+                serviceE = services.getElements().values()[z]
+                
                 if equivalenceRepository.hasElement(serviceE.getUUID()):
                      
                      equivalenceS = equivalenceRepository.getElementID(serviceE.getUUID())
@@ -110,24 +109,24 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                      equivalenceS = ServiceEquivalence(serviceE)
                 #print "aqui"
             
-            #print "e --->",equivalenceS.getResource(),equivalenceS.getResourceUUID()
-            serviceQuantity = randint(1,10)
-            equivalenceQuantity = randint(1,10)
-            
-              
-            
-            periodStar = randomDate(dateTimeStart,dateTimeStop, random())
-            periodEnd = randomDate(periodStar,dateTimeStop, random())
-            
-            equivalence = Equivalence(service,serviceQuantity,equivalenceS,equivalenceQuantity,periodStar,periodEnd)
-            
-            #print "aa", service,serviceQuantity,equivalenceS,equivalenceQuantity,periodStar,periodEnd
-            
-            service.addEquivalence(equivalence)
-            equivalenceS.addEquivalence(equivalence)        
-            
-            equivalenceRepository.addElement(service)
-            equivalenceRepository.addElement(equivalenceS)
+                #print "e --->",countEle,z,equivalenceS.getResource(),equivalenceS.getResourceUUID()
+                serviceQuantity = randint(1,10)
+                equivalenceQuantity = randint(1,10)
+                
+                  
+                
+                periodStar = randomDate(dateTimeStart,dateTimeStop, random())
+                periodEnd = randomDate(periodStar,dateTimeStop, random())
+                
+                #equivalence = Equivalence(service,serviceQuantity,equivalenceS,equivalenceQuantity,periodStar,periodEnd)
+                
+                #print "aa", service,serviceQuantity,equivalenceS,equivalenceQuantity,periodStar,periodEnd
+                
+                service.addEquivalence(Equivalence(service,serviceQuantity,equivalenceS,equivalenceQuantity,periodStar,periodEnd))
+                equivalenceS.addEquivalence(Equivalence(equivalenceS,equivalenceQuantity,service,serviceQuantity,periodStar,periodEnd))        
+                
+                equivalenceRepository.addElement(service)
+                equivalenceRepository.addElement(equivalenceS)
             
     def showEquivalence(self,peer):
         

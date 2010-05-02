@@ -7,10 +7,10 @@ from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageH
 from pydssim.util.log.message_logger import MessageLogger
 import traceback
 
-class MessageHandlerTradingSuperforChildren(AbstractMessageHandler):
+class MessageHandlerTradingOwner(AbstractMessageHandler):
     
     def __init__(self,peer):
-        self.initialize(peer,"TRADINGCH",AbstractMessageHandler.TRADINGCH)
+        self.initialize(peer,"TRADINGOC",AbstractMessageHandler.TRADINGOC)
         
     def executeHandler(self,peerConn,data):
         
@@ -21,11 +21,9 @@ class MessageHandlerTradingSuperforChildren(AbstractMessageHandler):
             try:
                 #print "data", data
                               
-                if self.getPeer().getTradingManager().getISA().verifyTrading(data):
-                    self.getPeer().getTradingManager().getISA().sendStartTrading(data)
-                    
-                MessageLogger().resgiterLoggingInfo('TRADINGSCH%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
-                peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
+                msg = self.getPeer().getTradingManager().getISA().recvOwner(data)
+                MessageLogger().resgiterLoggingInfo('TRADINGST%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
+                peerConn.sendData(AbstractMessageHandler.REPLY, msg)
                 
                        
             except:
