@@ -6,8 +6,8 @@ Created on 08/01/2010
 
 import socket
 import struct
-import threading
-import time
+#import threading
+#import time
 import traceback
 from pydssim.util.log.peer_logger import PeerLogger
 

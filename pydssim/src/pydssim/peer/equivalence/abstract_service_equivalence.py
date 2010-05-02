@@ -14,7 +14,7 @@ from random import random,randint
 from pydssim.util.log.equivalence_logger import EquivalenceLogger
 
 
-class AbstractEquivalence():
+class AbstractServiceEquivalence():
     '''
     classdocs
     '''
@@ -40,6 +40,9 @@ class AbstractEquivalence():
     def getResourceUUID(self):
         return self.__resource.getUUID()
     
+    def getResourceTag(self):
+        return self.__resource.getTag()
+    
     def getResource(self):
         return self.__resource.getResource()
     
@@ -55,6 +58,12 @@ class AbstractEquivalence():
     def getAllEquivalenceInPeriod(self,periodStart,periodEnd):
         return dict([(equivalenceID,equivalence) for equivalenceID, equivalence in self.getEquivalences().iteritems()
                       if(equivalence.getPeriodStart() <=periodStart) and (equivalence.getPeriodEnd()>= periodEnd)])
+     
+    def hasEquivalencesForTag(self,serviceTag,periodStart,periodEnd):
+       
+        return dict([(equivalenceID,equivalence) for equivalenceID, equivalence in self.getEquivalences().iteritems()
+                      if (equivalence.getEquivalence().getResourceTag() == serviceTag) and 
+                         (equivalence.getPeriodStart() <=periodStart) and (equivalence.getPeriodEnd()>= periodEnd)]) 
      
     def hasEquivalences(self,recourseEquivalence,periodStart,periodEnd):
        
