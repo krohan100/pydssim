@@ -20,8 +20,15 @@ class MessageHandlerTradingSuperPeer(AbstractMessageHandler):
         try:
             try:
                 #print "data", data
-                               
-                self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
+                
+                peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
+                equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
+                tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd,tradingAttempt = data.split()
+                
+                if int(tradingAttempt) ==1:               
+                    self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
+                else:
+                    self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(data)    
                 MessageLogger().resgiterLoggingInfo('TRADINGSP %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
                 

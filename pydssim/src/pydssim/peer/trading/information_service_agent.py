@@ -27,7 +27,7 @@ class InformationServiceAgent(object):
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
         equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
-        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd = data.split()
+        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd,tradingAttempt = data.split()
         
         
         # Put in History 
@@ -100,7 +100,18 @@ class InformationServiceAgent(object):
             self.getTradingManager().getPeer().getPeerLock().release()
       
         
+    def sendTradindForSuperPeerNeighbor(self,data):
         
+        peerNeighbors = self.getTradingManager().getPeer().getSuperPeerNeighbor()
+        
+        for super in peerNeighbors.keys():
+            
+            host, port = super.split(":")
+      
+            self.getTradingManager().getPeer().getPeerLock().acquire()             
+            resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGCSN,data)#[0]
+            self.getTradingManager().getPeer().getPeerLock().release()
+            
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd):
         
         serviceEquivalences = self.getTrading().getPeer().getEquivalenceRepository()
@@ -129,7 +140,7 @@ class InformationServiceAgent(object):
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
         equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
-        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd = data.split()
+        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd,tradingAttempt = data.split()
         
        
         host,port = peerSource.split(":")
@@ -184,7 +195,7 @@ class InformationServiceAgent(object):
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
         
-        #colocar uma verificação#
+        #colocar uma verificacao#
         
         trading.setStatus(status)
         msg = AbstractTrading.NOTCOMLETE
@@ -239,7 +250,7 @@ class InformationServiceAgent(object):
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
         
-        #colocar uma verificação#
+
         
         trading.setStatus(status)
         msg = AbstractTrading.NULL
@@ -251,13 +262,13 @@ class InformationServiceAgent(object):
         
     def searchServiceForTrading(self,trading):
         
-        
+        #if trading.getAttempt == 1:
         equivalence,sharePeriodsEquiva = self.__consultEquivalenceAndShare(trading.getService(), trading.getPeriodStart(), trading.getPeriodEnd())[0]
         
         quantityTrand = int((trading.getQuantity()*equivalece.getEquivalenceQuantity())/equivalence.getServiceQuantity())
         
         trading.setQuantityEquivalence(quantityTrand)
-        trading.setEquivalence = equivalence
+        trading.setEquivalence(equivalence)
         
         self.getTradingManager().getTradings().AddElemts(trading)
         
@@ -265,7 +276,7 @@ class InformationServiceAgent(object):
             if sharePeriod.getQuantity()>= quantityTrand and sharePeriod.getMetric() == trading.getMetric() and sharePeriod.getStatus() == SharePeriod.IDLE:
                 sharePeriod.setStatus(SharePeriod.TRADING)
                 break
-            
+                
        
         superPeer = self.getTradingManager().getPeer().getMySuperPeer()
         peerSource      = self.getTradingManager().getPeer().getPID()
@@ -275,9 +286,9 @@ class InformationServiceAgent(object):
         
         
         
-        msgSend = "%s %s %s %s % s%d %s %s %s %d %s %s %s %s"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
+        msgSend = "%s %s %s %s % s%d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
                                           equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
-                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd())
+                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
            
         print msgSend   
         self.getTradingManager().getPeer().getPeerLock().acquire()             

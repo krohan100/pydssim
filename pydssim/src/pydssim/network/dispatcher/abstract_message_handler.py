@@ -25,6 +25,7 @@ class AbstractMessageHandler():
     TRADINGST       = "0022" # Start Trading
     TRADINGCP       = "0023" # cOMPLETE
     TRADINGOC       = "0024" # certificado
+    TRADINGSN       = "0025" # send to supeerNeibor
     
     def __init__(self):
         raise NotImplementedError()
