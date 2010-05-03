@@ -8,6 +8,7 @@ from pydssim.simulation.process.factory.new_portalpeers_simulation_process_facto
 from pydssim.simulation.process.factory.new_superpeers_simulation_process_factory import NewSuperPeersSimulationProcessFactory
 from pydssim.simulation.process.factory.begin_simulation_process_factory import BeginSimulationProcessFactory
 from pydssim.simulation.process.factory.new_peers_simulation_process_factory import NewPeersSimulationProcessFactory
+from pydssim.simulation.process.factory.new_trading_simulation_process_factory import NewTradingSimulationProcessFactory
 
 simulation = ReciprocalTradeSimulationP2P()
 simulation.setSimulationTime(500000000000000)
@@ -19,4 +20,5 @@ simulation.addSimulationProcessFactory(NewPortalPeersSimulationProcessFactory())
 simulation.addSimulationProcessFactory(NewSuperPeersSimulationProcessFactory())
 simulation.addSimulationProcessFactory(NewPeersSimulationProcessFactory())
 simulation.addSimulationProcessFactory(BeginSimulationProcessFactory())
+simulation.addSimulationProcessFactory(NewTradingSimulationProcessFactory())
 print simulation.start()

@@ -39,6 +39,7 @@ class AbstractTrading():
         self.__quantity = quantity
         self.__metric   = metric
         self.__status   = AbstractTrading.STARTED
+        self.__attempt  = 1
         
         self.__peersTrading = {}
          
@@ -54,6 +55,12 @@ class AbstractTrading():
         share.setOwnershipCertificate(ownershipCertificate)
         service.updateSharePeriod(share)  
         
+    def getAttempt(self):
+        return self.__attempt
+    
+    def setAttempt(self,attempt):
+        self.__attempt = attempt
+    
     def definyPeerTrading(self):
         
         value =0;

@@ -47,10 +47,7 @@ class TradingManager(object):
         
         return trading
     
-    def createTrading(self,trading):
-        
-        t = threading.Thread(target = setServiceForTrading,args=(trading))
-        t.start()
+    
     
     def setServiceForTrading(self,trading):
         
@@ -58,12 +55,19 @@ class TradingManager(object):
         self.__isa= InformationServiceAgent(self)
         self.__isa.searchServiceForTrading(trading)
         tradingUUID = trading.getUUID()
+        timeStart =time.time()
+        
+        
         while trading.getStatus == AbstractTrading.STARTED:
             
             trading = self.__tradingManager.getTradings().getElementID(tradingUUID)
             if trading.getStatus() == AbstractTrading.NOTCOMLETE:
                 continue 
             
+            if (time.time() - timeStart) > 90:
+                timeStart =time.time()
+                trading.setattempt(trading.getAttempt() +1)
+                self.__isa.searchServiceForTrading(trading)
             
             peer,trust = trading.definyPeerTrading()
             
@@ -77,6 +81,11 @@ class TradingManager(object):
                     
                 
         self.__isa.sendResponseToPeerAll(trandig,self.getPeer().getPID(),peer)
+        
+    def createTrading(self,trading):
+        
+        t = threading.Thread(target = self.setServiceForTrading,args=(trading))
+        t.start()
                 
         
         
