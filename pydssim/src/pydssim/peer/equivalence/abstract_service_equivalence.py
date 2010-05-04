@@ -46,6 +46,9 @@ class AbstractServiceEquivalence():
     def getResource(self):
         return self.__resource.getResource()
     
+    def getResourceS(self):
+        return self.__resource
+    
     
     def getEquivalences(self):
         return self.__equivalences
@@ -58,6 +61,8 @@ class AbstractServiceEquivalence():
     def getAllEquivalenceInPeriod(self,periodStart,periodEnd):
         return dict([(equivalenceID,equivalence) for equivalenceID, equivalence in self.getEquivalences().iteritems()
                       if(equivalence.getPeriodStart() <=periodStart) and (equivalence.getPeriodEnd()>= periodEnd)])
+        
+   
      
     def hasEquivalencesForTag(self,serviceTag,periodStart,periodEnd):
        

@@ -14,6 +14,7 @@ from pydssim.peer.trading.trading_service import TradingService
 from pydssim.peer.trading.abstract_trading import AbstractTrading
 from random import random
 from datetime import datetime
+from pydssim.util.log.trading_logger import TradingLogger
 
 
 class TradingManager(object):
@@ -41,6 +42,7 @@ class TradingManager(object):
         return self.__tradings
     
     def creatTradingService(self,service,periodStart,periodEnd,quantity):
+        TradingLogger().resgiterLoggingInfo("Initialize Trandig = URN = ,Peer = %s "%(self.__peer.getPID()))
         
         trading = TradingService(service,periodStart,periodEnd,quantity)
         self.createTrading(trading)
@@ -51,13 +53,15 @@ class TradingManager(object):
     
     def setServiceForTrading(self,trading):
         
+        
+        
         self.getTradings().addElement(trading)
         self.__isa= InformationServiceAgent(self)
         self.__isa.searchServiceForTrading(trading)
         tradingUUID = trading.getUUID()
         timeStart =time.time()
         
-        
+        peer = " "
         while trading.getStatus == AbstractTrading.STARTED:
             
             trading = self.__tradingManager.getTradings().getElementID(tradingUUID)
@@ -80,11 +84,12 @@ class TradingManager(object):
                     trading.getPeersTrading().pop(peer)    
                     
                 
-        self.__isa.sendResponseToPeerAll(trandig,self.getPeer().getPID(),peer)
+        self.__isa.sendResponseToPeerAll(trading,self.getPeer().getPID(),peer)
         
     def createTrading(self,trading):
         
-        t = threading.Thread(target = self.setServiceForTrading,args=(trading))
+                
+        t = threading.Thread(target = self.setServiceForTrading,args=([trading]))
         t.start()
                 
         

@@ -33,13 +33,13 @@ class AbstractLogger():
         
         self.debug = False
         
-        #'''
+        '''
         name,ext = logFileName.split(".")
     
         hoje = datetime.today()
         dia = hoje.strftime('%d%m%Y-%I%M%S')
         logFileName = "%s-%s.%s"%(name,dia,ext)
-        #'''
+        '''
         
         self.__messagesLogFile = self.openFileLog(logFileName, fileMode)
             

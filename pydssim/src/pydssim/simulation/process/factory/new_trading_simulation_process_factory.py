@@ -53,9 +53,10 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peer = network.getRandonPeer()
             services = peer.getServices()
-            service = services.getElements().values()[randint(0,services.countElements())]
+            if services.countElements()>1:
+                service = services.getElements().values()[randint(0,services.countElements()-1)]
              
-            peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity)
+                peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity)
             
               
               

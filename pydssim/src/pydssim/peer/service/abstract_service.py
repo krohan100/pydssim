@@ -68,7 +68,7 @@ class AbstractService():
         
         #EquivalenceLogger().resgiterLoggingInfo("Add Service %s  in Repository URN  %s of peer %s "%(equivalence.getUUID(),self.__class__.__name__,self.__peer.getURN()))
         
-        return equivalence    
+        return sharePeriod    
     
     def updateSharePeriod(self,share):
         key = sharePeriod.getUUID()

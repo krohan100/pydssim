@@ -25,10 +25,7 @@ from pydssim.peer.trading.trading_manager import TradingManager
 
 from pydssim.util.log.peer_logger import PeerLogger
 from random import randint
-from pydssim.util.resource_maps import *
-from pydssim.peer.service.hardware_service import Hardware 
-from pydssim.peer.service.abstract_service import AbstractService
-from pydssim.peer.service.service_service import Service
+
 from pydssim.network.dispatcher.message_handler_insert import MessageHandlerInsertPeer
 from pydssim.network.dispatcher.message_handler_trust_final import MessageHandlerTrustFinal
 from pydssim.network.dispatcher.message_handler_list_peer import MessageHandlerListPeer
@@ -635,32 +632,7 @@ class AbstractPeer:
         assert self.getMaxPeers() == 0 or len(self.getPeerNeighbors()) <= self.getMaxPeers()
         return self.getMaxPeers() > 0 and len(self.getPeerNeighbors()) == self.getMaxPeers()
     
-    def createServices(self,tam=7):
-        
-        optionMap   = [ServiceMap(),HardwareMap()]
-        optionClass = [Service,Hardware]
-       
-        
-        for i in range(0,randint(1,tam)):
-            option = randint(0,1)
-            resourceMap = ResourceMap(optionMap[option])
-            #resourceMap = ResourceMap(optionMap[1])
-         
-            map = resourceMap.Map()
-            
-            concept = map.keys()[randint(0, len(map.keys()) - 1)]
-            resour  = randint(0, (len(map[concept]) - 1))
-                    
-            service = optionClass[option](self.getPID(),resource=map[concept][resour])
-            
-            has = False
-            for vServices in self.getServices().getElements().values():
-                
-                if service.getResource() == vServices.getResource():
-                    has = True
-                    break
-            if not has:
-                self.getServices().addElement(service)
+    
         
        
         

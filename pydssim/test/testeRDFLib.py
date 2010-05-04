@@ -76,3 +76,4 @@ hoje = datetime.today()
 print  hoje.strftime('%d-%m-%Y-%I:%M:%S %p')
 print createMessage("info", "teste")
 
+
