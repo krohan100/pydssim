@@ -7,6 +7,7 @@ Created on 29/08/2009
 from pydssim.util.decorator.public import  createURN
 
 class SharePeriod():
+    
     '''
     classdocs
     
@@ -19,7 +20,7 @@ class SharePeriod():
     NULL   = 0
 
 
-    def __init__(self,service,owner=createURN("ownershipCertificate"),periodStart,periodEnd,quantity,metric="MB",status):
+    def __init__(self,service,periodStart,periodEnd,quantity,owner=createURN("ownershipCertificate"),metric="MB",status=IDLE):
         
         '''
         Constructor
@@ -32,7 +33,7 @@ class SharePeriod():
         self.__periodEnd   = periodEnd
         self.__quantity    = quantity
         self.__metric      = metric
-        self.__status      = SharePeriod.IDLE
+        self.__status      = status
         
        
     def getOwnerCertificate(self):
@@ -60,8 +61,11 @@ class SharePeriod():
     def getPeriodStart(self):
         return self.__periodStart
     
-    def getPeirodEnd(self):
+    def getPeriodEnd(self):
         return self.__periodEnd
+    
+    def getUUID(self):
+        return self.__uuid
         
         
         

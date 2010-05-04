@@ -19,6 +19,12 @@ from pydssim.peer.equivalence.service_equivalence import ServiceEquivalence
 from pydssim.peer.equivalence.equivalence import Equivalence
 from pydssim.peer.repository.equivalence_repository import EquivalenceRepository
 
+from pydssim.util.resource_maps import *
+from pydssim.peer.service.hardware_service import Hardware 
+from pydssim.peer.service.abstract_service import AbstractService
+from pydssim.peer.service.service_service import Service
+from pydssim.peer.service.shared_period import SharePeriod
+
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random,randint,shuffle
@@ -38,6 +44,47 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     def __init__(self):
         AbstractSimulationProcessFactory.initialize(self,"NEW SIMPLEPEER PROCESS FACTORY")
         
+    def createSharePeriods(self,peer,service,dateTimeStart,dateTimeStop):
+        
+        
+        for  countShare in range(1,10):
+        
+            periodStart = randomDate(dateTimeStart,dateTimeStop, random())
+            periodEnd = randomDate(periodStart,dateTimeStop, random())
+            quantity = randint(1,10)
+            
+            service.addSharePeriod(SharePeriod(service,periodStart,periodEnd,quantity,peer.getURN()))
+        
+        
+       
+    
+    def createServices(self,peer,tam,dateTimeStart,dateTimeStop):
+        
+        optionMap   = [ServiceMap(),HardwareMap()]
+        optionClass = [Service,Hardware]
+       
+        
+        for i in range(0,randint(1,tam)):
+            option = randint(0,1)
+            resourceMap = ResourceMap(optionMap[option])
+            #resourceMap = ResourceMap(optionMap[1])
+         
+            map = resourceMap.Map()
+            
+            concept = map.keys()[randint(0, len(map.keys()) - 1)]
+            resour  = randint(0, (len(map[concept]) - 1))
+                    
+            service = optionClass[option](peer.getPID(),resource=map[concept][resour])
+            
+            has = False
+            for vServices in peer.getServices().getElements().values():
+                
+                if service.getResource() == vServices.getResource():
+                    has = True
+                    break
+            if not has:
+                self.createSharePeriods(peer,service,dateTimeStart,dateTimeStop)
+                peer.getServices().addElement(service)
     
     def createTrust(self,peer,peers,transactionNumber,dateTimeStart,dateTimeStop):
        
@@ -113,8 +160,6 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                 serviceQuantity = randint(1,10)
                 equivalenceQuantity = randint(1,10)
                 
-                  
-                
                 periodStar = randomDate(dateTimeStart,dateTimeStop, random())
                 periodEnd = randomDate(periodStar,dateTimeStop, random())
                 
@@ -156,7 +201,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             peer = DefaultPeer(urn,port)
            
-            peer.createServices(simulation.getResourcePeer())
+            self.createServices(peer,simulation.getResourcePeer(),simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())
             #print peer.getServices().getElements().keys()
             
             self.createEquivalence(peer, simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())

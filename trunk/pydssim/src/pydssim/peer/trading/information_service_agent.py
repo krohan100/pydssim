@@ -6,6 +6,7 @@ Created on 24/04/2010
 
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.trading.abstract_trading import AbstractTrading
+from pydssim.peer.service.shared_period import SharePeriod
 
 class InformationServiceAgent(object):
     '''
@@ -114,18 +115,29 @@ class InformationServiceAgent(object):
             
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd):
         
-        serviceEquivalences = self.getTrading().getPeer().getEquivalenceRepository()
+        sharePeriods = {}
+        flag = True 
+        equivalence = None
+        
+        serviceEquivalences = self.getTradingManager().getPeer().getEquivalenceRepository()
         
         serviceEquivalence = serviceEquivalences.getElementID(service.getUUID())
         
-        equivalencesInPeriod = serviceEquivalence.getAllEquivalenceInPeriod(periodStart,periodEnd)
+        #equivalencesInPeriod = serviceEquivalence.getAllEquivalenceInPeriod(periodStart,periodEnd)
         
-        sharePeriods = {}
-        flag = True        
+        equivalencesInPeriod = serviceEquivalence.getEquivalences()
+        
+        if not equivalencesInPeriod:
+            return (equivalence,sharePeriods)
+        
+               
         for equivalenceID, equivalence in equivalencesInPeriod.iteritems():
             
             equivalenceService = equivalence.getEquivalence()
-            sharePeriods = equivalenceService.hasSharePeriods(periodStart,periodEnd)
+            #sharePeriods = equivalenceService.getResourceS().hasSharePeriods(periodStart,periodEnd)
+            sharePeriods = equivalenceService.getResourceS().getSharePeriod()
+            
+            
             if  sharePeriods:
                 flag = False
                 break
@@ -135,6 +147,51 @@ class InformationServiceAgent(object):
             pass
             
         return (equivalence,sharePeriods)    
+    
+    def searchServiceForTrading(self,trading):
+        
+        #if trading.getAttempt == 1:
+        equivalence,sharePeriodsEquiva = self.__consultEquivalenceAndShare(trading.getService(), trading.getPeriodStart(), trading.getPeriodEnd())
+        
+        if not equivalence:
+           
+            return False
+        
+        quantityTrand = int((trading.getQuantity()*equivalence.getEquivalenceQuantity())/equivalence.getServiceQuantity())
+        
+        trading.setQuantityEquivalence(quantityTrand)
+        trading.setEquivalence(equivalence)
+        
+        self.getTradingManager().getTradings().addElement(trading)
+        
+        sharePeriod  = None
+        for shareID, sharePeriod in sharePeriodsEquiva.iteritems():
+            if sharePeriod.getQuantity()>= quantityTrand and sharePeriod.getMetric() == trading.getMetric() and sharePeriod.getStatus() == SharePeriod.IDLE:
+                sharePeriod.setStatus(SharePeriod.TRADING)
+                break
+                
+        if not sharePeriod:
+            return False
+        
+        superPeer = self.getTradingManager().getPeer().getMySuperPeer()
+        peerSource      = self.getTradingManager().getPeer().getPID()
+        
+        hostSuper,portSuper = superPeer.split(":")
+        
+        
+        
+        
+        msgSend = "%s %s %s %s % s%d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
+                                          equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
+                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
+           
+        print msgSend   
+        self.getTradingManager().getPeer().getPeerLock().acquire()             
+        resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
+      
+        self.getTradingManager().getPeer().getPeerLock().release()
+        
+        return True
             
     def sendStartTrading(self,data):
         
@@ -227,9 +284,9 @@ class InformationServiceAgent(object):
         
         
         
-    def sendResponseToPeerAll(self,trandig,myPeer,peer):
+    def sendResponseToPeerAll(self,trading,myPeer,peer):
         
-        for peerTrading in trading.getPeersTrading.keys():
+        for peerTrading in trading.getPeersTrading().keys():
                        
             if peerTrading == peer:
                 continue
@@ -240,7 +297,7 @@ class InformationServiceAgent(object):
             self.getTradingManager().getPeer().getPeerLock().acquire()             
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCP,msg)#[0]
       
-        self.getTradingManager().getPeer().getPeerLock().release() 
+            self.getTradingManager().getPeer().getPeerLock().release() 
            
                   
             
@@ -260,41 +317,7 @@ class InformationServiceAgent(object):
         return msg
         
         
-    def searchServiceForTrading(self,trading):
-        
-        #if trading.getAttempt == 1:
-        equivalence,sharePeriodsEquiva = self.__consultEquivalenceAndShare(trading.getService(), trading.getPeriodStart(), trading.getPeriodEnd())[0]
-        
-        quantityTrand = int((trading.getQuantity()*equivalece.getEquivalenceQuantity())/equivalence.getServiceQuantity())
-        
-        trading.setQuantityEquivalence(quantityTrand)
-        trading.setEquivalence(equivalence)
-        
-        self.getTradingManager().getTradings().AddElemts(trading)
-        
-        for shareID, sharePeriod in sharedPeriodsEquiva.iteritems():
-            if sharePeriod.getQuantity()>= quantityTrand and sharePeriod.getMetric() == trading.getMetric() and sharePeriod.getStatus() == SharePeriod.IDLE:
-                sharePeriod.setStatus(SharePeriod.TRADING)
-                break
-                
-       
-        superPeer = self.getTradingManager().getPeer().getMySuperPeer()
-        peerSource      = self.getTradingManager().getPeer().getPID()
-        
-        hostSuper,portSuper = superPeer.split(":")
-        
-        
-        
-        
-        msgSend = "%s %s %s %s % s%d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
-                                          equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
-                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
-           
-        print msgSend   
-        self.getTradingManager().getPeer().getPeerLock().acquire()             
-        resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
-      
-        self.getTradingManager().getPeer().getPeerLock().release()
+    
         
                 
         

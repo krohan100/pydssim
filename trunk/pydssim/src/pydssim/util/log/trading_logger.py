@@ -21,7 +21,7 @@ class TradingLogger(AbstractLogger):
     @since: 22/08/2009
     """
 
-    def __init__(self, fileMode='a',logFileName = 'Trading_logger__file.log'):
+    def __init__(self, fileMode='a',logFileName = 'trading_logger_file.log'):
         
                
         AbstractLogger.initialize(self,fileMode,logFileName)
