@@ -35,6 +35,13 @@ from pydssim.network.dispatcher.message_handler_super_peer import MessageHandler
 from pydssim.network.dispatcher.message_handler_insert_super_peer import MessageHandlerInsertSuperPeer
 from pydssim.network.dispatcher.message_handler_list_super_peer import MessageHandlerListSuperPeer
 from pydssim.network.dispatcher.message_handler_update_level import MessageHandlerUpdatePeerLevel
+from pydssim.network.dispatcher.message_handler_trading_super import MessageHandlerTradingSuperPeer
+from pydssim.network.dispatcher.message_handler_trading_super_children import MessageHandlerTradingSuperforChildren
+from pydssim.network.dispatcher.message_handler_trading_start import MessageHandlerTradingStart
+from pydssim.network.dispatcher.message_handler_trading_complete import MessageHandlerTradingComplete
+from pydssim.network.dispatcher.message_handler_trading_super_neighbor import MessageHandlerTradingSuperforNeighbor
+from pydssim.network.dispatcher.message_handler_trading_owner import MessageHandlerTradingOwner
+
 
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.peer_connection import PeerConnection
@@ -67,6 +74,12 @@ class AbstractPeer:
         dispatcher.registerMessageHandler(MessageHandlerListSuperPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerUpdatePeerLevel(self))
         dispatcher.registerMessageHandler(MessageHandlerTrustFinal(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingSuperPeer(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingSuperforChildren(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingStart(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingComplete(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingOwner(self))
+        dispatcher.registerMessageHandler(MessageHandlerTradingSuperforNeighbor(self))    
        
         
         
@@ -139,6 +152,7 @@ class AbstractPeer:
                 
             if not self.__dispatcher.hasTypeMessage(msgType):   
             #if msgType not in self.__dispatcher.getMessageHandlers():
+                print "msg",msgType
                 PeerLogger().resgiterLoggingInfo('Not handled: %s: %s' % (msgType, msgData))
             else:
                 PeerLogger().resgiterLoggingInfo('Handling peer msg: %s: %s' % (msgType, msgData))
@@ -334,6 +348,7 @@ class AbstractPeer:
                 raise
             except:
                 num += 1
+                print "Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num)
                 PeerLogger().resgiterLoggingInfo("Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num))
         
         if num == AbstractPeer.NUMBER:

@@ -19,16 +19,16 @@ class MessageHandlerTradingSuperPeer(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                #print "data", data
+                #print  data
                 
-                peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
-                equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
-                tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd,tradingAttempt = data.split()
+                peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
                 
                 if int(tradingAttempt) ==1:               
                     self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
                 else:
                     self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(data)    
+                
+                print "MTSP"
                 MessageLogger().resgiterLoggingInfo('TRADINGSP %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
                 
