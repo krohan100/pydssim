@@ -12,6 +12,7 @@ from pydssim.util.decorator.public import  createURN
 from pydssim.util.data_util import randomDate
 from random import random,randint
 from pydssim.util.log.trust_logger import TrustLogger
+from pydssim.peer.trading.abstract_trading import AbstractTrading
 
 
 class AbstractHistory():
@@ -29,8 +30,8 @@ class AbstractHistory():
         '''
         raise NotImplementedError()
     
-    def initialize(self, peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
-        equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd):
+    def initialize(self, peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource,
+                          equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd):
       
         self.__uuid = createURN("trading")
         self.__peerSource = peerSource

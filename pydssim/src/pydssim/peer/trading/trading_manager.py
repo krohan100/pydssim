@@ -12,6 +12,7 @@ from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageH
 from pydssim.peer.repository.tradings_repository import TradingsRepository
 from pydssim.peer.trading.trading_service import TradingService
 from pydssim.peer.trading.abstract_trading import AbstractTrading
+from pydssim.peer.trading.information_service_agent import InformationServiceAgent
 from random import random
 from datetime import datetime
 from pydssim.util.log.trading_logger import TradingLogger
@@ -30,6 +31,7 @@ class TradingManager(object):
         
         self.__peer = peer
         self.__tradings = TradingsRepository(peer)
+        self.__isa= InformationServiceAgent(self)
         
     
     def getPeer(self):
@@ -54,7 +56,7 @@ class TradingManager(object):
     def setServiceForTrading(self,trading):
         
         
-        
+        TradingLogger().resgiterLoggingInfo("Set Service For Trading ,Peer = %s"%(self.__peer.getPID()))
         self.getTradings().addElement(trading)
         self.__isa= InformationServiceAgent(self)
         self.__isa.searchServiceForTrading(trading)
