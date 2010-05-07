@@ -35,14 +35,13 @@ class InformationServiceAgent(object):
          
         # Put in History 
         
-        history = History(peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource,
-                          equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd)
+        history = History(peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource,equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd)
         
         self.getTradingManager().getPeer().getHistoryResource().addElement(history)
         
         
         service = None
-        print self.getTradingManager().getPeer().getServices().getElements().values()
+        #print self.getTradingManager().getPeer().getServices().getElements().values()
         for service in self.getTradingManager().getPeer().getServices().getElements().values():
             
             if tradingServiceResource == service.getResource():
@@ -50,8 +49,6 @@ class InformationServiceAgent(object):
         
              
         if not service:
-            
-            
             return False
         
         
@@ -106,31 +103,36 @@ class InformationServiceAgent(object):
         try:
             for host, port in peerNeighbors.values():
                  
-                #self.getTradingManager().getPeer().getPeerLock().acquire()  
-                print "enter", host,port,self.getTradingManager().getPeer().getPID()           
+                 
+                #print "enter", host,port,self.getTradingManager().getPeer().getPID()           
                 resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGCH,data)#[0]
                 
                 
-                #self.getTradingManager().getPeer().getPeerLock().release()
+                
         except:
             traceback.print_exc()
               
         
         return True     
         
-    def sendTradindForSuperPeerNeighbor(self,data):
+    def sendTradindForSuperPeerNeighbor(self,superPeerNeig,data):
         
         TradingLogger().resgiterLoggingInfo("send Tradind For Super Peer Neighbor ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
-        
+        print "sendTradindForSuperPeerNeighbor"
         peerNeighbors = self.getTradingManager().getPeer().getSuperPeerNeighbor()
         
         for super in peerNeighbors.keys():
             
+            if super == superPeerNeig:
+                continue
+            
             host, port = super.split(":")
       
-            self.getTradingManager().getPeer().getPeerLock().acquire()             
-            resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGCSN,data)#[0]
-            self.getTradingManager().getPeer().getPeerLock().release()
+            data = self.getPeer().getPID()+"~"+data            
+            resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGSN,data)#[0]
+            
+            
+        return True    
             
     def __consultEquivalenceAndShare(self,service,periodStart,periodEnd):
         
@@ -203,40 +205,35 @@ class InformationServiceAgent(object):
         
         TradingLogger().resgiterLoggingInfo("Send for SuperPeer = %s ,Peer = %s"%(superPeer,self.getTradingManager().getPeer().getPID()))
         
-        
         hostSuper,portSuper = superPeer.split(":")
-        
-        
-        
         
         msgSend = "%s %s %s %s %s %d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
                                           equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
                                           trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
            
         print msgSend   
-        #self.getTradingManager().getPeer().getPeerLock().acquire()             
+                     
         resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
       
-        #self.getTradingManager().getPeer().getPeerLock().release()
+        
         
         return True
             
     def sendStartTrading(self,data):
         
         TradingLogger().resgiterLoggingInfo("send Start Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        print "Send Start Trand"
         
-        peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingQuantity,equivalenceEquivalenceResource,
-        equivalenceEquivalenceUUID,equivalenceQuantityTrand,tradingDPeriodStart,tradingtPeriodStart,tradingDPeriodEnd,
-        tradingTPeriodEnd,sharePeriodPeriodStart,sharePeriodPeriodEnd,tradingAttempt = data.split()
+        peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
         
        
         host,port = peerSource.split(":")
         
         msg = "%s %s"%(self.getTradingManager().getPeer().getPID(),tradingUUID)
-        #self.getTradingManager().getPeer().getPeerLock().acquire()             
+                    
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGST,msg)#[0]
       
-        #self.getTradingManager().getPeer().getPeerLock().release()
+        
         
         peer,tradingUUID,responseTrand = resp[0][1]
         
@@ -267,16 +264,16 @@ class InformationServiceAgent(object):
         
     def sendResponseToPeerWinner(self,trandig,myPeer,peer):
         
-        print "enter", self.getTradingManager().getPeer().getPID()
+        print "Send E P W", self.getTradingManager().getPeer().getPID()
         TradingLogger().resgiterLoggingInfo("send Response To Peer Winner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         msg = "%s %s"%(trading.getUUID(),AbstractTrading.NOTCOMLETE,myPeer)
             
         host,port = peer.split(":")
-        #self.getTradingManager().getPeer().getPeerLock().acquire()             
+                    
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCP,msg)#[0]
   
-        #self.getTradingManager().getPeer().getPeerLock().release() 
+         
         
         return resp[0][1]  
     
@@ -299,17 +296,17 @@ class InformationServiceAgent(object):
                 
     def sendOwnershipCertificate(self,trandig,myPeer,peer):
         
-        print "enter OC", self.getTradingManager().getPeer().getPID()
+        print "Send  OC", self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("send OwnershipCertificate ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         msg = "%s %s"%(trading.getUUID(),myPeer)
             
         host,port = peer.split(":")
-        #self.getTradingManager().getPeer().getPeerLock().acquire()             
+                     
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGOC,msg)#[0]
   
-        #self.getTradingManager().getPeer().getPeerLock().release() 
+         
         
         return resp[0][1]   
                     
@@ -321,8 +318,6 @@ class InformationServiceAgent(object):
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
         trading.setOwnershipCertificate(ownershipCertificate,trading.getService())
-        
-        
         
         
         
@@ -338,10 +333,10 @@ class InformationServiceAgent(object):
             msg = "%s %s"%(trading.getUUID(),AbstractTrading.NOTCOMLETE,myPeer)
                 
             host,port = peerTrading.split(":")
-            #self.getTradingManager().getPeer().getPeerLock().acquire()             
+                         
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCP,msg)#[0]
       
-            #self.getTradingManager().getPeer().getPeerLock().release() 
+             
            
                   
             
@@ -354,8 +349,6 @@ class InformationServiceAgent(object):
         tradingUUID,status,myPeer = data.split()
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
-        
-
         
         trading.setStatus(status)
         msg = AbstractTrading.NULL

@@ -42,7 +42,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
       
         while  (simulation.getSimInstance().now() < simulation.getSimulationTime()):
              
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*2
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*10
             
             urn = "urn:trading:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making  : id %s" % (self.getName(),simulation.getSimInstance().now() , urn) 

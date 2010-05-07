@@ -19,7 +19,7 @@ class MessageHandlerTradingSuperforChildren(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                print "data ->", data
+                
                 MessageLogger().resgiterLoggingInfo('TRADINGSCH%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())              
                 
