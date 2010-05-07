@@ -3,8 +3,6 @@ Created on 28/08/2009
 
 @author: LGustavo
 
-COLOCAR PARA LE DE ARQUIVO YAAM
-
 '''
 
 
@@ -64,7 +62,7 @@ class AbstractTrading():
     def definyPeerTrading(self):
         
         value =0;
-        
+        peerAux =""
         for peer,trust in self.__peersTrading:
             
             if trust >= value:

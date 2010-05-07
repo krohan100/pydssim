@@ -26,9 +26,10 @@ class MessageHandlerTradingSuperPeer(AbstractMessageHandler):
                 if int(tradingAttempt) ==1:               
                     self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
                 else:
-                    self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(data)    
+                    myPID = self.getPeer().getPID()
+                    self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(myPIDdata)    
                 
-                print "MTSP"
+                    #print "MTSP"
                 MessageLogger().resgiterLoggingInfo('TRADINGSP %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
                 

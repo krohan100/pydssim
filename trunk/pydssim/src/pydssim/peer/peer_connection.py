@@ -63,7 +63,14 @@ class PeerConnection:
             return False
         return True
         
-
+    def getHost(self):
+        return self.__host
+    
+    def getPort(self):
+        return self.__port 
+    
+    def getSocket(self):
+        return self.__socket
     
     def recvData( self ):
         

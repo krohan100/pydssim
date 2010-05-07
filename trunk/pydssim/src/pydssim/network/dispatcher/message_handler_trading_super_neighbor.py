@@ -19,9 +19,11 @@ class MessageHandlerTradingSuperforNeighbor(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(data) 
-                self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
-                    
+                #superPeerNeig,data = data.split("~")
+                #self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(superPeerNeig,data) 
+                #print "sn" 
+                #self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
+                   
                 MessageLogger().resgiterLoggingInfo('TRADINGSN %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
                 
@@ -32,4 +34,5 @@ class MessageHandlerTradingSuperforNeighbor(AbstractMessageHandler):
                 peerConn.sendData(AbstractMessageHandler.ERROR, 'Join: incorrect arguments')
                 traceback.print_exc()        
         finally:
+            
             self.getPeer().getPeerLock().release()

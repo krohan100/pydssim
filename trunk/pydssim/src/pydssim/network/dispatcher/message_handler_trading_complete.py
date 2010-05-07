@@ -22,7 +22,7 @@ class MessageHandlerTradingComplete(AbstractMessageHandler):
                 #print "data", data
                               
                 msg = self.getPeer().getTradingManager().getISA().recvResponseToPeer(data)
-                MessageLogger().resgiterLoggingInfo('TRADINGST%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
+                MessageLogger().resgiterLoggingInfo('TRADINGCP%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, msg)
                 
                        
