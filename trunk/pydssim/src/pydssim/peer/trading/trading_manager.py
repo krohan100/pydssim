@@ -6,6 +6,7 @@ Created on 11/04/2010
 
 import time
 import threading
+import traceback
 from pydssim.peer.trading.information_service_agent import InformationServiceAgent
 #from pydssim.util.data_util import strTime
 from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
@@ -43,10 +44,10 @@ class TradingManager(object):
     def getTradings(self):
         return self.__tradings
     
-    def creatTradingService(self,service,periodStart,periodEnd,quantity):
+    def creatTradingService(self,service,periodStart,periodEnd,quantity,type):
         TradingLogger().resgiterLoggingInfo("Initialize Trandig = URN = ,Peer = %s "%(self.__peer.getPID()))
         
-        trading = TradingService(service,periodStart,periodEnd,quantity)
+        trading = TradingService(service,periodStart,periodEnd,quantity,type)
         
         self.createTrading(trading)
         
@@ -96,9 +97,13 @@ class TradingManager(object):
         
     def createTrading(self,trading):
         
-                
-        t = threading.Thread(target = self.setServiceForTrading,args=([trading]))
-        t.start()
+        try:        
+            t = threading.Thread(target = self.setServiceForTrading,args=([trading]))
+        
+            t.start()
+        except:
+            
+            traceback.print_exc()
                 
         
         

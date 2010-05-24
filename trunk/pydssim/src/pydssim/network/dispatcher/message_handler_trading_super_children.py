@@ -20,7 +20,7 @@ class MessageHandlerTradingSuperforChildren(AbstractMessageHandler):
         try:
             try:
                 
-                MessageLogger().resgiterLoggingInfo('TRADINGSCH%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
+                MessageLogger().resgiterLoggingInfo('TRADINGSCH %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())              
                 
                 if self.getPeer().getTradingManager().getISA().verifyTrading(data):

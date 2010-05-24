@@ -155,11 +155,11 @@ class TrustManager(object):
                 
                 #print "--------------->",self.getPeer().getPID(),host,port,peerID, service, startDate, stopDate
                 
-                self.getPeer().getPeerLock().acquire()             
+                #self.getPeer().getPeerLock().acquire()             
                 resp = self.getPeer().connectAndSend(host, port, AbstractMessageHandler.TRUSTFINAL, 
                         '%s %s %s %s' % (peerID, service, startDate, stopDate))#[0]
               
-                self.getPeer().getPeerLock().release()
+                #self.getPeer().getPeerLock().release()
                 trustFinalValue = float(resp[0][1])
                 
                 reputation+= (peerConf*trustFinalValue)
@@ -179,6 +179,7 @@ class TrustManager(object):
         
         trustFinalValue = 0.5
         confDir, t ,tt = self.directTrustCalculation(peerID, serviceID, startDate, stopDate)
+        #print "trust mana ",confDir, t ,tt
         gamaConfDir    = (self.getGama()*confDir)
         betaReputation = (self.getBeta()*self.reputationCalculation(peerID, serviceID, startDate, stopDate))
         trustFinalValue = (gamaConfDir+betaReputation) 

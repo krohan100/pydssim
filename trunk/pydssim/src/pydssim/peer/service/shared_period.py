@@ -38,6 +38,10 @@ class SharePeriod():
        
     def getOwnerCertificate(self):
         return self.__ownershipCertificate
+    
+    def getService(self):
+        return self.__service
+    
     def setOwnerCertificate(self,ownershipCertificate):
         self.__ownershipCertificate = ownershipCertificate 
     
