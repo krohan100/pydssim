@@ -237,6 +237,7 @@ class InformationServiceAgent(object):
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
         
+        
        
         host,port = peerSource.split(":")
         
@@ -244,14 +245,13 @@ class InformationServiceAgent(object):
                     
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGST,msg)#[0]
       
-        
-        
-        peer,tradingUUID,responseTrand = resp[0][1]
+        print "isa sst",resp[0][1]
+        peer,tradingUUID,responseTrand = resp[0][1].split()
         try:
             trading = self.__tradingManager.getTradings().getElementID(tradingUUID)
+            print "entrei ntry",trading
         except:
-            print "entrei ntry"
-            
+                      
             traceback.print_exc()  
         
         trading.setStatus(responseTrand)
@@ -273,7 +273,7 @@ class InformationServiceAgent(object):
                                                                                                     trading.getPeriodStart(),
                                                                                                     trading.getPeriodEnd()) 
             trading.addPeerTrading(peer,trust)
-            
+           
         return "%s %s"%(data,trading.getStatus())    
             
         
