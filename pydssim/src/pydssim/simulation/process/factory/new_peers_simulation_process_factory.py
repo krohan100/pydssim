@@ -251,7 +251,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             #print "Reputation", r
             
             
-            print " Peer", peer.getPID()
+            #print " Peer", peer.getPID()
             #tf = peer.getTrustManager().TrustFinalValueCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
             #print "trusfinal", tf
              
