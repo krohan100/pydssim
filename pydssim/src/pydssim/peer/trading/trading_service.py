@@ -11,11 +11,11 @@ class TradingService(AbstractTrading):
     classdocs
     '''
 
-    def __init__(self,service,periodStart,periodEnd,quantity):
+    def __init__(self,service,periodStart,periodEnd,quantity,type):
         '''
         Constructor
         '''
-        self.initialize(service,periodStart,periodEnd,quantity)
+        self.initialize(service,periodStart,periodEnd,quantity,type)
         
-    def initialize(self, service,periodStart,periodEnd,quantity):
-        AbstractTrading.initialize(self, service,periodStart,periodEnd,quantity)
+    def initialize(self, service,periodStart,periodEnd,quantity,type):
+        AbstractTrading.initialize(self, service,periodStart,periodEnd,quantity,type=type)

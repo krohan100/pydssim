@@ -21,6 +21,9 @@ class AbstractTrading():
     NOTCOMLETE = 3 # nao venceu
     ACK       = 4
     NULL   = 0
+    
+    CLIENT = 1000
+    SERVER = 1001
   
     def __init__(self):
         '''
@@ -28,7 +31,7 @@ class AbstractTrading():
         '''
         raise NotImplementedError()
     
-    def initialize(self, service,periodStart,periodEnd,quantity,metric="MB"):
+    def initialize(self, service,periodStart,periodEnd,quantity,metric="MB",type=CLIENT):
       
         self.__uuid = createURN("trading")
         self.__service = service
@@ -38,12 +41,16 @@ class AbstractTrading():
         self.__metric   = metric
         self.__status   = AbstractTrading.STARTED
         self.__attempt  = 1
+        self.__type     = type
         
         self.__peersTrading = {}
          
         
         TradingLogger().resgiterLoggingInfo("Initialize Trading = URN = %s,"%(self.__uuid))
     
+    
+    def getType(self):
+        return self.__type
     
     
     def setOwnershipCertificate(self,ownershipCertificate,service):
@@ -119,4 +126,7 @@ class AbstractTrading():
     
     def getStatus(self):
         return self.__status
+    
+    def setStatus(self,status):
+        self.__status = status
      

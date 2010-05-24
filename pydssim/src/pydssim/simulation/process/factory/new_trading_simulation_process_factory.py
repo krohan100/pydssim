@@ -14,7 +14,7 @@ from pydssim.simulation.process.factory.abstract_simulation_process_factory impo
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random,randint,shuffle
-
+from pydssim.peer.trading.abstract_trading import AbstractTrading
 from pydssim.util.data_util import randomDate,strTime
 import uuid
 
@@ -50,14 +50,15 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             periodStart = randomDate(simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop(), random())
             periodEnd = randomDate(periodStart,simulation.getTransactionDateTimeStop(), random()) 
-            serviceQuantity = randint(1,10)
+            serviceQuantity = 5#randint(1,10)
             
             peer = network.getRandonPeer()
             services = peer.getServices()
             if services.countElements()>1:
                 service = services.getElements().values()[randint(0,services.countElements()-1)]
+                print " NEEWWW ",service.getResource()
              
-                peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity)
+                peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity,AbstractTrading.CLIENT)
             
               
               

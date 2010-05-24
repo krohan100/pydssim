@@ -51,7 +51,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         
             periodStart = randomDate(dateTimeStart,dateTimeStop, random())
             periodEnd = randomDate(periodStart,dateTimeStop, random())
-            quantity = randint(1,10)
+            quantity = 10 #randint(1,10)
             
             service.addSharePeriod(SharePeriod(service,periodStart,periodEnd,quantity,peer.getURN()))
         
@@ -60,12 +60,19 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     
     def createServices(self,peer,tam,dateTimeStart,dateTimeStop):
         
+        ''' change resource '''
+        
         optionMap   = [ServiceMap(),HardwareMap()]
         optionClass = [Service,Hardware]
        
         
+        
         for i in range(0,randint(1,tam)):
+            
             option = randint(0,1)
+            
+           
+            
             resourceMap = ResourceMap(optionMap[option])
             #resourceMap = ResourceMap(optionMap[1])
          
@@ -85,6 +92,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             if not has:
                 self.createSharePeriods(peer,service,dateTimeStart,dateTimeStop)
                 peer.getServices().addElement(service)
+                
     
     def createTrust(self,peer,peers,transactionNumber,dateTimeStart,dateTimeStop):
        
@@ -157,8 +165,8 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                 #print "aqui"
             
                 #print "e --->",countEle,z,equivalenceS.getResource(),equivalenceS.getResourceUUID()
-                serviceQuantity = randint(1,10)
-                equivalenceQuantity = randint(1,10)
+                serviceQuantity = 5 #randint(1,10)
+                equivalenceQuantity = 5 #randint(1,10)
                 
                 periodStar = randomDate(dateTimeStart,dateTimeStop, random())
                 periodEnd = randomDate(periodStar,dateTimeStop, random())

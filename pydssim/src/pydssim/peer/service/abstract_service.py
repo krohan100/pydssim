@@ -53,10 +53,20 @@ class AbstractService():
      
      
     def hasSharePeriodswithQuantity(self,periodStart,periodEnd,quantity,metric):
-       
-        return dict([(sharePeriodID,sharePeriod) for sharePeriodID, sharePeriod in self.__sharePeriod.iteritems()
+        '''
+        print "###############  abs service ",periodStart,periodEnd,quantity,metric
+        
+        for sh in self.getSharePeriod().values():
+            print "## ",sh.getService().getResource(),sh.getPeriodStart(),sh.getPeriodEnd(),sh.getQuantity(),sh.getMetric(),sh.getStatus()
+            if (sh.getPeriodStart() <=periodStart)and (sh.getPeriodEnd()>= periodEnd)  and  (sh.getQuantity() >=int(quantity)) and (sh.getMetric() == metric):
+                print "##  ====",sh.getService().getResource(),sh.getPeriodStart(),sh.getPeriodEnd(),sh.getQuantity(),sh.getMetric(),sh.getStatus()
+        
+        
+        '''
+        
+        return dict([(sharePeriodID,sharePeriod) for sharePeriodID, sharePeriod in self.getSharePeriod().iteritems()
                       if (sharePeriod.getPeriodStart() <=periodStart) and (sharePeriod.getPeriodEnd()>= periodEnd) and
-                          (sharePeriod.getQuantity() >=quantity) and (sharePeriod.getmetric() == metric)])
+                         (sharePeriod.getQuantity() >=int(quantity)) and (sharePeriod.getMetric() == metric)])
      
     def addSharePeriod(self, sharePeriod):
         
