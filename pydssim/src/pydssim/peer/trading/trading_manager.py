@@ -9,7 +9,7 @@ import threading
 import traceback
 from pydssim.peer.trading.information_service_agent import InformationServiceAgent
 #from pydssim.util.data_util import strTime
-from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.peer.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.repository.tradings_repository import TradingsRepository
 from pydssim.peer.trading.trading_service import TradingService
 from pydssim.peer.trading.abstract_trading import AbstractTrading

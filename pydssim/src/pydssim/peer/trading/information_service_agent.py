@@ -4,7 +4,7 @@ Created on 24/04/2010
 @author: Luiz Gustavo
 '''
 
-from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.peer.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.trading.abstract_trading import AbstractTrading
 from pydssim.peer.service.shared_period import SharePeriod
 from pydssim.util.log.trading_logger import TradingLogger
