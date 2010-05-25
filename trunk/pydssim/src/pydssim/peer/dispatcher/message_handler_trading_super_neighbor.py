@@ -21,7 +21,7 @@ class MessageHandlerTradingSuperforNeighbor(AbstractMessageHandler):
             try:
                 #superPeerNeig,data = data.split("~")
                 #self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(superPeerNeig,data) 
-                #print "sn" 
+                print "MessageHandlerTradingSuperforNeighbor" 
                 #self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
                    
                 MessageLogger().resgiterLoggingInfo('TRADINGSN %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))

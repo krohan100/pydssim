@@ -43,18 +43,19 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
         while  (simulation.getSimInstance().now() < simulation.getSimulationTime()):
              
             yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*10
-            
-            urn = "urn:trading:"+uuid.uuid1().__str__()
-            logMsg = "Factoring Process %s => Simulation Time %10.2f making  : id %s" % (self.getName(),simulation.getSimInstance().now() , urn) 
-            SimulationProcessLogger().resgiterLoggingInfo(logMsg)
-            
-            periodStart = randomDate(simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop(), random())
-            periodEnd = randomDate(periodStart,simulation.getTransactionDateTimeStop(), random()) 
-            serviceQuantity = 5#randint(1,10)
-            
             peer = network.getRandonPeer()
             services = peer.getServices()
-            if services.countElements()>1:
+            
+            if services.countElements()>=2:
+                urn = "urn:trading:"+uuid.uuid1().__str__()
+                logMsg = "Factoring Process %s => Simulation Time %10.2f making  : id %s" % (self.getName(),simulation.getSimInstance().now() , urn) 
+                SimulationProcessLogger().resgiterLoggingInfo(logMsg)
+                
+                periodStart = randomDate(simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop(), random())
+                periodEnd = randomDate(periodStart,simulation.getTransactionDateTimeStop(), random()) 
+                serviceQuantity = 5#randint(1,10)
+            
+            
                 service = services.getElements().values()[randint(0,services.countElements()-1)]
                 print " NEEWWW ",service.getResource()
              

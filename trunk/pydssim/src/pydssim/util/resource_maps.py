@@ -27,6 +27,7 @@ class ServiceMap(object):
         mapping["howto"] = ["tutorial", "tips", "linux", "reference", "tutorials", "diy", "photography", "ubuntu", "photoshop", "programming", "software"]
         ''' 
         mapping["teste"] = ["teste"]
+        mapping["teste1"] = ["teste1"]
         return mapping
 
 class HardwareMap(object):
@@ -40,6 +41,7 @@ class HardwareMap(object):
         mapping["memory"] = ["memory","DDR"]
         '''
         mapping["memory"] = ["memory"]
+        mapping["memory1"] = ["memory1"]
         
         return mapping
 

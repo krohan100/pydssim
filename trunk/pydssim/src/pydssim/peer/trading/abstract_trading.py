@@ -16,14 +16,14 @@ class AbstractTrading():
     '''
     classdocs
     '''
-    STARTED = 1
-    COMPLETE = 2 # vencedor
-    NOTCOMLETE = 3 # nao venceu
-    ACK       = 4
-    NULL   = 0
+    STARTED = "0001"
+    COMPLETE = "0002" # vencedor
+    NOTCOMLETE = "0003" # nao venceu
+    ACK       = "0004"
+    NULL   = "0000"
     
-    CLIENT = 1000
-    SERVER = 1001
+    CLIENT = "1000"
+    SERVER = "1001"
   
     def __init__(self):
         '''
