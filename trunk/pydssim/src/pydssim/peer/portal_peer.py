@@ -10,7 +10,7 @@ Defines the module with the implementation AbstractPeer class.
 from pydssim.peer.abstract_peer import AbstractPeer
 from pydssim.util.decorator.public import public,createURN
 from pydssim.util.log.portal_logger import PortalLogger
-from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.peer.dispatcher.abstract_message_handler import AbstractMessageHandler
 from random import randint
 import math
 

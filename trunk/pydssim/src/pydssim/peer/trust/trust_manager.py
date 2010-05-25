@@ -8,7 +8,7 @@ import time
 from pydssim.peer.repository.direct_trust_repository import DirectTrustRepository
 from pydssim.peer.repository.trust_final_repository import TrustFinalRepository
 #from pydssim.util.data_util import strTime
-from pydssim.network.dispatcher.abstract_message_handler import AbstractMessageHandler
+from pydssim.peer.dispatcher.abstract_message_handler import AbstractMessageHandler
 from random import random
 from datetime import datetime
 from pydssim.peer.trust.trust_final import TrustFinal
