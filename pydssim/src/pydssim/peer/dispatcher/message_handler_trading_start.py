@@ -14,12 +14,12 @@ class MessageHandlerTradingStart(AbstractMessageHandler):
         
     def executeHandler(self,peerConn,data):
         
-        """ Handles the TRUSTFINAL message type. Message data is not used. """
+        """ Handles the TRADINGST message type. Message data is not used. """
 
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                #print "data", data
+                print "data ---->>>>", data
                               
                 msg = self.getPeer().getTradingManager().getISA().verifyTrust(data)
                 

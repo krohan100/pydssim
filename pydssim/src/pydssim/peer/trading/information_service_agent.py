@@ -101,18 +101,20 @@ class InformationServiceAgent(object):
         
 
     
-    def sendTradindForChildren(self,data):
+    def sendTradingForChildren(self,data):
         
         TradingLogger().resgiterLoggingInfo("send Tradind For Children ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         peerNeighbors = self.getTradingManager().getPeer().getPeerNeighbors()
         
        
         try:
+            print " neigSP",peerNeighbors.values()
             for host, port in peerNeighbors.values():
                  
                  
                 #print "enter", host,port,self.getTradingManager().getPeer().getPID()           
                 resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGCH,data)#[0]
+                print "resp sendTradingForChildren",resp
                 
                 
                 
@@ -212,21 +214,25 @@ class InformationServiceAgent(object):
         
         
         superPeer = self.getTradingManager().getPeer().getMySuperPeer()
+        #print "Supererr", superPeer
         peerSource      = self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("Send for SuperPeer = %s ,Peer = %s"%(superPeer,self.getTradingManager().getPeer().getPID()))
         
         hostSuper,portSuper = superPeer.split(":")
-        
-        msgSend = "%s %s %s %s %s %d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
-                                          equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
-                                          trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
-           
-        print msgSend   
-                     
-        resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
-      
-        
+        try:
+            
+            msgSend = "%s %s %s %s %s %d %s %s %s %d %s %s %s %s %d"%(peerSource,trading.getUUID(),trading.getService().getResource(),trading.getService().getUUID(),trading.getMetric(),trading.getQuantity(),
+                                              equivalence.getEquivalence().getResource(),equivalence.getEquivalence().getUUID(),sharePeriod.getMetric(),quantityTrand,trading.getPeriodStart(),
+                                              trading.getPeriodEnd(),sharePeriod.getPeriodStart(),sharePeriod.getPeriodEnd(),trading.getAttempt())
+               
+            #print msgSend   
+                         
+            resp = self.getTradingManager().getPeer().connectAndSend(hostSuper, portSuper, AbstractMessageHandler.TRADINGSP,msgSend)#[0]
+            #print "resp", resp
+  
+        except:
+           traceback.print_exc()        
         
         return True
             
@@ -237,9 +243,10 @@ class InformationServiceAgent(object):
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
         
-        
+        print "Send Start Trand 2"
        
         host,port = peerSource.split(":")
+        print "Send Start Trand 3",host,port
         
         msg = "%s %s"%(self.getTradingManager().getPeer().getPID(),tradingUUID)
                     

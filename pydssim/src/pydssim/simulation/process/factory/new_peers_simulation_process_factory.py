@@ -67,7 +67,8 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
        
         
         
-        for i in range(0,randint(1,tam)):
+        #for i in range(0,randint(1,tam)):
+        for i in range(0,4):
             
             option = randint(0,1)
             
@@ -133,12 +134,12 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         equivalenceRepository = peer.getEquivalenceRepository()
                          
         services = peer.getServices()
-       
-        if services.countElements()< 2:
-            return   
-        
         
         tam = services.countElements()
+       
+        if tam <2:
+            return   
+        
        
         for countEle in range(0,tam):
             
