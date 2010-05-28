@@ -57,7 +57,7 @@ class AbstractTrading():
         
         sharedPeriods = service.hasSharePeriods(self.__periodStart,self.__periodEnd)
         sharedPeriodid,share = sharedPeriods.popitem()
-        share.setOwnershipCertificate(ownershipCertificate)
+        share.setOwnerCertificate(ownershipCertificate)
         service.updateSharePeriod(share)  
         
     def getAttempt(self):
@@ -70,7 +70,7 @@ class AbstractTrading():
         
         value =0;
         peerAux =""
-        for peer,trust in self.__peersTrading:
+        for peer,trust in self.__peersTrading.iteritems():
             
             if trust >= value:
                 value = trust

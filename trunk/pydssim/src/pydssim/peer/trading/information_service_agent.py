@@ -86,7 +86,7 @@ class InformationServiceAgent(object):
         #print "+++++++++++++ isa 4"
         equivalenceID,equivalence = hasEquiv.popitem()
         
-        trading = self.getTradingManager().creatTradingService(tradingServiceResource,tradingPeriodStart,tradingPeriodEnd,tradingQuantity,AbstractTrading.SERVER)
+        trading = self.getTradingManager().creatTradingService(service,tradingPeriodStart,tradingPeriodEnd,tradingQuantity,AbstractTrading.SERVER)
         trading.setUUID(tradingUUID)
         
         trading.setQuantityEquivalence(equivalenceQuantityTrand)
@@ -108,13 +108,13 @@ class InformationServiceAgent(object):
         
        
         try:
-            print " neigSP",peerNeighbors.values()
+            #print " neigSP",peerNeighbors.values()
             for host, port in peerNeighbors.values():
                  
                  
                 #print "enter", host,port,self.getTradingManager().getPeer().getPID()           
                 resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGCH,data)#[0]
-                print "resp sendTradingForChildren",resp
+                #print "resp sendTradingForChildren",resp
                 
                 
                 
@@ -239,29 +239,36 @@ class InformationServiceAgent(object):
     def sendStartTrading(self,data):
         
         TradingLogger().resgiterLoggingInfo("send Start Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
-        print "Send Start Trand"
+      
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
         
-        print "Send Start Trand 2"
+        if peerSource == self.getTradingManager().getPeer().getPID():
+            return False
+         
+        
        
         host,port = peerSource.split(":")
-        print "Send Start Trand 3",host,port
+       
         
         msg = "%s %s"%(self.getTradingManager().getPeer().getPID(),tradingUUID)
                     
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGST,msg)#[0]
       
-        print "isa sst",resp[0][1]
+        
         peer,tradingUUID,responseTrand = resp[0][1].split()
         try:
             trading = self.__tradingManager.getTradings().getElementID(tradingUUID)
-            print "entrei ntry",trading
+            trading.setStatus(responseTrand)
+            self.__tradingManager.getTradings().addElement(trading)
+            #print "resp sst",resp
+           
         except:
                       
             traceback.print_exc()  
         
-        trading.setStatus(responseTrand)
+        
+        return True
         
             
     def verifyTrust(self,data):
@@ -274,7 +281,7 @@ class InformationServiceAgent(object):
         
         
         if trading.getStatus() == AbstractTrading.STARTED:
-                
+               
             trust = self.getTradingManager().getPeer().getTrustManager().TrustFinalValueCalculation(peer,
                                                                                                     trading.getService().getTag(),
                                                                                                     trading.getPeriodStart(),
@@ -284,12 +291,12 @@ class InformationServiceAgent(object):
         return "%s %s"%(data,trading.getStatus())    
             
         
-    def sendResponseToPeerWinner(self,trandig,myPeer,peer):
+    def sendResponseToPeerWinner(self,trading,myPeer,peer):
         
-        print "Send E P W", self.getTradingManager().getPeer().getPID()
+        print "Send E P W", self.getTradingManager().getPeer().getPID(),peer
         TradingLogger().resgiterLoggingInfo("send Response To Peer Winner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
-        msg = "%s %s %s"%(trading.getUUID(),AbstractTrading.NOTCOMLETE,myPeer)
+        msg = "%s %s %s"%(trading.getUUID(),AbstractTrading.COMPLETE,myPeer)
             
         host,port = peer.split(":")
                     
@@ -309,14 +316,15 @@ class InformationServiceAgent(object):
         
         #colocar uma verificacao#
         
-        trading.setStatus(status)
+        
         msg = AbstractTrading.NOTCOMLETE
         if status == AbstractTrading.COMPLETE:
+            trading.setStatus(status)
             msg = AbstractTrading.ACK
             
         return msg 
                 
-    def sendOwnershipCertificate(self,trandig,myPeer,peer):
+    def sendOwnershipCertificate(self,trading,myPeer,peer):
         
         print "Send  OC", self.getTradingManager().getPeer().getPID()
         
@@ -336,14 +344,18 @@ class InformationServiceAgent(object):
         
         TradingLogger().resgiterLoggingInfo("recv Owner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
-        tradingUUID,myPeer = data.split()
+        tradingUUID,ownershipCertificate = data.split()
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
         trading.setOwnershipCertificate(ownershipCertificate,trading.getService())
         
+        return colocar dono nbo equivalence eno servico 
+        
         
         
     def sendResponseToPeerAll(self,trading,myPeer,peer):
+        
+        print "Send  SendAll", self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("send Response To Peer All ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         

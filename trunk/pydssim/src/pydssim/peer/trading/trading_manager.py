@@ -57,7 +57,7 @@ class TradingManager(object):
     
     def setServiceForTrading(self,trading):
         
-        
+       
         TradingLogger().resgiterLoggingInfo("Set Service For Trading ,Peer = %s"%(self.__peer.getPID()))
         self.getTradings().addElement(trading)
         self.__isa= InformationServiceAgent(self)
@@ -68,26 +68,29 @@ class TradingManager(object):
         
         peer = ""
         
-        while trading.getStatus == AbstractTrading.STARTED:
+        while trading.getStatus() == AbstractTrading.STARTED:
+            
+            
             
             trading = self.getTradings().getElementID(tradingUUID)
             if trading.getStatus() == AbstractTrading.NOTCOMLETE:
                 continue 
             
-            if (time.time() - timeStart) > 10:
+           
+            if (time.time() - timeStart) > 30:
                 #print "+1"
                 timeStart =time.time()
                 trading.setAttempt(trading.getAttempt() +1)
                 self.__isa.searchServiceForTrading(trading)
             
-            
+            time.sleep(3)
             peer,trust = trading.definyPeerTrading()
             
             if trust >= 0.5 or len(trading.getPeersTrading())>3:
-                if self.__isa.sendResponseToPeerWinner(trandig,self.getPeer().getPID(),peer)== AbstractTrading.ACK:
+                if self.__isa.sendResponseToPeerWinner(trading,self.getPeer().getPID(),peer)== AbstractTrading.ACK:
                     trading.setStatus(AbstractTrading.COMPLETE)
                     print "com"
-                    ownershipCertificate = self.__isa.sendOwnershipCertificate(trandig,self.getPeer().getURN(),peer)
+                    ownershipCertificate = self.__isa.sendOwnershipCertificate(trading,self.getPeer().getURN(),peer)
                     trading.setOwnershipCertificate(ownershipCertificate,trading.getEquivalence())
                 else:
                     trading.getPeersTrading().pop(peer)    

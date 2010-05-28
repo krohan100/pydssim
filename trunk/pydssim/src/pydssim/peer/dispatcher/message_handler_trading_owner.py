@@ -19,7 +19,7 @@ class MessageHandlerTradingOwner(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                #print "data", data
+               
                               
                 msg = self.getPeer().getTradingManager().getISA().recvOwner(data)
                 MessageLogger().resgiterLoggingInfo('TRADINGST%s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
