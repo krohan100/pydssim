@@ -19,7 +19,7 @@ class MessageHandlerTradingStart(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                print "data ---->>>>", data
+                #print "data ---->>>>", data
                               
                 msg = self.getPeer().getTradingManager().getISA().verifyTrust(data)
                 

@@ -27,7 +27,7 @@ class MessageHandlerTradingSuperPeer(AbstractMessageHandler):
                 peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
                 
                 if int(tradingAttempt) ==1: 
-                    print "SP DATA 1"             
+                    #print "SP DATA 1"             
                     self.getPeer().getTradingManager().getISA().sendTradingForChildren(data)
                 else:
                     myPID = self.getPeer().getPID()

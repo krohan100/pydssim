@@ -80,7 +80,7 @@ class AbstractService():
         
         return sharePeriod    
     
-    def updateSharePeriod(self,share):
+    def updateSharePeriod(self,sharePeriod):
         key = sharePeriod.getUUID()
         self.__sharePeriod[key] = sharePeriod
         
