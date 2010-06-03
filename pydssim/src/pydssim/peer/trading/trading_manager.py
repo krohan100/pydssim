@@ -89,9 +89,9 @@ class TradingManager(object):
             if trust >= 0.5 or len(trading.getPeersTrading())>3:
                 if self.__isa.sendResponseToPeerWinner(trading,self.getPeer().getPID(),peer)== AbstractTrading.ACK:
                     trading.setStatus(AbstractTrading.COMPLETE)
-                    print "com"
+                   
                     ownershipCertificate = self.__isa.sendOwnershipCertificate(trading,self.getPeer().getURN(),peer)
-                    trading.setOwnershipCertificate(ownershipCertificate,trading.getEquivalence())
+                    trading.setOwnershipCertificate(ownershipCertificate)
                 else:
                     trading.getPeersTrading().pop(peer)    
                     

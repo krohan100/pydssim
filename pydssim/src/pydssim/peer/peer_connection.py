@@ -36,7 +36,7 @@ class PeerConnection:
     def __makeMSG( self, msgType, msgData ):
     
     
-        #print "Peer conect",msgData
+        #print "Peer conect ------------------->>>>  ",msgData
         msgLen = len(msgData)
         msg = struct.pack( "!4sL%ds" % msgLen, msgType, msgLen, msgData )
         return msg

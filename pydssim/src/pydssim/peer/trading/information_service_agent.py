@@ -326,30 +326,40 @@ class InformationServiceAgent(object):
                 
     def sendOwnershipCertificate(self,trading,myPeer,peer):
         
-        print "Send  OC", self.getTradingManager().getPeer().getPID()
+        
         
         TradingLogger().resgiterLoggingInfo("send OwnershipCertificate ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         msg = "%s %s"%(trading.getUUID(),myPeer)
+        
+        print "Send  OC", self.getTradingManager().getPeer().getPID(), msg,peer
             
         host,port = peer.split(":")
                      
         resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGOC,msg)#[0]
+       
+        tradingUUID,ownershipCertificate = resp[0][1].split()
+        
+        #trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
+        #trading.setOwnershipCertificate(ownershipCertificate)
   
          
         
-        return resp[0][1]   
+        return ownershipCertificate    
                     
     def recvOwner(self, data):
         
         TradingLogger().resgiterLoggingInfo("recv Owner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        print "recv  OC", data
         
         tradingUUID,ownershipCertificate = data.split()
         
         trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
-        trading.setOwnershipCertificate(ownershipCertificate,trading.getService())
+        trading.setOwnershipCertificate(ownershipCertificate)
         
-        return colocar dono nbo equivalence eno servico 
+        msg = "%s %s"%(trading.getUUID(),self.getTradingManager().getPeer().getURN())
+        
+        return msg  
         
         
         
