@@ -16,14 +16,14 @@ class AbstractTrading():
     '''
     classdocs
     '''
-    STARTED = "0001"
-    COMPLETE = "0002" # vencedor
-    NOTCOMLETE = "0003" # nao venceu
-    ACK       = "0004"
-    NULL   = "0000"
+    STARTED     = "0001"
+    COMPLETE    = "0002" # vencedor
+    NOTCOMLETE  = "0003" # nao venceu
+    ACK         = "0004"
+    NULL        = "0000"
     
-    CLIENT = "1000"
-    SERVER = "1001"
+    CLIENT      = "1000"
+    SERVER      = "1001"
   
     def __init__(self):
         '''
@@ -53,12 +53,12 @@ class AbstractTrading():
         return self.__type
     
     
-    def setOwnershipCertificate(self,ownershipCertificate,service):
+    def setOwnershipCertificate(self,ownershipCertificate):
         
-        sharedPeriods = service.hasSharePeriods(self.__periodStart,self.__periodEnd)
+        sharedPeriods = self.getService().hasSharePeriods(self.__periodStart,self.__periodEnd)
         sharedPeriodid,share = sharedPeriods.popitem()
         share.setOwnerCertificate(ownershipCertificate)
-        service.updateSharePeriod(share)  
+        self.getService().updateSharePeriod(share)  
         
     def getAttempt(self):
         return self.__attempt
