@@ -18,4 +18,4 @@ class TradingService(AbstractTrading):
         self.initialize(service,periodStart,periodEnd,quantity,type)
         
     def initialize(self, service,periodStart,periodEnd,quantity,type):
-        AbstractTrading.initialize(self, service,periodStart,periodEnd,quantity,type=type)
+        AbstractTrading.initialize(self, service,periodStart,periodEnd,quantity,type)
