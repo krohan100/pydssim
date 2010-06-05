@@ -41,18 +41,19 @@ class InformationServiceAgent(object):
         
         
         service = None
-        
+        print "Verifi 1"
         for service in self.getTradingManager().getPeer().getServices().getElements().values():
             
             if tradingServiceResource == service.getResource():
                 break
         
-             
+        
+        print "Verifi 2"     
         if not service:
            
             return False
         
-        
+        print "Verifi 3"
         tradingPeriodStart = "%s %s"%(tradingDPeriodStart,tradingTPeriodStart)
         tradingPeriodEnd = "%s %s"%(tradingDPeriodEnd,tradingTPeriodEnd)
         
@@ -60,9 +61,9 @@ class InformationServiceAgent(object):
         hasShare = service.hasSharePeriodswithQuantity(tradingPeriodStart,tradingPeriodEnd,tradingQuantity,tradingMetric)
         
        
-        
+        aqui  sdf 
         if not hasShare:
-            
+            print "Verifi 5",hasShare
             return False
         
         #verificar quantidade 
@@ -72,10 +73,10 @@ class InformationServiceAgent(object):
         serviceEquivalent  = equivalenceRepository.getElementID(service.getUUID())
         
         hasEquiv = serviceEquivalent.hasEquivalencesForTag(equivalenceEquivalenceResource,tradingPeriodStart,tradingPeriodEnd)
-        #print " Isa has equiv", hasEquiv
-               
+        print " Isa has equiv", hasEquiv
+        print "Verifi 4"       
         if not hasEquiv:
-            #print "+++++++++++++ isa false 3"
+            print "+++++++++++++ isa false 3"
             return False
         
         trust = self.getTradingManager().getPeer().getTrustManager().TrustFinalValueCalculation(peerSource,
@@ -83,7 +84,7 @@ class InformationServiceAgent(object):
                                                                                                 tradingPeriodStart,
                                                                                                 tradingPeriodEnd) 
         
-        #print "+++++++++++++ isa 4"
+        print "+++++++++++++ isa 4"
         equivalenceID,equivalence = hasEquiv.popitem()
         
         trading = self.getTradingManager().creatTradingService(service,tradingPeriodStart,tradingPeriodEnd,tradingQuantity,AbstractTrading.SERVER)
@@ -94,7 +95,7 @@ class InformationServiceAgent(object):
         trading.addPeerTrading(peerSource,trust)
         
         self.getTradingManager().getTradings().addElement(trading)
-        #print "isa ver SSSSAAAIIIIII"
+        print "isa ver SSSSAAAIIIIII"
         
         return True        
                
@@ -127,7 +128,7 @@ class InformationServiceAgent(object):
     def sendTradindForSuperPeerNeighbor(self,superPeerNeig,data):
         
         TradingLogger().resgiterLoggingInfo("send Tradind For Super Peer Neighbor ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
-        print "sendTradindForSuperPeerNeighbor"
+       
         peerNeighbors = self.getTradingManager().getPeer().getSuperPeerNeighbor()
         
         for super in peerNeighbors.keys():
@@ -137,8 +138,11 @@ class InformationServiceAgent(object):
             
             host, port = super.split(":")
       
-            data = self.getPeer().getPID()+"~"+data            
-            resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGSN,data)#[0]
+            datasp = self.getTradingManager().getPeer().getPID()+"~"+data
+                       
+            resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGSN,datasp)#[0]
+            
+            
             
             
         return True    
@@ -183,9 +187,10 @@ class InformationServiceAgent(object):
     def searchServiceForTrading(self,trading):
         
         if trading.getType() == AbstractTrading.SERVER:
+            print "Server"
             return False
            
-        
+       
         TradingLogger().resgiterLoggingInfo("search Service For Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         #if trading.getAttempt == 1:

@@ -14,13 +14,18 @@ if __name__ == '__main__':
     
     teste["002"][0] = (0,"leticia")
     teste["002"][1] = (10,"clara")
-
+    teste["003"] = 0
     x,y = teste["002"][0]
     print teste
     print teste["002"].keys(), teste["002"].values()
     teste["002"][0] = (30,"Arhur") 
     print teste["002"].keys(), teste["002"].values()
-    print teste.sort()
+  
+    print ("003" in teste.keys() and (teste["003"] > 0))
+    teste["003"] += 12
+    print ("003" in teste.keys() and (teste["003"] > 0)), teste["003"]
+    
+
     #print x,y
    
     data = "danielle_gustavo.amor"

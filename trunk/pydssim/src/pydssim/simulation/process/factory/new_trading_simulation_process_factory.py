@@ -35,15 +35,28 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
                                
     def factorySimulationProcess(self):
         
-        
+        peers = {}
         simulation = self.getSimulation()
         network    = simulation.getNetwork()
         
-      
+        contt = 0
         while  (simulation.getSimInstance().now() < simulation.getSimulationTime()):
              
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*10
+            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*2
             peer = network.getRandonPeer()
+            
+            if peer.getPID() in peers.keys():
+                if  peers[peer.getPID()] < 4:
+                    #print "new 1"
+                    peers[peer.getPID()] += 1
+                else:
+                    #print "new 2"
+                    continue    
+            else:
+                #print "new 3"
+                peers[peer.getPID()] = 0
+                         
+            
             services = peer.getServices()
             
             if services.countElements()>=2:
@@ -57,7 +70,8 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             
                 service = services.getElements().values()[randint(0,services.countElements()-1)]
-                print " NEEWWW ",service.getResource()
+                print " New Trading Service -> ",peer.getPID(),service.getResource(),peers[peer.getPID()],contt
+                contt+=1
              
                 peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity,AbstractTrading.CLIENT)
             

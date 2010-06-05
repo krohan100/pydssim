@@ -64,28 +64,31 @@ class TradingManager(object):
         self.__isa.searchServiceForTrading(trading)
         
         tradingUUID = trading.getUUID()
+        #print " trading 1 ", tradingUUID
         timeStart =time.time()
         
         peer = ""
         
-        while trading.getStatus() == AbstractTrading.STARTED:
+        while (trading.getStatus() == AbstractTrading.STARTED and ((time.time() - timeStart) < 60)) :
             
-            
+            #print " trading 2 ", tradingUUID
             
             trading = self.getTradings().getElementID(tradingUUID)
+            #
             if trading.getStatus() == AbstractTrading.NOTCOMLETE:
                 continue 
             
            
-            if (time.time() - timeStart) > 30:
-                #print "+1"
+            if (time.time() - timeStart) > 30 and trading.getAttempt() == 1:
+                #print trading.getUUID(),time.time() , timeStart, trading.getAttempt()
                 timeStart =time.time()
                 trading.setAttempt(trading.getAttempt() +1)
-                self.__isa.searchServiceForTrading(trading)
+                ###self.__isa.searchServiceForTrading(trading)
+                
             
-            time.sleep(3)
+           
             peer,trust = trading.definyPeerTrading()
-            
+            #print "num peer tra",trading.getUUID(),time.time() , timeStart,len(trading.getPeersTrading())
             if trust >= 0.5 or len(trading.getPeersTrading())>3:
                 if self.__isa.sendResponseToPeerWinner(trading,self.getPeer().getPID(),peer)== AbstractTrading.ACK:
                     trading.setStatus(AbstractTrading.COMPLETE)
