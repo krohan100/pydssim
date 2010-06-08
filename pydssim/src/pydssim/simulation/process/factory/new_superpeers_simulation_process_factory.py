@@ -58,6 +58,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             network.addPeer(peer)
             #peer.newSuperPeer(portalID)
             peer.connectPortal(portalID,1)
+            print "Super Peer ------------> ", peer.getPID()
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )

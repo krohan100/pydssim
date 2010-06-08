@@ -26,8 +26,8 @@ class MessageHandlerTradingSuperforChildren(AbstractMessageHandler):
                 if self.getPeer().getTradingManager().getISA().verifyTrading(data):
                     print "TCH",self.getPeer().getPID()
                     self.getPeer().getTradingManager().getISA().sendStartTrading(data)
-                else:
-                    print "NO TCH",self.getPeer().getPID(),data
+                #else:
+                #    print "NO TCH",self.getPeer().getPID()
                
                 
                        

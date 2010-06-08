@@ -70,7 +70,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             
                 service = services.getElements().values()[randint(0,services.countElements()-1)]
-                print " New Trading Service -> ",peer.getPID(),service.getResource(),peers[peer.getPID()],contt
+                print "New Trading Service -> ",peer.getPID(),service.getResource(),peers[peer.getPID()],contt
                 contt+=1
              
                 peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity,AbstractTrading.CLIENT)

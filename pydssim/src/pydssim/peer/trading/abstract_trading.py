@@ -10,6 +10,7 @@ from pydssim.util.decorator.public import  createURN
 from pydssim.util.data_util import randomDate
 from random import random,randint
 from pydssim.util.log.trading_logger import TradingLogger
+from multiprocessing import Semaphore
 
 
 class AbstractTrading():
@@ -31,7 +32,7 @@ class AbstractTrading():
         '''
         raise NotImplementedError()
     
-    def initialize(self, service,periodStart,periodEnd,quantity,metric="MB",type=CLIENT):
+    def initialize(self, service,periodStart,periodEnd,quantity,type=CLIENT,metric="MB"):
       
         self.__uuid = createURN("trading")
         self.__service = service
@@ -39,9 +40,11 @@ class AbstractTrading():
         self.__periodEnd = periodEnd
         self.__quantity = quantity
         self.__metric   = metric
+        
         self.__status   = AbstractTrading.STARTED
         self.__attempt  = 1
         self.__type     = type
+        
         
         self.__peersTrading = {}
          
@@ -70,6 +73,8 @@ class AbstractTrading():
         
         value =0;
         peerAux =""
+        semaphore = Semaphore()
+        semaphore.acquire()
         for peer,trust in self.__peersTrading.iteritems():
             
             if trust >= value:
@@ -77,7 +82,7 @@ class AbstractTrading():
                 peerAux = peer 
             
             
-        
+        semaphore.release()
         return (peerAux,value)
 
     def getPeersTrading(self):

@@ -30,6 +30,7 @@ class InformationServiceAgent(object):
     def verifyTrading(self,data):
         
         TradingLogger().resgiterLoggingInfo("Verify Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
         
          
@@ -41,29 +42,29 @@ class InformationServiceAgent(object):
         
         
         service = None
-        print "Verifi 1"
+        
         for service in self.getTradingManager().getPeer().getServices().getElements().values():
             
             if tradingServiceResource == service.getResource():
                 break
         
         
-        print "Verifi 2"     
+             
         if not service:
            
             return False
         
-        print "Verifi 3"
         tradingPeriodStart = "%s %s"%(tradingDPeriodStart,tradingTPeriodStart)
         tradingPeriodEnd = "%s %s"%(tradingDPeriodEnd,tradingTPeriodEnd)
         
+         
         # verify if service shared
         hasShare = service.hasSharePeriodswithQuantity(tradingPeriodStart,tradingPeriodEnd,tradingQuantity,tradingMetric)
         
        
-        aqui  sdf 
+       
         if not hasShare:
-            print "Verifi 5",hasShare
+            
             return False
         
         #verificar quantidade 
@@ -73,10 +74,10 @@ class InformationServiceAgent(object):
         serviceEquivalent  = equivalenceRepository.getElementID(service.getUUID())
         
         hasEquiv = serviceEquivalent.hasEquivalencesForTag(equivalenceEquivalenceResource,tradingPeriodStart,tradingPeriodEnd)
-        print " Isa has equiv", hasEquiv
-        print "Verifi 4"       
+        #print " Isa has equiv", hasEquiv
+            
         if not hasEquiv:
-            print "+++++++++++++ isa false 3"
+            #print "+++++++++++++ isa false 3"
             return False
         
         trust = self.getTradingManager().getPeer().getTrustManager().TrustFinalValueCalculation(peerSource,
@@ -84,7 +85,7 @@ class InformationServiceAgent(object):
                                                                                                 tradingPeriodStart,
                                                                                                 tradingPeriodEnd) 
         
-        print "+++++++++++++ isa 4"
+        
         equivalenceID,equivalence = hasEquiv.popitem()
         
         trading = self.getTradingManager().creatTradingService(service,tradingPeriodStart,tradingPeriodEnd,tradingQuantity,AbstractTrading.SERVER)
@@ -95,7 +96,7 @@ class InformationServiceAgent(object):
         trading.addPeerTrading(peerSource,trust)
         
         self.getTradingManager().getTradings().addElement(trading)
-        print "isa ver SSSSAAAIIIIII"
+        
         
         return True        
                
@@ -187,7 +188,7 @@ class InformationServiceAgent(object):
     def searchServiceForTrading(self,trading):
         
         if trading.getType() == AbstractTrading.SERVER:
-            print "Server"
+            #print "Server"
             return False
            
        
@@ -311,23 +312,7 @@ class InformationServiceAgent(object):
         
         return resp[0][1]  
     
-    def recvResponseToPeer(self,data):
-        
-        TradingLogger().resgiterLoggingInfo("recv Response To Peer ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
-        
-        tradingUUID,status,myPeer = data.split()
-        
-        trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
-        
-        #colocar uma verificacao#
-        
-        
-        msg = AbstractTrading.NOTCOMLETE
-        if status == AbstractTrading.COMPLETE:
-            trading.setStatus(status)
-            msg = AbstractTrading.ACK
-            
-        return msg 
+    
                 
     def sendOwnershipCertificate(self,trading,myPeer,peer):
         
@@ -370,7 +355,7 @@ class InformationServiceAgent(object):
         
     def sendResponseToPeerAll(self,trading,myPeer,peer):
         
-        print "Send  SendAll", self.getTradingManager().getPeer().getPID()
+        print "SendAll", self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("send Response To Peer All ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
@@ -386,12 +371,28 @@ class InformationServiceAgent(object):
             resp = self.getTradingManager().getPeer().connectAndSend(host, port, AbstractMessageHandler.TRADINGCP,msg)#[0]
       
              
-           
+    def recvResponseToPeer(self,data):
+        
+        TradingLogger().resgiterLoggingInfo("recv Response To Peer ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        
+        tradingUUID,status,myPeer = data.split()
+        
+        trading = self.getTradingManager().getTradings().getElementID(tradingUUID)
+        
+        #colocar uma verificacao#
+        
+        
+        msg = AbstractTrading.NOTCOMLETE
+        if status == AbstractTrading.COMPLETE:
+            trading.setStatus(status)
+            msg = AbstractTrading.ACK
+            
+        return msg       
                   
             
     def recvResponseToPeerComplete(self,data):
         
-        print "enter Complete ", self.getTradingManager().getPeer().getPID()
+        print "------------>>>>>>>> Complete ", self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("recv Response To Peer Complete ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
