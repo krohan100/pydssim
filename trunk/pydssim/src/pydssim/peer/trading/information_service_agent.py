@@ -126,20 +126,24 @@ class InformationServiceAgent(object):
         
         return True     
         
-    def sendTradindForSuperPeerNeighbor(self,superPeerNeig,data):
+    def sendTradingForSuperPeerNeighbor(self,superPeerNeig,level,data):
         
         TradingLogger().resgiterLoggingInfo("send Tradind For Super Peer Neighbor ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
        
         peerNeighbors = self.getTradingManager().getPeer().getSuperPeerNeighbor()
         
-        for super in peerNeighbors.keys():
+                
+        #print "send super ----->>>>>--->>>>>>>>>>>-------------->>>> ",superPeerNeig,peerNeighbors
+        
+        for super,levelSP in peerNeighbors.iteritems():
             
-            if super == superPeerNeig:
+            if super == superPeerNeig or levelSP >int(level)  :
                 continue
             
+            #print "Super - - - - -  > > >",super, self.getTradingManager().getPeer().getPID(),self.getTradingManager().getPeer().getLevelNeighbor()
             host, port = super.split(":")
       
-            datasp = self.getTradingManager().getPeer().getPID()+"~"+data
+            datasp = self.getTradingManager().getPeer().getPID()+" "+str(levelSP)+"~"+data
                        
             resp = self.getTradingManager().getPeer().connectAndSend(host, int(port), AbstractMessageHandler.TRADINGSN,datasp)#[0]
             
@@ -220,7 +224,7 @@ class InformationServiceAgent(object):
         
         
         superPeer = self.getTradingManager().getPeer().getMySuperPeer()
-        #print "Supererr", superPeer
+        print "SuperPerr", superPeer,trading.getAttempt()
         peerSource      = self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("Send for SuperPeer = %s ,Peer = %s"%(superPeer,self.getTradingManager().getPeer().getPID()))

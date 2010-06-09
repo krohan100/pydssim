@@ -19,15 +19,17 @@ class MessageHandlerTradingSuperforNeighbor(AbstractMessageHandler):
         self.getPeer().getPeerLock().acquire()
         try:
             try:
-                 
+                
                 superPeerNeig,data = data.split("~")
+                superPeerNeig,level = superPeerNeig.split()
+                print "MessageHandlerTradingSuperforNeighbor Level-->-->--> ",superPeerNeig,level
                 
                 
                 
-                self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(superPeerNeig,data) 
+                self.getPeer().getTradingManager().getISA().sendTradingForSuperPeerNeighbor(superPeerNeig,level,data) 
                 
-                self.getPeer().getTradingManager().getISA().sendTradindForChildren(data)
-                print "MessageHandlerTradingSuperforNeighbor -->-->--> ",data
+                self.getPeer().getTradingManager().getISA().sendTradingForChildren(data)
+                
                    
                 MessageLogger().resgiterLoggingInfo('TRADINGSN %s %s: %s' % (self.getPeer().getPID(),str(peerConn), data))
                 peerConn.sendData(AbstractMessageHandler.REPLY, self.getPeer().getPID())
