@@ -33,9 +33,9 @@ class MessageHandlerTradingSuperPeer(AbstractMessageHandler):
                     self.getPeer().getTradingManager().getISA().sendTradingForChildren(data)
                 else:
                     myPID = self.getPeer().getPID()
+                    myLevel = self.getPeer().getLevelNeighbor()
                     
-                    
-                    self.getPeer().getTradingManager().getISA().sendTradindForSuperPeerNeighbor(myPID,data)    
+                    self.getPeer().getTradingManager().getISA().sendTradingForSuperPeerNeighbor(myPID,myLevel,data)    
                 
                     #print "MTSP"
                
