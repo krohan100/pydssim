@@ -69,7 +69,7 @@ class TradingManager(object):
         
         peer = ""
         
-        while (trading.getStatus() == AbstractTrading.STARTED and ((time.time() - timeStart) < 60)) :
+        while (trading.getStatus() == AbstractTrading.STARTED and ((time.time() - timeStart) < 20)) :
             
             #print " trading 2 ", tradingUUID
             
@@ -79,8 +79,8 @@ class TradingManager(object):
                 continue 
             
            
-            if (time.time() - timeStart) > 30 and trading.getAttempt() == 1:
-                print "time --->>>", time.time()-timeStart, trading.getAttempt()
+            if (time.time() - timeStart) > 10 and trading.getAttempt() == 1:
+                #print "time --->>>", time.time()-timeStart, trading.getAttempt()
                 timeStart =time.time()
                 trading.setAttempt(trading.getAttempt() +1)
                 self.__isa.searchServiceForTrading(trading)

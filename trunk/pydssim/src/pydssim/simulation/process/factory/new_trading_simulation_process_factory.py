@@ -47,13 +47,13 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             if peer.getPID() in peers.keys():
                 if  peers[peer.getPID()] < 4:
-                    #print "new 1"
+                    
                     peers[peer.getPID()] += 1
                 else:
-                    #print "new 2"
+                    
                     continue    
             else:
-                #print "new 3"
+                
                 peers[peer.getPID()] = 0
                          
             
