@@ -22,7 +22,7 @@ class MessageHandlerTradingSuperforNeighbor(AbstractMessageHandler):
                 
                 superPeerNeig,data = data.split("~")
                 superPeerNeig,level = superPeerNeig.split()
-                print "MessageHandlerTradingSuperforNeighbor Level-->-->--> ",superPeerNeig,level
+                #print "MessageHandlerTradingSuperforNeighbor Level-->-->--> ",superPeerNeig,level
                 
                 
                 

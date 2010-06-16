@@ -224,7 +224,7 @@ class InformationServiceAgent(object):
         
         
         superPeer = self.getTradingManager().getPeer().getMySuperPeer()
-        print "SuperPerr", superPeer,trading.getAttempt()
+        #print "SuperPerr", superPeer,trading.getAttempt()
         peerSource      = self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("Send for SuperPeer = %s ,Peer = %s"%(superPeer,self.getTradingManager().getPeer().getPID()))
@@ -359,7 +359,7 @@ class InformationServiceAgent(object):
         
     def sendResponseToPeerAll(self,trading,myPeer,peer):
         
-        print "SendAll", self.getTradingManager().getPeer().getPID()
+        #print "SendAll", self.getTradingManager().getPeer().getPID()
         
         TradingLogger().resgiterLoggingInfo("send Response To Peer All ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
