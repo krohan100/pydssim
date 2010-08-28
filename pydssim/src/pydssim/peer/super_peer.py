@@ -134,6 +134,9 @@ class SuperPeer(AbstractPeer):
     def getLevelNeighbor(self):
         return self.__levelNeighbor
     
+    def DisconectSuperPeer(self):
+        pass
+    
     def discoverNewNeighbor(self,peers,portalID,dportal):
          
         auxLevel = int(self.getLevelNeighbor())

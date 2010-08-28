@@ -107,7 +107,7 @@ class AbstractNetwork():
         '''
         
         
-        del self.__layout[peer.getPID().getId()]
+        del self.__layout[peer.getPID()]
        
         
         flag = not self.__layout.has_key(peer.getPID())

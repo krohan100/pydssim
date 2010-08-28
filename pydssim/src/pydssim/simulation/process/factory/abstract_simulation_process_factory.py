@@ -12,7 +12,7 @@ from pydssim.simulation.process.factory.i_simualtor_process_factory import ISimu
 from SimPy.Simulation import Process
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 
-class AbstractSimulationProcessFactory( ISimulationProcessFactory,Process):
+class AbstractSimulationProcessFactory(Process):
     """
     Defines the basic implementation of ISimulationProcessFactory interface.
     @author: Luiz Gustavo 
@@ -24,9 +24,10 @@ class AbstractSimulationProcessFactory( ISimulationProcessFactory,Process):
     def __init__(self):
         raise NotImplementedError()
     
-    def initialize(self,name):
+    def initialize(self,name,active):
         self.__name = name
         self.__simulation = None
+        self.__active = active
         
         self.__logger = SimulationProcessLogger()
         
@@ -34,10 +35,12 @@ class AbstractSimulationProcessFactory( ISimulationProcessFactory,Process):
     
     
     def initializeProcess(self):
-                
+             
         return Process.__init__( self, self.getName(), self.getSimulation().getSimInstance())
         
         
+    def getActive(self):
+        return self.__active
         
     def getSimulation(self):
         return self.__simulation

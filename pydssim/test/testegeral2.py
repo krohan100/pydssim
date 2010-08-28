@@ -24,12 +24,19 @@ if __name__ == '__main__':
     now = datetime.now()
 
     
-    t1 =time.time()
-    #print time.asctime(time.localtime(t1))
+    '''t1 =time.time()
+    print time.asctime(time.localtime(t1)),t1
     while (time.time() - t1) <1:
+        #print time.time()
         pass
-    #print time.asctime(time.localtime(time.time()))
-                
+    
+    print time.asctime(time.localtime(time.time())),time.time() - t1
+    
+    '''
+    t1 =time.time()           
+    print time.asctime(time.localtime(t1)),t1
+    time.sleep(1)
+    print time.asctime(time.localtime(time.time())),time.time(),time.time() - t1
     
    
    

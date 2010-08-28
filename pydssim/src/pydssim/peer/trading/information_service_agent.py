@@ -248,7 +248,7 @@ class InformationServiceAgent(object):
             
     def sendStartTrading(self,data):
         
-        TradingLogger().resgiterLoggingInfo("send Start Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        TradingLogger().resgiterLoggingInfo("**** Send Start Trading ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
       
         
         peerSource,tradingUUID,tradingServiceResource,tradingServiceUUID,tradingMetric,tradingQuantity,equivalenceEquivalenceResource, equivalenceEquivalenceUUID,sharePeriodMetric,equivalenceQuantityTrand,tradingDPeriodStart,tradingTPeriodStart,tradingDPeriodEnd,tradingTPeriodEnd,sharePeriodDPeriodStart,sharePeriodTPeriodStart,sharePeriodDPeriodEnd,sharePeriodTPeriodEnd,tradingAttempt = data.split()
@@ -303,8 +303,8 @@ class InformationServiceAgent(object):
         
     def sendResponseToPeerWinner(self,trading,myPeer,peer):
         
-        print "Send E P W", self.getTradingManager().getPeer().getPID(),peer
-        TradingLogger().resgiterLoggingInfo("send Response To Peer Winner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        print "Send sendResponseToPeerWinner ", self.getTradingManager().getPeer().getPID(),peer
+        TradingLogger().resgiterLoggingInfo("** send Response To Peer Winner ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         msg = "%s %s %s"%(trading.getUUID(),AbstractTrading.COMPLETE,myPeer)
             
@@ -322,11 +322,11 @@ class InformationServiceAgent(object):
         
         
         
-        TradingLogger().resgiterLoggingInfo("send OwnershipCertificate ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        TradingLogger().resgiterLoggingInfo("Send OwnershipCertificate ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         msg = "%s %s"%(trading.getUUID(),myPeer)
         
-        print "Send  OC", self.getTradingManager().getPeer().getPID(), msg,peer
+        print "Send  sendOwnershipCertificate ", self.getTradingManager().getPeer().getPID(), msg,peer
             
         host,port = peer.split(":")
                      
@@ -361,7 +361,7 @@ class InformationServiceAgent(object):
         
         #print "SendAll", self.getTradingManager().getPeer().getPID()
         
-        TradingLogger().resgiterLoggingInfo("send Response To Peer All ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        TradingLogger().resgiterLoggingInfo("Send Response To Peer All ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         for peerTrading in trading.getPeersTrading().keys():
                        
@@ -377,7 +377,7 @@ class InformationServiceAgent(object):
              
     def recvResponseToPeer(self,data):
         
-        TradingLogger().resgiterLoggingInfo("recv Response To Peer ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        TradingLogger().resgiterLoggingInfo("Recv Response To Peer ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         tradingUUID,status,myPeer = data.split()
         
@@ -398,7 +398,7 @@ class InformationServiceAgent(object):
         
         print "------------>>>>>>>> Complete ", self.getTradingManager().getPeer().getPID()
         
-        TradingLogger().resgiterLoggingInfo("recv Response To Peer Complete ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
+        TradingLogger().resgiterLoggingInfo("** Recv Response To Peer Complete ,Peer = %s"%(self.getTradingManager().getPeer().getPID()))
         
         tradingUUID,status,myPeer = data.split()
         

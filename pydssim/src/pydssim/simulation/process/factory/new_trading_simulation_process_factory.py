@@ -10,7 +10,7 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 import threading
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
 
-
+from datetime import datetime
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random,randint,shuffle
@@ -42,7 +42,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
         contt = 0
         while  (simulation.getSimInstance().now() < simulation.getSimulationTime()):
              
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*2
+            #yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
             peer = network.getRandonPeer()
             
             if peer.getPID() in peers.keys():
@@ -50,7 +50,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
                     
                     peers[peer.getPID()] += 1
                 else:
-                    
+                    print "tttttttttttttttttttttttttttttttttttt" 
                     continue    
             else:
                 
@@ -70,10 +70,11 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             
                 service = services.getElements().values()[randint(0,services.countElements()-1)]
-                print "New Trading Service -> ",peer.getPID(),service.getResource(),peers[peer.getPID()],contt
+                print "New Trading Service -> ",datetime.today(),peer.getPID(),service.getResource(),peers[peer.getPID()],contt
                 contt+=1
              
                 peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity,AbstractTrading.CLIENT)
+                yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*contt
             
               
               

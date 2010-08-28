@@ -24,7 +24,7 @@ class BeginSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"BEGIN SIMULATION PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"BEGIN SIMULATION PROCESS FACTORY",0)
         
     
     @public

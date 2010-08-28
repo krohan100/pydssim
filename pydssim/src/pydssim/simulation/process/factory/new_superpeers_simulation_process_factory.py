@@ -9,14 +9,17 @@ Defines the module with the implementation AbstractSimulationProcessFactory clas
 
 import threading
 from pydssim.simulation.process.factory.abstract_simulation_process_factory import AbstractSimulationProcessFactory
-
+from datetime import datetime
 from pydssim.peer.super_peer import SuperPeer
+import time
 
 from pydssim.peer.abstract_peer import AbstractPeer
 
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
-from random import random
+from random import random, seed, expovariate, normalvariate
+
+
 import uuid
 
 class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
@@ -29,7 +32,7 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"NEW SUPERPEER PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"NEW SUPERPEER PROCESS FACTORY",3)
         
    
     def factorySimulationProcess(self):
@@ -40,25 +43,32 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         peer_number = 0
        
         ###
-        port = 3001
+        port = 3000
       
         portalID = network.getPortalID()
-        totalSP = simulation.getNetwork().getPeers()/simulation.getNetwork().getMaxNeighbor()
+        totalSP  = simulation.getNetwork().getPeers()/simulation.getNetwork().getMaxNeighbor()
         
-        while ( ( simulation.getSimInstance().now() < simulation.getSimulationTime() ) and ( peer_number < totalSP )):
+        while (( peer_number < totalSP )):# and ( simulation.getSimInstance().now() < simulation.getSimulationTime() )):
             peer_number+=1 
             
+            
+           
             urn = "urn:superpeer:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
             SimulationProcessLogger().resgiterLoggingInfo(logMsg)
-            
+            #print logMsg
             peer = SuperPeer(urn,port,simulation.getNetwork().getMaxNeighbor())
            
            
             network.addPeer(peer)
             #peer.newSuperPeer(portalID)
-            peer.connectPortal(portalID,1)
-            print "Super Peer ------------> ", peer.getPID()
+            #peer.connectPortal(portalID,1)
+            seed(333555)
+            X = expovariate(1)
+            Y = normalvariate(10.0, 1.0)
+
+            randa =simulation.getNetwork().getNewPeerTime()*random()#*(peer_number)
+            print "Super Peer ------------> ",datetime.today(), peer.getPID(),peer_number, simulation.getSimInstance().now(),time.asctime(time.localtime(time.time()))
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
@@ -66,8 +76,12 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                       
             port += 1
            
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*(peer_number)#*2)
+           
             
+          
+            yield hold,self,60#randa
+           
+           
         
        
             

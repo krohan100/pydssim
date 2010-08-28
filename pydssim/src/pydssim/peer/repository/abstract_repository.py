@@ -70,10 +70,10 @@ class AbstractRepository():
     
     def getElementID(self, Id):
         
-        semaphore = Semaphore()
-        semaphore.acquire()
+        #semaphore = Semaphore()
+        #semaphore.acquire()
         element = self.__elements[Id]
-        semaphore.release()
+        #semaphore.release()
         return element
     
     def getRandonElement(self):

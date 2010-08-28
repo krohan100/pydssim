@@ -29,7 +29,7 @@ class PeerConnection:
             self.__socket = sock
          
         self.__socketd = self.__socket.makefile( 'rw', 0 )
-        PeerLogger().resgiterLoggingInfo("PeersConnection from (%s,%s)" % (host,port))
+        #PeerLogger().resgiterLoggingInfo("PeersConnection from (%s,%s)" % (host,port))
 
 
     

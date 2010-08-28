@@ -29,7 +29,7 @@ class NewPortalPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"NEW PORTAL PEER PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"NEW PORTAL PEER PROCESS FACTORY",0)
         
    
     def factorySimulationProcess(self):
