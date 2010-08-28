@@ -66,7 +66,7 @@ class AbstractPeer:
         
         dispatcher = MessageDispatcher(self)
         dispatcher.registerMessageHandler(MessageHandlerInsertPeer(self))
-        dispatcher.registerMessageHandler(MessageHandlerListPeer(self))
+        #dispatcher.registerMessageHandler(MessageHandlerListPeer(self))
         dispatcher.registerMessageHandler(MessageHandlerPeerExit(self))
         dispatcher.registerMessageHandler(MessageHandlerPeerName(self))
         dispatcher.registerMessageHandler(MessageHandlerSuperPeer(self))
@@ -138,8 +138,8 @@ class AbstractPeer:
         #Logger().resgiterLoggingInfo('New child ' + str(threading.currentThread().getName())) 
         #Logger().resgiterLoggingInfo('Connected ' + str(clientSock.getpeername()))
         
-        PeerLogger().resgiterLoggingInfo('New child ' + str(threading.currentThread().getName())) 
-        PeerLogger().resgiterLoggingInfo('Connected ' + str(clientSock.getpeername()))
+        #PeerLogger().resgiterLoggingInfo('New child ' + str(threading.currentThread().getName())) 
+        #PeerLogger().resgiterLoggingInfo('Connected ' + str(clientSock.getpeername()))
     
         host, port = clientSock.getpeername()
         peerConn = PeerConnection( None, host, port, clientSock)
@@ -153,9 +153,9 @@ class AbstractPeer:
             if not self.__dispatcher.hasTypeMessage(msgType):   
             #if msgType not in self.__dispatcher.getMessageHandlers():
                 print "msg",msgType
-                PeerLogger().resgiterLoggingInfo('Not handled: %s: %s' % (msgType, msgData))
+                #PeerLogger().resgiterLoggingInfo('Not handled: %s: %s' % (msgType, msgData))
             else:
-                PeerLogger().resgiterLoggingInfo('Handling peer msg: %s: %s' % (msgType, msgData))
+                #PeerLogger().resgiterLoggingInfo('Handling peer msg: %s: %s' % (msgType, msgData))
                 self.__dispatcher.executeHandleMessage(msgType, peerConn, msgData)
                 #self.__dispatcher.getMessageHandlers()[ msgType ].e( peerConn, msgData )
         except KeyboardInterrupt:
@@ -164,7 +164,7 @@ class AbstractPeer:
             
             traceback.print_exc()
         
-        PeerLogger().resgiterLoggingInfo('Disconnecting ' + str(clientSock.getpeername())) 
+        #PeerLogger().resgiterLoggingInfo('Disconnecting ' + str(clientSock.getpeername())) 
         peerConn.close()
         
     
@@ -172,7 +172,7 @@ class AbstractPeer:
     
         s = self.makeServerSocket( self.getServerPort() )
         s.settimeout(2)
-        PeerLogger().resgiterLoggingInfo('Server started: %s (%s:%d)'  % ( self.getPID(), self.getServerHost(), self.getServerPort() ))
+        #PeerLogger().resgiterLoggingInfo('Server started: %s (%s:%d)'  % ( self.getPID(), self.getServerHost(), self.getServerPort() ))
         
         
         while not self.getShutdown():
@@ -192,17 +192,20 @@ class AbstractPeer:
                 self.getShutdown = True
                 continue
             except:
-            
+                print "sem comnu"
                 #traceback.print_exc()
                 continue
     
         
-        print 'Main loop exiting' 
+        print '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Main loop exiting' 
     
         s.close()
         
     def getShutdown(self):
         return self.__shutdown
+    
+    def setShutdown(self):
+        self.__shutdown = True
     
     def getRouter(self):
         return self.__router
@@ -313,7 +316,7 @@ class AbstractPeer:
         if self.__router:
             nextpid, host, port = self.__router( peerID )
         if not self.__router or not nextpid:
-            PeerLogger().resgiterLoggingInfo('Unable to route %s to %s' % (msgType, peerID))
+            #PeerLogger().resgiterLoggingInfo('Unable to route %s to %s' % (msgType, peerID))
             return None
         #host,port = self.peers[nextpid]
         return self.connectAndSend( host, port, msgType, msgData,
@@ -331,7 +334,7 @@ class AbstractPeer:
         
         while  num != AbstractPeer.NUMBER:
             
-            PeerLogger().resgiterLoggingInfo("ConnectAndSend peers from (%s,%s) %s number %d" % (host,port,msgType,num))
+            #PeerLogger().resgiterLoggingInfo("ConnectAndSend peers from (%s,%s) %s number %d" % (host,port,msgType,num))
             
             try:
                 peerConn = PeerConnection( pid, host, port)
@@ -340,21 +343,23 @@ class AbstractPeer:
                     onereply = peerConn.recvData()
                     while (onereply != (None,None)):
                         msgreply.append( onereply )
-                        PeerLogger().resgiterLoggingInfo('Got reply %s: %s' % ( pid, str(msgreply) ))
+                        #PeerLogger().resgiterLoggingInfo('Got reply %s: %s' % ( pid, str(msgreply) ))
                         onereply = peerConn.recvData()
                 peerConn.close()
                 break
             except KeyboardInterrupt:
                 raise
             except:
-                num += 1
+                
                 print "Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num)
-                PeerLogger().resgiterLoggingInfo("Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num))
+                num += 1
+                #PeerLogger().resgiterLoggingInfo("Erro de Connecao peers from (%s,%s) %s %d" % (host,port,msgType, num))
         
-        if num == AbstractPeer.NUMBER:
-            self.setMySuperPeer(self.getPID())
-            self.setPeerType(AbstractPeer.SUPER)
-            
+        #if num == AbstractPeer.NUMBER:
+        #    self.setMySuperPeer(self.getPID())
+        #    self.setPeerType(AbstractPeer.SUPER)
+        
+        #print  msgreply    
         return msgreply
     
      
@@ -374,7 +379,7 @@ class AbstractPeer:
         
         host,port = portalID.split(":")
     
-        PeerLogger().resgiterLoggingInfo ("Connecting to PortalPeers (%s,%s)" % (host,port))
+        #PeerLogger().resgiterLoggingInfo ("Connecting to PortalPeers (%s,%s)" % (host,port))
         
         try:
             #print "contacting " #+ peerID
@@ -400,7 +405,7 @@ class AbstractPeer:
                 if nextpid != self.getPID():
                     hostSuper,portSuper = nextpid.split(":")
                     if self.connectSuperPeers(hostSuper, portSuper, hops,type ):
-                        PeerLogger().resgiterLoggingInfo ("Connected to SUperPeers (%s,%s)" % (host,port))
+                        #PeerLogger().resgiterLoggingInfo ("Connected to SUperPeers (%s,%s)" % (host,port))
                         
                         super = False
                         if type == AbstractPeer.SIMPLE:
@@ -408,7 +413,8 @@ class AbstractPeer:
                         self.addSuperPeerNeighbors(nextpid)
             
             if super:
-                PeerLogger().resgiterLoggingInfo ("sem super")
+                pass
+                #PeerLogger().resgiterLoggingInfo ("sem super")
                 #self.__newSuperPeer(host, port)       
                 
         except:
@@ -433,7 +439,7 @@ class AbstractPeer:
     
         peerID = None
     
-        PeerLogger().resgiterLoggingInfo ("Connecting to SuperPeers (%s,%s)" % (host,port))
+        #PeerLogger().resgiterLoggingInfo ("Connecting to SuperPeers (%s,%s)" % (host,port))
         
         try:
             #print "contacting " #+ peerID
@@ -446,7 +452,7 @@ class AbstractPeer:
                 
             else:
                 msgHandler = AbstractMessageHandler.INSERTSPEER
-                PeerLogger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
+                #PeerLogger().resgiterLoggingInfo ("Insert SuperPeers (%s,%s)" % (self.getServerHost(),self.getServerPort()))
             
             resp = self.connectAndSend(host, port, msgHandler, 
                         '%s %s %d' % (self.getPID(),

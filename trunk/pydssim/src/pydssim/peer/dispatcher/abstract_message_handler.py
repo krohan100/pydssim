@@ -12,7 +12,7 @@ class AbstractMessageHandler():
     FILEGET         = "0008"
     PEERQUIT        = "0009"
     SUPERPEER       = "0010"
-    SSUPERPEER      = "0012"
+    #SSUPERPEER      = "0012"
     REPLY           = "0013"
     ERROR           = "0014"
     PEERFULL        = "0015"

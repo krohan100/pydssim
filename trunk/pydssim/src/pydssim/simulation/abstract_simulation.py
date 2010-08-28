@@ -33,6 +33,8 @@ class AbstractSimulation(ISimulation):
         @rtype: NoneType
         """
         self.__simInstance = Simulation() 
+        self.__simInstance.initialize()
+
         
         self.__simulationTime = 0
         self.__currentSimulationTime = 0
@@ -55,9 +57,10 @@ class AbstractSimulation(ISimulation):
        
         if simulationProcessFactory in self.__simulationProcessFactory:
             return None
-        self.__simulationProcessFactory.append(simulationProcessFactory)
         simulationProcessFactory.setSimulation(self)
         simulationProcessFactory.initializeProcess()
+        self.__simulationProcessFactory.append(simulationProcessFactory)
+       
         
         return self.__simulationProcessFactory[self.__simulationProcessFactory.index(simulationProcessFactory)]
 
@@ -168,7 +171,8 @@ class AbstractSimulation(ISimulation):
         factoryProcess = 0
         for factory in self.__simulationProcessFactory:
             print factory.getName()
-            mySim.activate( factory, factory.factorySimulationProcess() ) 
+            mySim.activate( factory, factory.factorySimulationProcess(),at=factory.getActive()) 
+            
             factoryProcess +=1
             
             

@@ -73,7 +73,7 @@ class TradingManager(object):
             
             #print " trading 2 ", tradingUUID
             
-            trading = self.getTradings().getElementID(tradingUUID)
+            #l#trading = self.getTradings().getElementID(tradingUUID)
             #
             if trading.getStatus() == AbstractTrading.NOTCOMLETE:
                 continue 
@@ -100,6 +100,7 @@ class TradingManager(object):
                     
                 
         self.__isa.sendResponseToPeerAll(trading,self.getPeer().getPID(),peer)
+        TradingLogger().resgiterLoggingInfo("****** Final Trading ,Peer = %s"%(self.__peer.getPID()))
         
     def createTrading(self,trading):
         

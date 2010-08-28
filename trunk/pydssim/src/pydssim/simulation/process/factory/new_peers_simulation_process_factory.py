@@ -24,13 +24,15 @@ from pydssim.peer.service.hardware_service import Hardware
 from pydssim.peer.service.abstract_service import AbstractService
 from pydssim.peer.service.service_service import Service
 from pydssim.peer.service.shared_period import SharePeriod
-
+import time
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
 from random import random,randint,shuffle
 
 from pydssim.util.data_util import randomDate,strTime
 import uuid
+
+from datetime import datetime
 
 class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
@@ -42,7 +44,7 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"NEW SIMPLEPEER PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"NEW DEDAULTPEER PROCESS FACTORY",6)
         
     def createSharePeriods(self,peer,service,dateTimeStart,dateTimeStop):
         
@@ -201,13 +203,13 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
       
         portalID = network.getPortalID()
       
-        while ( ( simulation.getSimInstance().now() < simulation.getSimulationTime() ) and ( peer_number < simulation.getNetwork().getPeers())):
+        while ( ( peer_number < simulation.getNetwork().getPeers())):# and ( simulation.getSimInstance().now() < simulation.getSimulationTime() )):
             peer_number+=1 
             
             urn = "urn:peer:"+uuid.uuid1().__str__()
             logMsg = "Factoring Process %s => Simulation Time %10.2f making peer number : %s id %s" % (self.getName(),simulation.getSimInstance().now() ,peer_number, urn) 
             SimulationProcessLogger().resgiterLoggingInfo(logMsg)
-            
+            #print logMsg
             peer = DefaultPeer(urn,port)
            
             self.createServices(peer,simulation.getResourcePeer(),simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())
@@ -218,22 +220,13 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             #print self.showEquivalence(peer)
             
-            network.addPeer(peer)
-            peer.connectPortal(portalID)
             
-            t = threading.Thread( target = peer.mainLoop,
-                              args = [] )
-            t.start()
-                      
-            port += 1
-           
             
-           
+            
             self.createTrust(peer,network.getPeersFromLayout(peer),simulation.getTransactionNumber(),simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())
             #print peer.getDirectTrust().countElements()
-            
-            
-            
+                        
+            '''
             peerT = network.getRandonPeer()
             peeridT = peerT.getPID()
             while peeridT == peer.getPID():
@@ -241,9 +234,15 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
               peeridT = peerT.getPID()
             
             
+              
+            
+            
             if peerT.getPeerType() != AbstractPeer.SIMPLE:
-                
+                 
                 continue
+            
+            
+            '''
             
             #x,y,z = peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
             #print "direct ===>>",x,y,z
@@ -251,12 +250,23 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             #r = peer.getTrustManager().reputationCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
             #print "Reputation", r
             
+            network.addPeer(peer)
+            #peer.connectPortal(portalID)
             
-            print "Default Peer --> ", peer.getPID()
+            t = threading.Thread( target = peer.mainLoop,
+                              args = [] )
+            t.start()
+            
+            
+                      
+            port += 1
+           
+            
+            #print t.is_alive()
+            print "Default Peer --> ",datetime.today(), peer.getPID(),peer_number,simulation.getSimInstance().now(),time.asctime(time.localtime(time.time()))
             #tf = peer.getTrustManager().TrustFinalValueCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
             #print "trusfinal", tf
-             
-             
+            
               
-            yield hold, self, simulation.getNetwork().getNewPeerTime()*random()
+            yield hold, self, 6
        
