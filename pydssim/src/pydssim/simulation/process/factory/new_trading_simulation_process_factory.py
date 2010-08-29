@@ -28,7 +28,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
     """
 
     def __init__(self):
-        AbstractSimulationProcessFactory.initialize(self,"NEW TRADING PROCESS FACTORY")
+        AbstractSimulationProcessFactory.initialize(self,"NEW TRADING PROCESS FACTORY",120)
         
     
    
@@ -74,7 +74,7 @@ class NewTradingSimulationProcessFactory(AbstractSimulationProcessFactory):
                 contt+=1
              
                 peer.getTradingManager().creatTradingService(service,periodStart,periodEnd,serviceQuantity,AbstractTrading.CLIENT)
-                yield hold, self, simulation.getNetwork().getNewPeerTime()*random()*contt
+                yield hold, self, 24
             
               
               

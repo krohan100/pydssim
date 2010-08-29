@@ -15,15 +15,17 @@ class MessageHandlerPeerExit(AbstractMessageHandler):
         
         self.getPeer().getPeerLock().acquire()
         try:
-            peerID = data.lstrip().rstrip()
-            if peerID in self.getPeer().getpeerIDs():
+            
+            peerID,host,port = data.split()
+            if peerID in self.getPeer().getPeerIDs():
                 msg = 'Quit: peer removed: %s' % peerID 
-                
+                #print msg
                 peerConn.sendData(AbstractMessageHandler.REPLY, msg)
-                self.getPeer().removepeer(peerID)
+                self.getPeer().removePeer(peerID)
             else:
                 msg = 'Quit: peer not found: %s' % peerID 
-                print msg
+                #print msg
                 peerConn.sendData(AbstractMessageHandler.ERROR, msg)
+            #print msg    
         finally:
             self.getPeer().getPeerLock().release()

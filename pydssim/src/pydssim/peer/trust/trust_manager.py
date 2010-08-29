@@ -160,7 +160,13 @@ class TrustManager(object):
                         '%s %s %s %s' % (peerID, service, startDate, stopDate))#[0]
               
                 #self.getPeer().getPeerLock().release()
-                trustFinalValue = float(resp[0][1])
+                #print resp
+                
+                trustFinalValue = 0
+                
+                if resp != []:
+                    #print "resp",resp,host,port 
+                    trustFinalValue = float(resp[0][1])
                 
                 reputation+= (peerConf*trustFinalValue)
                 
