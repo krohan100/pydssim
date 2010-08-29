@@ -17,7 +17,7 @@ from pydssim.peer.abstract_peer import AbstractPeer
 
 from pydssim.util.log.simulation_process_logger import SimulationProcessLogger
 from SimPy.Simulation import *
-from random import random, seed, expovariate, normalvariate
+from random import random, seed, expovariate, normalvariate,randint
 
 
 import uuid
@@ -61,14 +61,10 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
            
            
             network.addPeer(peer)
-            #peer.newSuperPeer(portalID)
-            #peer.connectPortal(portalID,1)
-            seed(333555)
-            X = expovariate(1)
-            Y = normalvariate(10.0, 1.0)
-
-            randa =simulation.getNetwork().getNewPeerTime()*random()#*(peer_number)
-            print "Super Peer ------------> ",datetime.today(), peer.getPID(),peer_number, simulation.getSimInstance().now(),time.asctime(time.localtime(time.time()))
+            
+            peer.connectPortal(portalID,1)
+           
+            print "Super Peer = %s = %s = %s = %s"%(datetime.today(), peer.getPID(),peer_number, simulation.getSimInstance().now())
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
@@ -78,8 +74,9 @@ class NewSuperPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
            
            
             
+            randa = randint(55,65)#
           
-            yield hold,self,60#randa
+            yield hold,self,randa
            
            
         

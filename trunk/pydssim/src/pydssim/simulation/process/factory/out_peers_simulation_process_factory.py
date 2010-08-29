@@ -46,7 +46,7 @@ class OutPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
      
 
     def __init__(self):
-        self.__active = 60
+        self.__active =36
         AbstractSimulationProcessFactory.initialize(self,"OUT SIMPLEPEER PROCESS FACTORY",self.__active)
                                    
     def factorySimulationProcess(self):
@@ -60,7 +60,7 @@ class OutPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
         while network.countPeers > 1:# and ( simulation.getSimInstance().now() < simulation.getSimulationTime() )):
          
             
-            peer_number+=1
+            
             logMsg = "Factoring Process %s => Simulation Time %10.2f" % (self.getName(),simulation.getSimInstance().now()) 
             SimulationProcessLogger().resgiterLoggingInfo(logMsg)
              
@@ -71,10 +71,11 @@ class OutPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
                 continue
             
             #randa =simulation.getNetwork().getNewPeerTime()*random()
-            print "Remove Peer ----------------------------------------------------> ",datetime.today(), peer.getPID(),peer.getPeerType() ,peer_number
+            peer_number+=1
             peer.setShutdown()
-            network.removePeer(peer)
-            yield hold, self, self.__active
+            print "Remov Peer = %s = %s = %s = %s"%(datetime.today(), peer.getPID(),peer_number, simulation.getSimInstance().now())
+            randa = randint(4,8)*6
+            yield hold, self, randa
             
         
        

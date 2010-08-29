@@ -7,6 +7,7 @@ Created on 29/01/2010
 import math
 from portal import Portal
 from peer import Peer
+from random import random,randint,shuffle
 
 #
 #
@@ -19,6 +20,7 @@ if __name__ == '__main__':
     #print math.trunc(math.log(5,2))
     portal = Portal()
    
+    print randint(5,10)
    
     for i in range(1,9):
         peer = Peer(i)

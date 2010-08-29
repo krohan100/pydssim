@@ -43,6 +43,7 @@ from pydssim.peer.dispatcher.message_handler_trading_super_neighbor import Messa
 from pydssim.peer.dispatcher.message_handler_trading_owner import MessageHandlerTradingOwner
 
 
+
 from pydssim.peer.dispatcher.abstract_message_handler import AbstractMessageHandler
 from pydssim.peer.peer_connection import PeerConnection
 
@@ -52,7 +53,7 @@ from random import randint
 
 class AbstractPeer:
     
-    NUMBER = 3
+    NUMBER = 1
     SUPER  = "SUPER_PEER"
     SIMPLE = "SIMPLE_PEER"
     PORTAL = "PORTAL_PEER"
@@ -152,7 +153,7 @@ class AbstractPeer:
                 
             if not self.__dispatcher.hasTypeMessage(msgType):   
             #if msgType not in self.__dispatcher.getMessageHandlers():
-                print "msg",msgType
+                pass#print "msg",msgType
                 #PeerLogger().resgiterLoggingInfo('Not handled: %s: %s' % (msgType, msgData))
             else:
                 #PeerLogger().resgiterLoggingInfo('Handling peer msg: %s: %s' % (msgType, msgData))
@@ -192,12 +193,12 @@ class AbstractPeer:
                 self.getShutdown = True
                 continue
             except:
-                print "sem comnu"
+                #print "sem comnu"
                 #traceback.print_exc()
                 continue
     
         
-        print '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Main loop exiting' 
+        #print '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Main loop exiting' ,self.getPID()
     
         s.close()
         
@@ -205,7 +206,13 @@ class AbstractPeer:
         return self.__shutdown
     
     def setShutdown(self):
+        
+        #self.getPeerLock().acquire()
+        self.removeFromSuperPeers()
+        
         self.__shutdown = True
+        PeerLogger().resgiterLoggingInfo("Remove     Peer =>  URN = %s, IP = %s port = %s"%(self.__urn,self.__serverHost,self.__serverPort))
+        #self.getPeerLock().release()
     
     def getRouter(self):
         return self.__router
@@ -445,7 +452,7 @@ class AbstractPeer:
             #print "contacting " #+ peerID
             _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
     
-            #print "contacted " + peerID
+            
             
             if type == AbstractPeer.SIMPLE:
                 msgHandler = AbstractMessageHandler.INSERTPEER
@@ -463,8 +470,50 @@ class AbstractPeer:
             if (resp[0][0] == AbstractMessageHandler.PEERFULL):
                 return False
           
+            #print "contacted Suuper",host,port 
             self.setMySuperPeer("%s:%s"%(host,port))
             
+            return True
+            
+                
+        except:
+            #traceback.print_exc()
+            #print "eerrroooo" 
+            self.removePeer(peerID)
+    
+    def removeFromSuperPeers(self):
+    
+        """ RemoveConnectPeers(host, port, hops) 
+    
+        Attempt to build the local peer list up to the limit stored by
+        self.maxPeers, using a simple depth-first search given an
+        initial host and port as starting point. The depth of the
+        search is limited by the hops parameter.
+    
+        """
+    
+        peerID = None
+    
+        #PeerLogger().resgiterLoggingInfo ("Connecting to SuperPeers (%s,%s)" % (host,port))
+        
+        try:
+            #print "contacting " + self.getMySuperPeer()
+            host,port = self.getMySuperPeer().split(":")
+             
+            _, peerID = self.connectAndSend(host, port, AbstractMessageHandler.PEERNAME, '')[0]
+    
+            #print "contacted " + peerID
+            
+            msgHandler = AbstractMessageHandler.PEEREXIT
+            
+           
+            
+            resp = self.connectAndSend(host, int(port), msgHandler, 
+                        '%s %s %d' % (self.getPID(),
+                                  self.getServerHost(), 
+                                  self.getServerPort()))#[0]
+           
+                        
             return True
             
                 
@@ -480,27 +529,7 @@ class AbstractPeer:
         not reply. This function can be used as a simple stabilizer.
     
         """
-        todelete = []
-        for pid in self.getPeerNeighbors():
-            isconnected = False
-            try:
-                
-                host,port,super = self.getPeerNeighbors()[pid]
-                peerConn = PeerConnection( pid, host, port)
-                peerConn.sendData( 'PING', '' )
-                isconnected = True
-            except:
-                todelete.append( pid )
-            if isconnected:
-                peerConn.close()
-    
-        self.getPeerLock().acquire()
-        try:
-            for pid in todelete: 
-                if pid in self.getPeerNeighbors():
-                    del self.getPeerNeighbors()[pid]
-        finally:
-            self.getPeerLock().release()
+        pass
         
 
   

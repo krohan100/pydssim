@@ -73,7 +73,7 @@ class TradingManager(object):
             
             #print " trading 2 ", tradingUUID
             
-            #l#trading = self.getTradings().getElementID(tradingUUID)
+            #trading = self.getTradings().getElementID(tradingUUID)
             #
             if trading.getStatus() == AbstractTrading.NOTCOMLETE:
                 continue 

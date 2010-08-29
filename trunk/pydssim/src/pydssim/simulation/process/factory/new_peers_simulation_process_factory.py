@@ -217,56 +217,20 @@ class NewPeersSimulationProcessFactory(AbstractSimulationProcessFactory):
             
             self.createEquivalence(peer, simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())
             
-            
-            #print self.showEquivalence(peer)
-            
-            
-            
-            
             self.createTrust(peer,network.getPeersFromLayout(peer),simulation.getTransactionNumber(),simulation.getTransactionDateTimeStart(),simulation.getTransactionDateTimeStop())
-            #print peer.getDirectTrust().countElements()
-                        
-            '''
-            peerT = network.getRandonPeer()
-            peeridT = peerT.getPID()
-            while peeridT == peer.getPID():
-              peerT = network.getRandonPeer()
-              peeridT = peerT.getPID()
-            
-            
-              
-            
-            
-            if peerT.getPeerType() != AbstractPeer.SIMPLE:
-                 
-                continue
-            
-            
-            '''
-            
-            #x,y,z = peer.getTrustManager().directTrustCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
-            #print "direct ===>>",x,y,z
-            
-            #r = peer.getTrustManager().reputationCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
-            #print "Reputation", r
             
             network.addPeer(peer)
-            #peer.connectPortal(portalID)
+            peer.connectPortal(portalID)
             
             t = threading.Thread( target = peer.mainLoop,
                               args = [] )
             t.start()
-            
-            
-                      
+           
             port += 1
            
+            print "Defau Peer = %s = %s = %s = %s"%(datetime.today(), peer.getPID(),peer_number,simulation.getSimInstance().now())
+                  
+            randa = randint(5,10)# 
+            yield hold, self, randa
             
-            #print t.is_alive()
-            print "Default Peer --> ",datetime.today(), peer.getPID(),peer_number,simulation.getSimInstance().now(),time.asctime(time.localtime(time.time()))
-            #tf = peer.getTrustManager().TrustFinalValueCalculation(peerT.getPID(),"memory",strTime("1/1/2009 1:30"),strTime("1/1/2009 4:50"))
-            #print "trusfinal", tf
-            
-              
-            yield hold, self, 6
        
